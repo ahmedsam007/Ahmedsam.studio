@@ -1,0 +1,767 @@
+/* Remove Tailwind directives from here */
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* Reset/Base styles */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', 'Rubik', sans-serif;
+    background-color: white;
+    color: #1f2937; /* Default text color for light mode */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.dark body {
+    background-color: #0f0f0f; /* dark:bg-dark-900 */
+    color: #f9fafb; /* Default text color for dark mode */
+}
+
+* {
+    /* transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; */ /* This global transition might be too broad */
+    cursor: none; /* Apply custom cursor globally */
+}
+
+/* Custom cursor styles */
+.cursor-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #6b6969;
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease, background-color 0.2s ease, width 0.2s ease, height 0.2s ease;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%); /* Center the dot */
+}
+
+.cursor-circle {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #adadad;
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.2s ease, border-color 0.2s ease, width 0.2s ease, height 0.2s ease;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%); /* Center the circle */
+}
+
+/* Dark mode cursor */
+.dark .cursor-dot {
+    background-color: #808080;
+}
+
+.dark .cursor-circle {
+    border-color: rgba(205, 205, 205, 0.4);
+}
+
+/* Cursor Hover state (applied via JS) */
+.cursor-dot.hover {
+    width: 12px;
+    height: 12px;
+    background-color: #40FB30; /* primary-500 */
+}
+
+.cursor-circle.hover {
+    width: 40px; /* Maintain size */
+    height: 40px;
+    border-color: rgba(64, 251, 48, 0.4);
+}
+
+/* Cursor Active state (applied via JS) */
+.cursor-dot.active {
+    background-color: #40FB30;
+}
+
+.cursor-circle.active {
+    border-color: rgba(64, 251, 48, 0.4);
+    /* Consider slight scale change if desired */
+    /* transform: translate(-50%, -50%) scale(0.9); */
+}
+
+
+/* General Link Styles */
+.nav-link,
+.footer-link,
+.social-link {
+    transition: color 0.3s ease;
+}
+
+.nav-link {
+    /* Tailwind used: text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500 font-medium */
+    color: #4b5563; /* text-gray-600 */
+    font-weight: 500;
+}
+.dark .nav-link {
+    color: #d1d5db; /* dark:text-gray-300 */
+}
+.nav-link:hover {
+    color: #40FB30; /* hover:text-primary-500 */
+}
+.dark .nav-link:hover {
+    color: #40FB30; /* dark:hover:text-primary-500 */
+}
+
+.footer-link {
+    color: #4b5563; /* text-gray-600 */
+}
+.dark .footer-link {
+    color: #9ca3af; /* dark:text-gray-400 */
+}
+.footer-link:hover {
+    color: #40FB30; /* hover:text-primary-500 */
+}
+.dark .footer-link:hover {
+    color: #6EE75F; /* Example: Lighter primary for dark hover */
+}
+
+.social-link {
+    color: #4b5563; /* text-gray-600 */
+}
+.dark .social-link {
+    color: #9ca3af; /* dark:text-gray-400 */
+}
+.social-link:hover {
+    color: #40FB30; /* hover:text-primary-500 */
+}
+.dark .social-link:hover {
+    color: #6EE75F; /* Example: Lighter primary for dark hover */
+}
+
+
+/* Section Styling */
+.section {
+    /* Common padding, handled by Tailwind in App.jsx (py-20) */
+    position: relative;
+    overflow: hidden; /* Contain potential overflows */
+}
+
+/* --- Base Section Title Styles --- */
+.section-title {
+    font-size: 3.5rem;
+    line-height: 1.3;
+    margin: 0 auto 2rem;
+    text-align: center;
+    font-weight: 900;
+    position: relative;
+    z-index: 10;
+
+    /* Fallback Color (Light Mode) */
+    color: #1f2937; /* text-gray-800 */
+
+    /* Gradient Styles (applied if supported) */
+    background: linear-gradient(180deg, rgba(31, 41, 55, 1) 0%, rgba(75, 85, 99, 0.9) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    /* Base animation state */
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+/* Dark mode for base sections */
+.dark .section-title {
+    /* Fallback Color (Dark Mode) */
+    color: #f9fafb; /* text-gray-50 */
+
+    /* Gradient Styles (applied if supported) */
+    background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(156, 163, 175, 0.7) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Trigger animation for base sections (applied via JS using 'active' class) */
+.section.active .section-title {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+/* --- Hero Section Specific Styles --- */
+#hero {
+    /* Tailwind handles height: h-screen, flex, items-center, justify-center */
+    position: sticky; /* Part of the fixed scroll effect */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 10;
+    overflow: hidden;
+}
+
+/* Hero Headline Text (using .hero-gradient-text and .hero-char for animation) */
+.hero-gradient-text {
+    display: inline-block; /* Important for layout */
+    background: none; /* Gradient applied to chars */
+    color: transparent; /* Fallback handled by chars */
+    -webkit-text-fill-color: initial;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    font-size: 82px; /* Tailwind: text-[82px] */
+    line-height: 1.2; /* Tailwind: leading-tight */
+    letter-spacing: -0.03em;
+}
+
+.hero-char {
+    display: inline-block;
+    opacity: 0; /* Start hidden */
+    transform: translateY(20px); /* Start position */
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    font-weight: 900;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    /* Light Mode Gradient */
+    color: #1f2937;
+    background: linear-gradient(180deg, rgba(31, 41, 55, 1) 0%, rgba(75, 85, 99, 0.9) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.dark .hero-char {
+    /* Dark Mode Gradient */
+    color: #f9fafb;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(156, 163, 175, 0.7) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive sizing for the hero headline */
+@media (max-width: 1200px) {
+    .hero-gradient-text {
+        font-size: 70px !important;
+    }
+}
+@media (max-width: 768px) {
+    .hero-gradient-text {
+        font-size: 56px !important;
+    }
+}
+@media (max-width: 480px) {
+    .hero-gradient-text {
+        font-size: 42px !important;
+    }
+}
+
+/* Hero SVG Background Animation */
+#hero svg {
+    will-change: transform;
+    animation: floatAnimation 20s ease-in-out infinite;
+    transform-origin: center center; /* Adjust if needed */
+}
+
+#hero svg path {
+    animation: pathFloat 15s ease-in-out infinite alternate; /* Added alternate */
+    transform-origin: center center; /* Adjust if needed */
+}
+
+/* Delay for paths - simplified */
+#hero svg path:nth-child(odd) { animation-delay: 0s; }
+#hero svg path:nth-child(even) { animation-delay: -7.5s; } /* Offset by half duration */
+
+
+@keyframes floatAnimation {
+    0% { transform: translate(-50%, -50%) rotate(0deg) translateY(0px); }
+    25% { transform: translate(-50%, -50%) rotate(2deg) translateY(-10px); }
+    50% { transform: translate(-50%, -50%) rotate(-2deg) translateY(-20px); }
+    75% { transform: translate(-50%, -50%) rotate(2deg) translateY(-10px); }
+    100% { transform: translate(-50%, -50%) rotate(0deg) translateY(0px); }
+}
+
+@keyframes pathFloat {
+    0% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-15px) scale(1.05); }
+    100% { transform: translateY(0) scale(1); }
+}
+
+/* Gradient border button like GitHub with animation */
+.gradient-border-button {
+    position: relative;
+    z-index: 1;
+    border-radius: 12px;
+    padding: 1px; /* Creates border effect */
+    background: linear-gradient(90deg, #ff00cc, #3333ff, #ff00cc);
+    background-size: 200% 100%;
+    overflow: hidden;
+    transition: background-position 0.5s ease;
+    animation: gradientMove 3s ease infinite;
+    display: inline-block; /* Ensure it behaves like a button */
+    border: none; /* Remove default border */
+    cursor: none; /* Use custom cursor */
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.gradient-border-button .inner-button {
+    background-color: #000; /* Inner background for light mode */
+    border-radius: 11px; /* Slightly smaller than outer */
+    padding: 12px 24px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    color: #fff; /* Default text color */
+}
+
+.dark .gradient-border-button .inner-button {
+    background-color: #121212; /* Inner background for dark mode */
+    color: #fff;
+}
+
+.gradient-border-button:hover .inner-button {
+    background-color: rgba(0, 0, 0, 0.8); /* Darken on hover */
+}
+
+.dark .gradient-border-button:hover .inner-button {
+    background-color: rgba(18, 18, 18, 0.8); /* Darken on hover */
+}
+
+/* Make text inside inner button visible */
+.gradient-border-button .inner-button span {
+    color: inherit; /* Inherit color from .inner-button */
+    position: relative; /* Ensure z-index works if needed */
+    z-index: 2;
+}
+
+.dark .gradient-border-button .inner-button span {
+     color: #fff;
+}
+
+/* --- Logos Section --- */
+.logos-track {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 2rem; /* Tailwind: gap-4 lg:gap-8 handled in JSX */
+    padding: 0 1.25rem; /* Tailwind: px-5 lg:px-12 handled in JSX */
+    /* animation: marquee 90s linear infinite; */ /* Animation applied in JSX */
+    will-change: transform;
+}
+
+.logo-item {
+    height: 3rem; /* Tailwind: h-5 lg:h-5 (adjust based on context) */
+    width: auto;
+    min-height: 3rem;
+    display: inline-block;
+    flex-shrink: 0;
+    opacity: 0.8; /* Added default opacity */
+    transition: opacity 0.3s ease;
+}
+
+.logo-item:hover {
+    opacity: 1;
+}
+
+.logo-item img {
+    height: 100%;
+    width: auto;
+    display: block;
+    pointer-events: none;
+}
+
+.dark .logo-item {
+    opacity: 0.7;
+}
+
+@keyframes marquee {
+    from { transform: translateX(0%); }
+    to { transform: translateX(-100%); }
+}
+
+/* Motion reduction for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .logos-track {
+        animation: none;
+        will-change: auto;
+    }
+}
+
+/* --- Fixed Scroll Sections Logic --- */
+.fixed-scroll-sections {
+    position: relative;
+    width: 100%;
+    height: 250vh; /* Height needed to accommodate pinned sections */
+    z-index: 5; /* Below navbar */
+}
+
+/* Regular sections positioning */
+.regular-sections {
+    position: relative;
+    z-index: 30; /* Above video/hero */
+    background: white;
+    margin-top: 50vh; /* Adjust based on fixed section heights */
+    /* Ensure it starts after the fixed scroll area */
+}
+
+.dark .regular-sections {
+    background: #0f0f0f;
+}
+
+/* --- Video Section Specific Styles --- */
+.video-section {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 20; /* Above hero, below regular */
+    background-color: black;
+    transform: translateY(100%);
+    transition: transform 1.2s cubic-bezier(0.17, 0.84, 0.44, 1);
+    will-change: transform;
+    overflow: hidden;
+    /* Removed opacity/visibility transitions, using transform instead */
+}
+
+.video-section.active {
+    transform: translateY(0);
+}
+
+/* Mask effect for Hero when video is active */
+.scrolling-video #hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 0;
+    transition: opacity 1s ease;
+    animation: fadeInMask 1.2s forwards;
+    z-index: 15; /* Between hero content and video */
+}
+
+@keyframes fadeInMask {
+    0% { opacity: 0; }
+    100% { opacity: 0.6; } /* Adjusted opacity */
+}
+
+/* Video content wrapper */
+.video-section .section-content {
+    height: 100vh;
+    overflow-y: auto; /* Allow scrolling within if needed */
+    display: flex;
+    flex-direction: column;
+    transition: all 0.8s ease;
+    position: relative;
+    padding-top: 4rem; /* Tailwind: pt-20 */
+    padding-bottom: 6rem;
+}
+
+/* Video container (holds the player) */
+.video-container {
+    max-width: 100%;
+    width: 100%;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 1s ease 0.3s, transform 1.4s cubic-bezier(0.17, 0.84, 0.44, 1) 0.3s; /* Added delay */
+    margin: 0 auto;
+    position: relative; /* Needed for aspect ratio */
+    flex-grow: 1; /* Allow it to take space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.video-section.active .video-container {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Video Player Itself */
+.video-container video {
+    width: 100%;
+    height: auto; /* Maintain aspect ratio */
+    max-height: 80vh; /* Limit max height */
+    object-fit: contain; /* Contain video within bounds */
+    border-radius: 24px; /* Tailwind: rounded-[24px] md:rounded-[32px] */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    display: block; /* Remove extra space below video */
+}
+@media (min-width: 768px) {
+    .video-container video {
+       border-radius: 32px;
+    }
+}
+
+/* Scale effect when scrolling further */
+.scrolling-video-further .video-container {
+    transform: scale(1.1);
+    transition: transform 1.4s cubic-bezier(0.17, 0.84, 0.44, 1);
+}
+
+/* Video Section Title */
+.video-section .section-title {
+    font-size: 48px; /* Tailwind: pc:text-68px */
+    line-height: 1.2;
+    margin: 0 auto 2rem;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(200, 200, 200, 0.9) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent; /* Fallback for text */
+    position: relative;
+    z-index: 25;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s; /* Added delay */
+    max-width: 90%;
+    padding-top: 3rem; /* Tailwind: pc:pb-[3.3vw] - applied as pt */
+}
+
+.video-section.active .section-title {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Video content fade-in (applied via JS) */
+.video-content {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.video-content.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- Overlay Glow Effect --- */
+.overlay-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(64, 251, 48, 0.2) 0%, transparent 70%); /* primary-500 */
+    opacity: 0;
+    z-index: 5; /* Above background, below content */
+    pointer-events: none;
+    transition: opacity 1.2s ease, background 1.2s ease, width 1.2s ease, height 1.2s ease;
+    will-change: opacity, background, width, height;
+}
+
+.video-section.active .overlay-glow {
+    opacity: 0.5; /* Initial visible opacity */
+}
+
+.scrolling-video-further .overlay-glow {
+    opacity: 0.8; /* Increased opacity */
+    background: radial-gradient(circle at center, rgba(64, 251, 48, 0.3) 0%, transparent 75%);
+    /* Consider scaling the glow if needed */
+    /* width: 120%; height: 120%; */
+}
+
+/* Blob animation styles */
+.blob-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1; /* Behind overlay glow */
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0;
+    transition: transform 0.8s ease, opacity 0.8s ease 0.5s, filter 0.8s ease; /* Delay opacity */
+    will-change: transform, opacity, filter;
+    animation: blobFloat 15s infinite alternate ease-in-out;
+}
+
+.video-section.active .blob {
+    opacity: 0.3; /* Initial visible opacity */
+    filter: blur(50px);
+}
+
+.blob-pink {
+    width: 350px; height: 350px;
+    background: linear-gradient(135deg, rgba(244, 114, 182, 0.3) 0%, rgba(236, 72, 153, 0.2) 100%);
+    top: 15%; left: 15%;
+    animation-delay: 0s; animation-duration: 18s;
+}
+
+.blob-purple { /* Was green in example */
+    width: 400px; height: 400px;
+    background: linear-gradient(135deg, rgba(64, 251, 48, 0.3) 0%, rgba(64, 251, 48, 0.15) 100%); /* primary-500 based */
+    top: 45%; right: 20%;
+    animation-delay: -5s; animation-duration: 20s;
+    filter: blur(80px);
+}
+
+.blob-black { /* Was primary green radial in example */
+    width: 300px; height: 300px;
+    background: radial-gradient(circle at center, rgba(64, 251, 48, 0.3) 0%, transparent 70%);
+    bottom: 10%; left: 25%;
+    animation-delay: -2s; animation-duration: 15s;
+}
+
+@keyframes blobFloat {
+    0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    33% { transform: translate(30px, -50px) rotate(5deg) scale(1.05); }
+    66% { transform: translate(-20px, 30px) rotate(-3deg) scale(0.95); }
+    100% { transform: translate(10px, -20px) rotate(1deg) scale(1); }
+}
+
+
+/* --- Story Section --- */
+/* Timeline Item Hover Effect */
+.timeline-item {
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform-origin: left;
+    will-change: transform, border-color;
+}
+
+.timeline-item:hover {
+    transform: translateX(5px);
+    /* Tailwind handles border color: border-primary-500 */
+    /* border-color: #40FB30; */
+}
+
+/* --- Portfolio Section --- */
+/* Hover Card Effect */
+.hover-card {
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform-origin: center;
+    will-change: transform, box-shadow;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+.dark .hover-card:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Global Reach Section --- */
+/* Globe Container */
+#globeViz {
+    width: 100%;
+    /* height: 480px; */ /* Aspect ratio handles height */
+    /* min-height: 320px; */
+    /* border-radius: 1.5rem; */ /* Handled by parent */
+    background: transparent; /* Make background transparent */
+    position: absolute; /* Fill parent container */
+    top: 0; left: 0; right: 0; bottom: 0;
+}
+
+#globeViz canvas {
+    display: block; /* Remove extra space */
+    width: 100% !important;
+    height: 100% !important;
+}
+
+
+/* Footer */
+footer {
+    position: relative; /* For absolute positioned elements like glow */
+    z-index: 40; /* Ensure it's above other content */
+}
+
+/* Responsive adjustments might be needed based on visual checks */
+
+/* Morph Button Styles (from original HTML) */
+.button-container {
+  position: relative;
+  display: inline-block;
+}
+
+.morph-button {
+  transition: all 0.3s ease;
+  transform: scale(1);
+}
+
+.morph-button:active {
+  transform: scale(0.95);
+}
+
+/* Style for when button is clicked/submitted - requires JS to add .clicked class */
+.morph-button.clicked {
+  /* Example: Change background if needed, Tailwind handles primary bg */
+  /* background: #10a37f; */ 
+}
+
+.button-text {
+  display: inline-flex; /* Use flex for icon alignment */
+  align-items: center;
+  transition: opacity 0.3s ease;
+}
+
+.checkmark {
+  display: none;
+  color: white; /* Assuming button text is white on primary bg */
+}
+
+/* Hide text, show checkmark when .clicked class is added via JS */
+.morph-button.clicked .button-text {
+  display: none;
+}
+
+.morph-button.clicked .checkmark {
+  display: inline-block;
+}
