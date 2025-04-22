@@ -1,0 +1,2785 @@
+<!DOCTYPE html>
+<html lang="en" class="light" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ahmed Sam - Portfolio</title>
+    <link rel="icon" type="image/png" href="images/dark.png">
+    <link rel="apple-touch-icon" href="images/white.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Add React and Three.js dependencies -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/three@0.132.2/build/three.min.js"></script>
+    <script src="https://unpkg.com/globe.gl@2.28.0/dist/globe.gl.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/react-globe.gl@2.33.2/dist/react-globe.gl.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Rubik', 'sans-serif'],
+                        arabic: ['Rubik', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0fff0',
+                            100: '#e0ffe0',
+                            500: '#40FB30',
+                            600: '#36e026',
+                            700: '#2cc61c',
+                        },
+                        dark: {
+                            800: '#1e1e1e',
+                            900: '#0f0f0f',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script>
+        // Check for saved theme preference
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script>
+    <style>
+        /* Custom cursor styles */
+        * {
+            cursor: none;
+        }
+
+        .cursor-dot {
+            background-color: #181818;
+        }
+
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #6b6969;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease, background-color 0.2s ease;
+        }
+
+        .cursor-circle {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #adadad;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        /* Dark mode cursor */
+        .dark .cursor-dot {
+            background-color: #808080; /* User's preferred dark mode color */
+        }
+
+        .dark .cursor-circle {
+            border-color: rgba(205, 205, 205, 0.4);
+        }
+
+        /* Hover state */
+        .cursor-dot.active {
+            background-color: #40FB30;
+        }
+
+        .cursor-circle.active {
+            border-color: rgba(64, 251, 48, 0.4);
+            width: 40px;
+            height: 40px;
+        }
+
+        /* Link hover state */
+        .cursor-dot.hover {
+            width: 12px;
+            height: 12px;
+            background-color: #40FB30;
+        }
+
+        .cursor-circle.hover {
+            width: 40px;
+            height: 40px;
+            border-color: rgba(64, 251, 48, 0.4);
+        }
+
+        /* Remove old cursor styles */
+        .custom-cursor {
+            display: none;
+        }
+
+        .progress-ring {
+            width: 100%;
+            height: 100%;
+        }
+
+        .background-ring {
+            fill: transparent;
+            stroke: #7e7e7e;
+            stroke-width: 4;
+        }
+
+        .progress-ring-circle {
+            fill: transparent;
+            stroke: #000;
+            stroke-width: 4;
+            stroke-dasharray: 226.2;
+            stroke-dashoffset: 226.2;
+            opacity: 0;
+            transition: stroke-dashoffset 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* Hover state */
+        .custom-cursor.hover {
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        .custom-cursor.hover::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Active/clicking state */
+        .custom-cursor.active {
+            transform: translate(-50%, -50%) scale(0.8);
+            background: #36e026;
+        }
+
+        /* Interactive element indicators */
+        a:hover ~ .custom-cursor,
+        button:hover ~ .custom-cursor {
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        a:hover ~ .custom-cursor::after,
+        button:hover ~ .custom-cursor::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Focus indicator */
+        *:focus ~ .custom-cursor {
+            background: #40FB30;
+            box-shadow: 0 0 0 2px rgb(225, 225, 225), 0 0 0 4px #40FB30;
+        }
+
+        /* Click indicator */
+        .custom-cursor.clicking {
+            animation: clickPulse 0.3s ease;
+        }
+
+        @keyframes clickPulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* Abstract Animation Styles */
+        #animated-shapes {
+            transition: transform 0.1s ease-out;
+        }
+
+        .shape {
+            fill: url(#gradient);
+            filter: url(#blur);
+            transition: transform 0.2s ease-out;
+        }
+
+        .shape:hover {
+            transform: scale(1.1);
+        }
+
+        .button-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .morph-button {
+            transition: all 0.3s ease;
+            transform: scale(1);
+        }
+
+        .morph-button:active {
+            transform: scale(0.95);
+        }
+
+        .morph-button.clicked {
+            background: #10a37f;
+        }
+
+        .button-text {
+            display: inline-block;
+            transition: opacity 0.3s ease;
+        }
+
+        .checkmark {
+            display: none;
+            color: white;
+        }
+
+        .morph-button.clicked .button-text {
+            display: none;
+        }
+
+        .morph-button.clicked .checkmark {
+            display: inline-block;
+        }
+
+        /* OpenAI-style transitions */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* Modern glowing text effect */
+        .glow-text {
+            position: relative;
+            z-index: 1;
+            letter-spacing: 2px;
+            display: inline-block;
+        }
+
+        .glow-text::before {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            filter: blur(25px);
+            background: linear-gradient(90deg, #00f0ff, #ff00ff, #ffff00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            animation: glow 4s linear infinite, move 8s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0% { filter: blur(15px) brightness(1); }
+            50% { filter: blur(30px) brightness(2); }
+            100% { filter: blur(15px) brightness(1); }
+        }
+
+        @keyframes move {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(10px, -10px); }
+            50% { transform: translate(-10px, 10px); }
+            75% { transform: translate(-10px, -10px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* OpenAI-style card hover effect */
+        .hover-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hover-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Glow Effect */
+        .glow {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glow::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, #8b5cf6, #d946ef, #7c3aed);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            z-index: -1;
+            filter: blur(20px);
+            transform: scale(1.1);
+        }
+
+        .glow:hover::before {
+            opacity: 0.2;
+        }
+
+        /* Hover Card Effect */
+        .hover-card {
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform-origin: center;
+            will-change: transform, box-shadow;
+        }
+
+        .hover-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Timeline Item Hover Effect */
+        .timeline-item {
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform-origin: left;
+            will-change: transform, border-color;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(5px);
+            border-color: #8b5cf6;
+        }
+
+        /* Morph Button Effect */
+        .morph-button {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            will-change: transform, background;
+        }
+
+        .morph-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, #8b5cf6, #d946ef, #7c3aed);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            z-index: -1;
+        }
+
+        .morph-button:hover::before {
+            opacity: 0.1;
+        }
+
+        .morph-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Checkmark Animation */
+        .checkmark {
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .morph-button:hover .checkmark {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Button Text Animation */
+        .button-text {
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .morph-button:hover .button-text {
+            transform: translateX(-5px);
+        }
+
+        /* Grayscale Effect */
+        .grayscale {
+            filter: grayscale(100%);
+        }
+
+        .grayscale-0 {
+            filter: grayscale(0%);
+        }
+
+        /* Remove Linear Logo Effect */
+        .logo-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo-container img {
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+
+        .logo-container:hover img {
+            opacity: 1;
+        }
+
+        /* --- Base Section Title Styles --- */
+        .section-title {
+            font-size: 3.5rem; 
+            line-height: 1.3; 
+            margin: 0 auto 2rem;
+            text-align: center;
+            font-weight: 900; 
+            position: relative;
+            z-index: 10;
+            
+            /* 1. ADD: Fallback Color (Light Mode) */
+            color: #1f2937; /* Example: Dark Gray - Adjust as needed */
+
+            /* 2. Gradient Styles (applied if supported) */
+            background: linear-gradient(180deg, rgba(31, 41, 55, 1) 0%, rgba(75, 85, 99, 0.9) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent; 
+            
+            /* Base animation state */
+            opacity: 0; 
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out; 
+        }
+
+        /* Add blur effect styles */
+        @media (min-width: 640px) {
+            .sm\:translate-y-1\/2 {
+                --tw-translate-y: 50%;
+                transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+            }
+        }
+
+        @media (min-width: 640px) {
+            .sm\:blur-\[56px\] {
+                --tw-blur: blur(56px);
+                filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+                transition: transform 0.1s ease-out, filter 0.1s ease-out;
+            }
+        }
+
+        /* Ensure the hero section has proper positioning for the blur effect */
+        #hero {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Add cursor-following styles for the blur effect */
+        #hero svg {
+            will-change: transform, filter;
+            transition: transform 0.1s ease-out, filter 0.1s ease-out;
+        }
+
+        #hero svg path {
+            transition: transform 0.1s ease-out;
+        }
+
+        /* Dark mode for base sections */
+        .dark .section-title {
+            /* 1. ADD: Fallback Color (Dark Mode) */
+            color: #f9fafb; /* Example: Light Gray/White - Adjust as needed */
+
+            /* 2. Gradient Styles (applied if supported) */
+            background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(156, 163, 175, 0.7) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Trigger animation for base sections */
+        .section.in-view .section-title { 
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Hero Section Headline Specific Styles --- */
+
+        /* Style the main H2 container */
+        #hero .section-title-ani {
+            font-size: 72px; /* Smaller text size as requested */
+            line-height: 1.2;
+            font-weight: 700;
+        }
+
+        /* Style the immediate wrapper spans within the hero headline */
+        #hero .section-title-ani > span {
+            /* Solid color fallback */
+            color: #1f2937; /* Dark gray for light mode */
+            background: linear-gradient(180deg, rgba(31, 41, 55, 1) 0%, rgba(75, 85, 99, 0.9) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Dark mode for the hero wrapper spans */
+        .dark #hero .section-title-ani > span {
+            /* Solid color fallback */
+            color: #ffffff; /* White for dark mode */
+            background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(156, 163, 175, 0.7) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- Character Animation Styles --- */
+        #hero .section-title-char {
+            display: inline-block;
+            color: inherit; /* Inherit from parent */
+            background: none !important; /* No background on characters */
+            -webkit-text-fill-color: inherit; /* Critical fix */
+            opacity: 1; /* Ensure visibility */
+        }
+
+        /* Animation trigger */
+        #hero.in-view .section-title-char {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Animation delays */
+        #hero.in-view .section-title-char:nth-child(1) { animation-delay: 0.1s; }
+        /* ... add more nth-child delays ... */
+
+        /* Regular sections title animation */
+        .regular-sections .section-title {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.17, 0.84, 0.44, 1) 0.2s,
+                        transform 0.8s cubic-bezier(0.17, 0.84, 0.44, 1) 0.2s;
+        }
+
+        /* Section title animation for when section becomes visible */
+        .section.active .section-title,
+        .section.visible .section-title {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+        /* Fixed sections container */
+        .fixed-scroll-sections {
+            position: relative;
+            width: 100%;
+            height: 250vh;
+            z-index: 10;
+        }
+
+        /* Hero section positioning */
+        #hero {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        /* Video section styles */
+        #video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: black;
+            z-index: 20;
+            transform: translateY(100%);
+            transition: transform 1.2s cubic-bezier(0.17, 0.84, 0.44, 1);
+            will-change: transform;
+            overflow: hidden;
+        }
+        
+        /* Video content styles */
+        #video .section-content {
+            padding-top: 4rem !important;
+            padding-bottom: 6rem !important;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            border-radius: 40px 40px 0 0;
+            transition: all 0.8s ease;
+            overflow: hidden;
+        }
+        
+        /* Video container with scale animation */
+        #video .video-container {
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 1s ease, transform 1.4s cubic-bezier(0.17, 0.84, 0.44, 1);
+            margin: 0 auto;
+        }
+        
+        /* Initial state - video covers the screen with a sliding animation */
+        body.scrolling-video #video {
+            transform: translateY(0);
+        }
+        
+        /* Active state - video container is visible */
+        #video.active .video-container {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        /* Expanded state - video container grows as user scrolls */
+        body.scrolling-video-further #video .video-container {
+            max-width: 100%;
+            transform: scale(1.2);
+            transition: max-width 1.4s cubic-bezier(0.17, 0.84, 0.44, 1), 
+                        transform 1.4s cubic-bezier(0.17, 0.84, 0.44, 1);
+        }
+        
+        /* Enhanced glow effect during expansion */
+        body.scrolling-video-further #video .overlay-glow {
+            opacity: 0.9;
+            background: radial-gradient(circle at center, rgba(64, 251, 48, 0.3) 0%, transparent 75%);
+            transition: opacity 1.2s ease, background 1.2s ease, width 1.2s ease, height 1.2s ease;
+        }
+        
+        /* Regular sections positioning to prevent overlap */
+        .regular-sections {
+            position: relative;
+            z-index: 30;
+            background: white;
+            margin-top: 50vh;
+        }
+        
+        .dark .regular-sections {
+            background: #0f0f0f;
+        }
+
+        /* Make sure footer is visible */
+        footer {
+            position: relative;
+            z-index: 40;
+        }
+
+        .video-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 5;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            overflow: hidden;
+        }
+
+        .video-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+
+        .scrolling-video .video-section {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: scale(1);
+            transition: transform 0.3s ease-out;
+            overflow: hidden;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            max-height: none;
+        }
+
+        .video-section .content {
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: white;
+            text-align: center;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: all 0.3s ease;
+        }
+
+        .scrolling-video-further .video-section .content {
+            transform: translateY(-55%);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .video-section .content {
+                padding: 1rem;
+            }
+        }
+
+        /* Add specific styling for the overlay glow */
+        #video .overlay-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(64, 251, 48, 0.3) 0%, transparent 70%);
+            opacity: 0.7;
+            z-index: 5;
+            pointer-events: none;
+            transition: opacity 1.2s ease, background 1.2s ease, width 1.2s ease, height 1.2s ease;
+            will-change: opacity, background, width, height;
+        }
+
+        /* Enhanced video section styles for a more dramatic effect */
+        #video .w-full.relative.rounded-\[24px\] {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: all 1.2s cubic-bezier(0.17, 0.84, 0.44, 1);
+        }
+
+        /* Create a mask effect when video is active */
+        body.scrolling-video #hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            opacity: 0;
+            transition: opacity 1s ease;
+            animation: fadeIn 1.2s forwards;
+            z-index: 10;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 0.4; }
+        }
+
+        /* Blob animation styles for video section */
+        .blob-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.4;
+            transition: transform 0.8s ease, opacity 0.8s ease, filter 0.8s ease;
+            will-change: transform, opacity, filter;
+            animation: blobFloat 15s infinite alternate ease-in-out;
+        }
+
+        .blob-pink {
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(135deg, rgba(244, 114, 182, 0.3) 0%, rgba(236, 72, 153, 0.2) 100%);
+            top: 15%;
+            left: 15%;
+            animation-delay: 0s;
+            animation-duration: 18s;
+        }
+
+        .blob-purple {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(64, 251, 48, 0.4) 0%, rgba(64, 251, 48, 0.2) 100%);
+            top: 45%;
+            right: 20%;
+            animation-delay: -5s;
+            animation-duration: 20s;
+            filter: blur(80px);
+        }
+
+        .blob-black {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle at center, rgba(64, 251, 48, 0.5) 0%, transparent 70%);
+            bottom: 10%;
+            left: 25%;
+            animation-delay: -2s;
+            animation-duration: 15s;
+        }
+
+        #video.active .blob {
+            opacity: 0.6;
+            filter: blur(40px);
+        }
+
+        @keyframes blobFloat {
+            0% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+            }
+            33% {
+                transform: translate(30px, -50px) rotate(5deg) scale(1.05);
+            }
+            66% {
+                transform: translate(-20px, 30px) rotate(-3deg) scale(0.95);
+            }
+            100% {
+                transform: translate(10px, -20px) rotate(1deg) scale(1);
+            }
+        }
+
+        /* Content animation for video section */
+        .video-content {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .section-title-ani {
+            overflow: hidden; /* Ensure the animation is contained */
+        }
+
+        .section-title-char {
+            opacity: 1; /* Ensure text is visible by default */
+            transform: translateY(0); /* Ensure text is in its final position by default */
+            display: inline-block;
+        }
+
+        /* Apply animation only when the hero section is in view */
+        #hero.in-view .section-title-char {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Add delays for each character */
+        #hero.in-view .section-title-char:nth-child(1) { animation-delay: 0.1s; }
+        #hero.in-view .section-title-char:nth-child(2) { animation-delay: 0.2s; }
+        #hero.in-view .section-title-char:nth-child(3) { animation-delay: 0.3s; }
+        #hero.in-view .section-title-char:nth-child(4) { animation-delay: 0.4s; }
+        #hero.in-view .section-title-char:nth-child(5) { animation-delay: 0.5s; }
+        #hero.in-view .section-title-char:nth-child(6) { animation-delay: 0.6s; }
+        #hero.in-view .section-title-char:nth-child(7) { animation-delay: 0.7s; }
+        #hero.in-view .section-title-char:nth-child(8) { animation-delay: 0.8s; }
+        #hero.in-view .section-title-char:nth-child(9) { animation-delay: 0.9s; }
+        #hero.in-view .section-title-char:nth-child(10) { animation-delay: 1s; }
+        /* Add more nth-child rules as needed for longer headlines */
+
+        /* Section content styles */
+        .section-content {
+            position: relative;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            z-index: 2;
+        }
+
+        /* Regular sections styles */
+        .regular-sections .section {
+            padding: 6rem 0;
+            position: relative;
+        }
+
+        /* Container for all sections */
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Video section title specific styles */
+        #video .section-title {
+            font-size: 48px;
+            line-height: 1.2;
+            margin: 0 auto 2rem;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(200, 200, 200, 0.9) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            position: relative;
+            z-index: 25;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            max-width: 90%;
+        }
+
+        #video.active .section-title {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #video .w-full.mb-12 {
+            margin-bottom: 3rem !important;
+            padding-top: 3rem;
+        }
+
+        #video .w-full.max-w-5xl.mx-auto {
+            margin-top: 2rem !important;
+            position: relative;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Animation states */
+        body.scrolling-video #video {
+            transform: translateY(0);
+        }
+
+        /* Problem item animation */
+        .problem-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .problem-item.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Target the headline in the hero section */
+        #hero .section-title-ani {
+            overflow: hidden; /* Ensure the animation is contained */
+        }
+
+        #hero .section-title-char {
+            opacity: 1; /* Ensure text is visible by default */
+            transform: translateY(0); /* Ensure text is in its final position by default */
+            display: inline-block;
+        }
+
+        /* Apply animation only when the hero section is in view */
+        #hero.in-view .section-title-char {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Add delays for each character */
+        #hero.in-view .section-title-char:nth-child(1) { animation-delay: 0.1s; }
+        #hero.in-view .section-title-char:nth-child(2) { animation-delay: 0.2s; }
+        #hero.in-view .section-title-char:nth-child(3) { animation-delay: 0.3s; }
+        #hero.in-view .section-title-char:nth-child(4) { animation-delay: 0.4s; }
+        #hero.in-view .section-title-char:nth-child(5) { animation-delay: 0.5s; }
+        #hero.in-view .section-title-char:nth-child(6) { animation-delay: 0.6s; }
+        #hero.in-view .section-title-char:nth-child(7) { animation-delay: 0.7s; }
+        #hero.in-view .section-title-char:nth-child(8) { animation-delay: 0.8s; }
+        #hero.in-view .section-title-char:nth-child(9) { animation-delay: 0.9s; }
+        #hero.in-view .section-title-char:nth-child(10) { animation-delay: 1s; }
+        /* Add more nth-child rules as needed for longer headlines */
+
+        /* First, define the base gradient styles that work in other sections */
+        .hero-gradient-text {
+            /* Remove gradient styles to avoid conflicts with character-level gradients */
+            display: inline-block;
+            background: none;
+            color: transparent;
+            -webkit-text-fill-color: initial;
+            -webkit-background-clip: initial;
+            background-clip: initial;
+            font-size: 82px; /* Set explicit font size */
+            line-height: 1.2;
+            letter-spacing: -0.03em; /* Decrease space between characters */
+        }
+
+        .dark .hero-gradient-text {
+            /* Remove gradient styles for dark mode too */
+            background: none;
+            color: transparent;
+            -webkit-text-fill-color: initial;
+            -webkit-background-clip: initial;
+            background-clip: initial;
+        }
+
+        /* Animation for individual characters */
+        .hero-char {
+            display: inline-block;
+            opacity: 0; /* Start hidden by default */
+            transform: translateY(20px); /* Start position */
+            
+            /* Apply darker gradient colors matching the section-title for better readability in light mode */
+            color: #1f2937; /* Darker fallback color for light mode */
+            background: linear-gradient(180deg, rgba(31, 41, 55, 1) 0%, rgba(75, 85, 99, 0.9) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900; /* Extra bold text */
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+            /* Make transition faster */
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        /* Dark mode for characters */
+        .dark .hero-char {
+            color: #f9fafb; /* Brighter fallback color for dark mode */
+            background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(156, 163, 175, 0.7) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Remove the auto keyframe animation, we'll only use JS animation */
+        @keyframes heroFadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Character delays */
+        .hero-char:nth-child(1) { animation-delay: 0.1s; }
+        .hero-char:nth-child(2) { animation-delay: 0.15s; }
+        .hero-char:nth-child(3) { animation-delay: 0.2s; }
+        .hero-char:nth-child(4) { animation-delay: 0.25s; }
+        .hero-char:nth-child(5) { animation-delay: 0.3s; }
+        .hero-char:nth-child(6) { animation-delay: 0.35s; }
+        .hero-char:nth-child(7) { animation-delay: 0.4s; }
+        .hero-char:nth-child(8) { animation-delay: 0.45s; }
+        .hero-char:nth-child(9) { animation-delay: 0.5s; }
+        .hero-char:nth-child(10) { animation-delay: 0.55s; }
+        .hero-char:nth-child(11) { animation-delay: 0.6s; }
+        .hero-char:nth-child(12) { animation-delay: 0.65s; }
+        /* Add more as needed for longer text */
+
+        /* Add responsive sizing for the hero headline */
+        @media (max-width: 1200px) {
+            #hero h1 {
+                font-size: 70px !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #hero h1 {
+                font-size: 56px !important;
+            }
+            
+            .hero-gradient-text {
+                font-size: 56px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #hero h1 {
+                font-size: 42px !important;
+            }
+            
+            .hero-gradient-text {
+                font-size: 42px !important;
+            }
+        }
+
+        /* Add automatic movement animations for hero SVG */
+        #hero svg {
+            will-change: transform;
+            animation: floatAnimation 20s ease-in-out infinite;
+            transform-origin: bottom center;
+            bottom: 0;
+            transform: translateY(0);
+        }
+
+        #hero svg path {
+            animation: pathFloat 15s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+
+        #hero svg path:nth-child(1) { animation-delay: 0s; }
+        #hero svg path:nth-child(2) { animation-delay: 2s; }
+        #hero svg path:nth-child(3) { animation-delay: 4s; }
+        #hero svg path:nth-child(4) { animation-delay: 6s; }
+        #hero svg path:nth-child(5) { animation-delay: 8s; }
+        #hero svg path:nth-child(6) { animation-delay: 10s; }
+        #hero svg path:nth-child(7) { animation-delay: 12s; }
+        #hero svg path:nth-child(8) { animation-delay: 14s; }
+        #hero svg path:nth-child(9) { animation-delay: 16s; }
+        #hero svg path:nth-child(10) { animation-delay: 18s; }
+
+        @keyframes floatAnimation {
+            0% {
+                transform: translate(-50%, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(-50%, -20px) rotate(2deg);
+            }
+            50% {
+                transform: translate(-50%, -40px) rotate(-2deg);
+            }
+            75% {
+                transform: translate(-50%, -20px) rotate(2deg);
+            }
+            100% {
+                transform: translate(-50%, 0) rotate(0deg);
+            }
+        }
+
+        @keyframes pathFloat {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+            25% {
+                transform: translateY(-10px) scale(1.05);
+            }
+            50% {
+                transform: translateY(-20px) scale(0.95);
+            }
+            75% {
+                transform: translateY(-10px) scale(1.05);
+            }
+            100% {
+                transform: translateY(0) scale(1);
+            }
+        }
+        /* Dark mode styles */
+        .dark {
+            color-scheme: dark;
+        }
+
+        /* Custom SVG positioning */
+        svg.absolute.overflow-visible.ai-style-change-1 {
+            bottom: auto;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            right: auto;
+            filter: blur(102px);
+        }
+        
+        /* Gradient border button like GitHub with animation */
+        .gradient-border-button {
+            position: relative;
+            z-index: 1;
+            border-radius: 12px;
+            padding: 1px;
+            background: linear-gradient(90deg, #ff00cc, #3333ff, #ff00cc);
+            background-size: 200% 100%;
+            overflow: hidden;
+            transition: color 400ms cubic-bezier(0.215, 0.61, 0.355, 1), background 100ms cubic-bezier(0.215, 0.61, 0.355, 1);
+            animation: gradientMove 3s ease infinite;
+        }
+        
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .gradient-border-button:before {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 12px;
+            padding: 2px;
+            background: linear-gradient(90deg, #ff00cc, #3333ff, #ff00cc);
+            background-size: 200% 100%;
+            animation: gradientMove 3s ease infinite;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out;
+            mask-composite: exclude;
+            box-shadow: 0 0 20px rgba(255, 0, 204, 0.5);
+        }
+        
+        .gradient-border-button .inner-button {
+            background-color: #000;
+            border-radius: 10px;
+            padding: 12px 24px;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 400ms cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        
+        .dark .gradient-border-button .inner-button {
+            background-color: #121212;
+        }
+        
+        .gradient-border-button:hover .inner-button {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .dark .gradient-border-button:hover .inner-button {
+            background-color: rgba(18, 18, 18, 0.8);
+        }
+
+        /* Add marquee animation keyframes */
+        @keyframes marquee {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Update logos section styles */
+        .logos-section {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            padding: 2rem 0;
+            background: linear-gradient(to right, 
+                hsl(var(--background-default)) 0%, 
+                transparent 10%, 
+                transparent 90%, 
+                hsl(var(--background-default)) 100%
+            );
+        }
+
+        .logos-container {
+            position: relative;
+            width: 100%;
+            max-width: 4xl;
+            margin: 0 auto;
+            opacity: 0.9;
+            overflow: hidden;
+        }
+
+        .logos-track {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 2rem;
+            padding: 0 1.25rem;
+            animation: marquee 30s linear infinite;
+            will-change: transform;
+        }
+
+        .logo-item {
+            height: 3rem;
+            width: auto;
+            min-height: 3rem;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .logo-item img {
+            height: 100%;
+            width: auto;
+            display: block;
+            pointer-events: none;
+        }
+
+        /* Dark mode adjustments */
+        .dark .logos-section {
+            opacity: 0.7;
+        }
+
+        /* Motion reduction for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            .logos-track {
+                animation: none;
+                will-change: auto;
+            }
+        }
+
+        /* Add the specific style for marquee gradient edges */
+        .before\:bg-\[linear-gradient\(to_right\2c hsl\(var\(--background-default\)\)_0\%\2c transparent_30\%\2c transparent_70\%\2c hsl\(var\(--background-default\)\)_100\%\)\]:before {
+            content: var(--tw-content);
+            background-image: linear-gradient(to right, hsl(var(--background-default)) 0, transparent 30%, transparent 70%, hsl(var(--background-default)) 100%);
+        }
+
+        /* Remove globe-related styles */
+        #globeViz {
+          display: none;
+        }
+
+        /* Add globe container styles */
+        .globe-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .globe-container > div {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        
+        /* Ensure content stays above globe */
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+     
+        
+    </style>
+</head>
+<body class="font-sans bg-white dark:bg-dark-900 antialiased">
+    <div id="root"></div>
+    <!-- Custom cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-circle"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/80 dark:bg-dark-800/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <a href="#" class="flex items-center">
+                        <img src="images/logo-light.png" alt="Ahmed Sam" class="h-10 w-auto transition-all duration-300 dark:hidden">
+                        <img src="images/logo-dark.png" alt="Ahmed Sam" class="h-10 w-auto transition-all duration-300 hidden dark:block">
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500 font-medium" data-en="Home" data-ar="الرئيسية">Home</a>
+                    <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500 font-medium" data-en="Features" data-ar="المميزات">Features</a>
+                    <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500 font-medium" data-en="Portfolio" data-ar="أعمالي">Portfolio</a>
+                    <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500 font-medium" data-en="Contact" data-ar="تواصل">Contact</a>
+                    
+                    <!-- Language Switcher -->
+                    <button id="lang-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-dark-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-dark-900">
+                        <span class="lang-en">عربي</span>
+                        <span class="lang-ar hidden">English</span>
+                    </button>
+                    
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-dark-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-dark-900">
+                        <i class="fas fa-sun dark:hidden"></i>
+                        <i class="fas fa-moon hidden dark:block"></i>
+                    </button>
+                </div>
+                <div class="md:hidden flex items-center space-x-4">
+                    <button id="theme-toggle-mobile" class="p-2 rounded-lg bg-gray-100 dark:bg-dark-800 text-gray-800 dark:text-gray-200">
+                        <i class="fas fa-sun dark:hidden"></i>
+                        <i class="fas fa-moon hidden dark:block"></i>
+                    </button>
+                    <button class="text-gray-600 dark:text-gray-300">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Scroll Container for fixed sections -->
+        <div class="fixed-scroll-sections">
+            <!-- Hero Section -->
+            <section id="hero">
+                <!-- Add the blur effect SVG -->
+                <svg class="absolute overflow-visible ai-style-change-1 w-[1000px] h-[1000px] sm:w-[2000px] sm:h-[2000px]" fill="none" viewBox="0 0 701 467" xmlns="http://www.w3.org/2000/svg">
+                    <g class="transform-gpu">
+                        <path class="will-change-transform" d="M407.64 132.674 511.646 108l81.075 17.082V326.27H419.103l-31.111-98.696 19.648-94.9Z" fill="#5DA200" data-svg-origin="387.99200439453125 108" transform="matrix(1,0,0,1,21.39708,-28.24411)" style="translate: none; rotate: none; scale: none; transform-origin: 0px 0px;"></path>
+                        <path class="will-change-transform" d="m357.667 186.498 72.448-19.143 56.475 13.253v156.09H365.651l-21.671-76.572 13.687-73.628Z" fill="#FFC700" data-svg-origin="343.9800109863281 167.35499572753906" transform="matrix(1,0,0,1,-30.49924,-16.30284)" style="translate: none; rotate: none; scale: none; transform-origin: 0px 0px;"></path>
+                        <path class="will-change-transform" d="m471.471 217.57 58.714-9.647 45.77 6.679v78.666h-98.013l-17.563-38.591 11.092-37.107Z" fill="#FFC700" data-svg-origin="460.3790283203125 207.92300415039062" transform="matrix(1,0,0,1,30.52197,31.32849)" style="translate: none; rotate: none; scale: none; transform-origin: 0px 0px;"></path>
+                        <path class="will-change-transform" d="m160.042 229.351 80.266-16.432 62.569 11.376v133.988H168.888l-24.009-65.73 15.163-63.202Z" fill="#FFC700" data-svg-origin="144.87899780273438 212.91900634765625" transform="matrix(1,0,0,1,12.7632,20.62255)" style="translate: none; rotate: none; scale: none; transform-origin: 0px 0px;"></path>
+                        <path class="will-change-transform" d="m290.066 207.03 73.697-19.143 57.449 13.253v156.091H298.188l-22.044-76.573 13.922-73.628Z" fill="#FFC700" data-svg-origin="276.14398193359375 187.88699340820312" transform="matrix(1,0,0,1,3.61952,-12.06715)" style="translate: none; rotate: none; scale: none; transform-origin: 0px 0px;"></path>
+                        <path class="will-change-transform" d="m136.004 208.083 73.697-19.143 57.449 13.253v156.09H144.127l-22.045-76.572 13.922-73.628Z" fill="#FFC700" data-svg-origin="122.08200073242188 188.9399871826172" transform="matrix(1,0,0,1,-31.93181,13.06702)" style="translate: none; rotate: none; scale: none; transform-origin: 0px 0px;"></path>
+                        <path class="will-change-transform" d="m243.752 200.799 86.172-18.321 67.174 12.683v149.388H253.249l-25.776-73.284 16.279-70.466Z" fill="#7C5FE4" data-svg-origin="227.47299194335938 182.47799682617188" transform="matrix(1,0,0,1,26.92721,13.68063)" style="translate: none; rotate: none; scale: none; transform-origin: 0px 0px;"></path>
+                        <path class="will-change-transform" d="m417.299 212.382 39.278-7.668 30.618 5.309v62.518h-65.567l-11.749-30.669 7.42-29.49Z" fill="#A40099" data-svg-origin="409.8790588378906 204.71400451660156" transform="matrix(1,0,0,1,7.36329,21.87962)" style="translate: none; rotate: none; scale: none; transform-origin: 0px 0px;"></path>
+                        <path class="will-change-transform" d="m145.653 194.349 93.505-19.143 72.89 13.253v156.09h-156.09l-27.97-76.573 17.665-73.627Z" fill="#FF69C4" data-svg-origin="127.98797607421875 175.20599365234375" transform="matrix(1,0,0,1,23.72941,-24.6444)" style="translate: none; rotate: none; scale: none; transform-origin: 0px 0px;"></path>
+                        <path class="will-change-transform" d="m117.665 194.349 93.505-19.143 72.89 13.253v156.09H127.97L100 267.976l17.665-73.627Z" fill="#C91884" data-svg-origin="100 175.20599365234375" transform="matrix(1,0,0,1,-31.996,14.57023)" style="translate: none; rotate: none; scale: none; transform-origin: 0px 0px;"></path>
+                    </g>
+                </svg>
+                <div class="section-content">
+                    <div class="container mx-auto px-4 relative z-10">
+                        <div class="flex flex-col items-center justify-center min-h-[70vh] max-w-4xl mx-auto text-center">
+                            <!-- Headline with Animation -->
+                            <h1 class="text-[82px] font-bold mb-8 leading-tight">
+                                <span class="hero-gradient-text">
+                                    <span class="hero-char">C</span>
+                                    <span class="hero-char">r</span>
+                                    <span class="hero-char">a</span>
+                                    <span class="hero-char">f</span>
+                                    <span class="hero-char">t</span>
+                                    <span class="hero-char">i</span>
+                                    <span class="hero-char">n</span>
+                                    <span class="hero-char">g</span>
+                                    <span class="hero-char">&nbsp;</span>
+                                    <span class="hero-char">D</span>
+                                    <span class="hero-char">i</span>
+                                    <span class="hero-char">g</span>
+                                    <span class="hero-char">i</span>
+                                    <span class="hero-char">t</span>
+                                    <span class="hero-char">a</span>
+                                    <span class="hero-char">l</span>
+                                </span>
+                                <br>
+                                <span class="hero-gradient-text">
+                                    <span class="hero-char">E</span>
+                                    <span class="hero-char">x</span>
+                                    <span class="hero-char">p</span>
+                                    <span class="hero-char">e</span>
+                                    <span class="hero-char">r</span>
+                                    <span class="hero-char">i</span>
+                                    <span class="hero-char">e</span>
+                                    <span class="hero-char">n</span>
+                                    <span class="hero-char">c</span>
+                                    <span class="hero-char">e</span>
+                                    <span class="hero-char">s</span>
+                                </span>
+                            </h1>
+
+                            <!-- Subheading -->
+                            <p class="text-2xl text-gray-600 dark:text-gray-300 mb-12 leading-relaxed" data-en="UI/UX designer specializing in creating intuitive and engaging digital experiences that bring your vision to life." data-ar="مصمم واجهات المستخدم متخصص في إنشاء تجارب رقمية سهلة وجذابة تحول رؤيتك إلى واقع.">
+                                UI/UX designer specializing in creating intuitive and engaging digital experiences that bring your vision to life.
+                            </p>
+
+                            <!-- CTA Button -->
+                            <div class="button-container relative">
+                                <a href="https://wa.me/+972598702740" target="_blank" class="gradient-border-button inline-block">
+                                    <div class="inner-button bg-white dark:bg-dark-900">
+                                        <i class="fab fa-whatsapp mr-3 text-[#25D366] text-lg relative z-10"></i>
+                                        <span class="relative z-10 text-white dark:text-white font-medium" data-en="Chat on WhatsApp" data-ar="تواصل عبر واتساب">Chat on WhatsApp</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Logos Section -->
+                        <div class="mt-32">
+                            <div class="max-w-md md:max-w-lg lg:max-w-2xl mx-auto">
+                                <div class="relative w-full mx-auto max-w-4xl opacity-90 dark:opacity-70 overflow-hidden before:content-[''] before:absolute before:inset-0 before:w-full before:bg-[linear-gradient(to_right,hsl(var(--background-default))_0%,transparent_30%,transparent_70%,hsl(var(--background-default))_100%)] before:z-10 flex flex-nowrap px-5 lg:px-12 justify-center gap-4 lg:gap-8" style="mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent 100%);">
+                                    <!-- First track of logos -->
+                                    <div class="gap-4 lg:gap-8 flex flex-nowrap items-center w-fit animate-[marquee_90000ms_linear_both_infinite] will-change-transform motion-reduce:animate-none motion-reduce:will-change-none">
+                                        <div class="flex items-center justify-center h-5 lg:h-5 w-max !inline-block">
+                                            <img src="images/logos/figma-black.svg" alt="Figma" class="h-5 lg:h-5 !min-h-5 lg:!min-h-5 w-auto block dark:hidden" draggable="false">
+                                            <img src="images/logos/figma-white.svg" alt="Figma" class="h-5 lg:h-5 !min-h-5 lg:!min-h-5 w-auto block hidden dark:block" draggable="false">
+                                        </div>
+                                        <div class="flex items-center justify-center h-3 lg:h-3 w-max !inline-block">
+                                            <img src="images/logos/cursor-light.png" alt="Cursor" class="h-3 lg:h-3 !min-h-3 lg:!min-h-3 w-auto block dark:hidden" draggable="false">
+                                            <img src="images/logos/cursor-dark.png" alt="Cursor" class="h-3 lg:h-3 !min-h-3 lg:!min-h-3 w-auto block hidden dark:block" draggable="false">
+                                        </div>
+                                        <div class="flex items-center justify-center h-5 lg:h-5 w-max !inline-block">
+                                            <img src="images/logos/Midjourney-light.svg" alt="Midjourney" class="h-5 lg:h-5 !min-h-5 lg:!min-h-5 w-auto block dark:hidden" draggable="false">
+                                            <img src="images/logos/Midjourney-dark.svg" alt="Midjourney" class="h-5 lg:h-5 !min-h-5 lg:!min-h-5 w-auto block hidden dark:block" draggable="false">
+                                        </div>
+                                        <div class="flex items-center justify-center h-4 lg:h-4 w-max !inline-block">
+                                            <img src="images/logos/slack-black.svg" alt="Slack" class="h-4 lg:h-4 !min-h-4 lg:!min-h-4 w-auto block dark:hidden" draggable="false">
+                                            <img src="images/logos/slack-white.svg" alt="Slack" class="h-4 lg:h-4 !min-h-4 lg:!min-h-4 w-auto block hidden dark:block" draggable="false">
+                                        </div>
+                                        <div class="flex items-center justify-center h-4 lg:h-4 w-max !inline-block">
+                                            <img src="images/logos/adobe-black.svg" alt="Adobe" class="h-4 lg:h-4 !min-h-4 lg:!min-h-4 w-auto block dark:hidden" draggable="false">
+                                            <img src="images/logos/adobe-white.svg" alt="Adobe" class="h-4 lg:h-4 !min-h-4 lg:!min-h-4 w-auto block hidden dark:block" draggable="false">
+                                        </div>
+                                        <div class="flex items-center justify-center h-5 lg:h-5 w-max !inline-block">
+                                            <img src="images/logos/framer-black.svg" alt="Framer" class="h-5 lg:h-5 !min-h-5 lg:!min-h-5 w-auto block dark:hidden" draggable="false">
+                                            <img src="images/logos/framer-white.svg" alt="Framer" class="h-5 lg:h-5 !min-h-5 lg:!min-h-5 w-auto block hidden dark:block" draggable="false">
+                                        </div>
+                                        <div class="flex items-center justify-center h-5 lg:h-5 w-max !inline-block">
+                                            <img src="images/logos/jira-black.svg" alt="Jira" class="h-5 lg:h-5 !min-h-5 lg:!min-h-5 w-auto block dark:hidden" draggable="false">
+                                            <img src="images/logos/jira-white.svg" alt="Jira" class="h-5 lg:h-5 !min-h-5 lg:!min-h-5 w-auto block hidden dark:block" draggable="false">
+                                        </div>
+                                        <div class="flex items-center justify-center h-3 lg:h-3 w-max !inline-block">
+                                            <img src="images/logos/freepik-dark.svg" alt="Freepik" class="h-3 lg:h-3 !min-h-3 lg:!min-h-3 w-auto block dark:hidden" draggable="false">
+                                            <img src="images/logos/freepik-light.svg" alt="Freepik" class="h-3 lg:h-3 !min-h-3 lg:!min-h-3 w-auto block hidden dark:block" draggable="false">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Second track of logos (identical to first for seamless looping) -->
+                                    <div class="gap-4 lg:gap-8 flex flex-nowrap items-center w-fit animate-[marquee_90000ms_linear_both_infinite] will-change-transform motion-reduce:animate-none motion-reduce:will-change-none">
+                                        <div class="flex items-center justify-center h-5 lg:h-5 w-max !inline-block">
+                                            <img src="images/logos/figma-black.svg" alt="Figma" class="h-5 lg:h-5 !min-h-5 lg:!min-h-5 w-auto block dark:hidden" draggable="false">
+                                            <img src="images/logos/figma-white.svg" alt="Figma" class="h-5 lg:h-5 !min-h-5 lg:!min-h-5 w-auto block hidden dark:block" draggable="false">
+                                        </div>
+                                        <div class="flex items-center justify-center h-3 lg:h-3 w-max !inline-block">
+                                            <img src="images/logos/cursor-light.png" alt="Cursor" class="h-3 lg:h-3 !min-h-3 lg:!min-h-3 w-auto block dark:hidden" draggable="false">
+                                            <img src="images/logos/cursor-dark.png" alt="Cursor" class="h-3 lg:h-3 !min-h-3 lg:!min-h-3 w-auto block hidden dark:block" draggable="false">
+                                        </div>
+                                        <div class="flex items-center justify-center h-5 lg:h-5 w-max !inline-block">
+                                            <img src="images/logos/Midjourney-light.svg" alt="Midjourney" class="h-5 lg:h-5 !min-h-5 lg:!min-h-5 w-auto block dark:hidden" draggable="false">
+                                            <img src="images/logos/Midjourney-dark.svg" alt="Midjourney" class="h-5 lg:h-5 !min-h-5 lg:!min-h-5 w-auto block hidden dark:block" draggable="false">
+                                        </div>
+                                        <div class="flex items-center justify-center h-4 lg:h-4 w-max !inline-block">
+                                            <img src="images/logos/slack-black.svg" alt="Slack" class="h-4 lg:h-4 !min-h-4 lg:!min-h-4 w-auto block dark:hidden" draggable="false">
+                                            <img src="images/logos/slack-white.svg" alt="Slack" class="h-4 lg:h-4 !min-h-4 lg:!min-h-4 w-auto block hidden dark:block" draggable="false">
+                                        </div>
+                                        <div class="flex items-center justify-center h-4 lg:h-4 w-max !inline-block">
+                                            <img src="images/logos/adobe-black.svg" alt="Adobe" class="h-4 lg:h-4 !min-h-4 lg:!min-h-4 w-auto block dark:hidden" draggable="false">
+                                            <img src="images/logos/adobe-white.svg" alt="Adobe" class="h-4 lg:h-4 !min-h-4 lg:!min-h-4 w-auto block hidden dark:block" draggable="false">
+                                        </div>
+                                        <div class="flex items-center justify-center h-5 lg:h-5 w-max !inline-block">
+                                            <img src="images/logos/framer-black.svg" alt="Framer" class="h-5 lg:h-5 !min-h-5 lg:!min-h-5 w-auto block dark:hidden" draggable="false">
+                                            <img src="images/logos/framer-white.svg" alt="Framer" class="h-5 lg:h-5 !min-h-5 lg:!min-h-5 w-auto block hidden dark:block" draggable="false">
+                                        </div>
+                                        <div class="flex items-center justify-center h-5 lg:h-5 w-max !inline-block">
+                                            <img src="images/logos/jira-black.svg" alt="Jira" class="h-5 lg:h-5 !min-h-5 lg:!min-h-5 w-auto block dark:hidden" draggable="false">
+                                            <img src="images/logos/jira-white.svg" alt="Jira" class="h-5 lg:h-5 !min-h-5 lg:!min-h-5 w-auto block hidden dark:block" draggable="false">
+                                        </div>
+                                        <div class="flex items-center justify-center h-3 lg:h-3 w-max !inline-block">
+                                            <img src="images/logos/freepik-dark.svg" alt="Freepik" class="h-3 lg:h-3 !min-h-3 lg:!min-h-3 w-auto block dark:hidden" draggable="false">
+                                            <img src="images/logos/freepik-light.svg" alt="Freepik" class="h-3 lg:h-3 !min-h-3 lg:!min-h-3 w-auto block hidden dark:block" draggable="false">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Video Section -->
+            <section class="section" id="video">
+                <div class="section-bg"></div>
+                <div class="overlay-glow"></div>
+             
+                <div class="section-content relative z-10">
+                    <div class="absolute inset-0 bg-black/90"></div>
+                    <div class="relative z-20 flex flex-col items-center h-full pt-20">
+                        <!-- Headline first with proper margin -->
+                        <div class="w-full mb-12 video-content">
+                            <h2 class="text-center font-m mot:text-48px mot:leading-[1.17] mot:mx-auto pc:text-68px pc:leading-[1.35] pc:pb-[3.3vw] mo:w-328rpx pad:w-720rpx section-title-ani" ani-section-title="" textkey="2d7v0" zn-text="">
+                                <span style="white-space: nowrap; overflow: hidden; height: fit-content; display: inline-flex; align-items: baseline;">
+                                    <span class="section-title-char">P</span>
+                                    <span class="section-title-char">u</span>
+                                    <span class="section-title-char">s</span>
+                                    <span class="section-title-char">h</span>
+                                    <span class="section-title-char">i</span>
+                                    <span class="section-title-char">n</span>
+                                    <span class="section-title-char">g</span>
+                                    <span class="section-title-char">&nbsp;</span>
+                                </span>
+                                <!-- Add more spans for the rest of the headline -->
+                            </h2>
+                        </div>
+                        
+                        <!-- Video container below headline -->
+                        <div class="w-full max-w-5xl mx-auto video-content">
+                            <div class="video-container">
+                                <div class="w-full">
+                                    <div class="w-full relative rounded-[24px] md:rounded-[32px] overflow-hidden bg-gray-900 shadow-2xl">
+                                        <!-- Video Player -->
+                                        <video 
+                                            class="w-full h-full object-cover" 
+                                            style="aspect-ratio: 16/9;"
+                                            src="images/ahmedvideo.mp4" 
+                                            poster="images/poster.jpg" 
+                                            autoplay 
+                                            loop 
+                                            muted 
+                                            playsinline
+                                            preload="metadata"
+                                        >
+                                            Your browser does not support the video tag.
+                                        </video>
+                                        <!-- Video overlay for better text contrast -->
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Regular scrolling sections -->
+        <div class="regular-sections">
+            
+            <!-- Story Section -->
+            <section class="section" id="story">
+                <div class="section-bg"></div>
+                <div class="section-content">
+                    <h2 class="section-title">My Story</h2>
+                    <div class="container mx-auto px-4">
+                        <p class="text-xl text-center text-gray-600 dark:text-gray-300 mb-16 max-w-3xl mx-auto" data-en="From Gaza to the world: A journey of passion, resilience, and creative innovation." data-ar="من غزة إلى العالم: رحلة من الشغف والمرونة والابتكار الإبداعي.">
+                            From Gaza to the world: A journey of passion, resilience, and creative innovation.
+                        </p>
+                        
+                        <div class="max-w-4xl mx-auto">
+                            <!-- Story Content -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
+                                <div class="order-2 md:order-1">
+                                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">The Beginning</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                                        Born and raised in Gaza, I discovered my passion for design at an early age. Despite the challenges, I found solace in creating digital experiences that could transcend physical boundaries.
+                                    </p>
+                                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                                        My journey began with simple sketches and evolved into a deep understanding of user-centered design principles.
+                                    </p>
+                                </div>
+                                <div class="order-1 md:order-2">
+                                    <div class="relative">
+                                        <div class="absolute inset-0 bg-primary-500/10 rounded-2xl transform rotate-3"></div>
+                                        <img src="images/mysorty.png" alt="My Story" class="rounded-2xl shadow-xl relative z-10 w-full h-[545px] object-cover">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Timeline -->
+                            <div class="space-y-12">
+                                <!-- Timeline Item 1 -->
+                                <div class="relative pl-8 border-l-2 border-primary-500">
+                                    <div class="absolute left-[-9px] top-0 w-4 h-4 bg-primary-500 rounded-full"></div>
+                                    <div class="mb-2">
+                                        <span class="text-primary-500 font-semibold">2018</span>
+                                    </div>
+                                    <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-2">First UI Project</h4>
+                                    <p class="text-gray-600 dark:text-gray-300">Launched my first mobile app design, reaching 10,000+ users.</p>
+                                </div>
+
+                                <!-- Timeline Item 2 -->
+                                <div class="relative pl-8 border-l-2 border-primary-500">
+                                    <div class="absolute left-[-9px] top-0 w-4 h-4 bg-primary-500 rounded-full"></div>
+                                    <div class="mb-2">
+                                        <span class="text-primary-500 font-semibold">2020</span>
+                                    </div>
+                                    <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Joined UNICC</h4>
+                                    <p class="text-gray-600 dark:text-gray-300">Started as a Senior UI/UX Designer at the United Nations International Computing Centre, contributing to global digital solutions.</p>
+                                </div>
+
+                                <!-- Timeline Item 3 -->
+                                <div class="relative pl-8 border-l-2 border-primary-500">
+                                    <div class="absolute left-[-9px] top-0 w-4 h-4 bg-primary-500 rounded-full"></div>
+                                    <div class="mb-2">
+                                        <span class="text-primary-500 font-semibold">2023</span>
+                                    </div>
+                                    <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Global Impact</h4>
+                                    <p class="text-gray-600 dark:text-gray-300">Collaborated with international teams on projects reaching millions of users.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Portfolio Section -->
+            <section class="section" id="portfolio">
+                <div class="section-bg"></div>
+                <div class="section-content">
+                    <h2 class="section-title">Portfolio</h2>
+                    <div class="container mx-auto px-4">
+                        <p class="text-xl text-center text-gray-600 dark:text-gray-300 mb-16 max-w-3xl mx-auto" data-en="Showcasing a collection of innovative UI/UX design projects that push boundaries." data-ar="عرض مجموعة من مشاريع تصميم واجهات المستخدم المبتكرة التي تتخطى الحدود.">
+                            Showcasing a collection of innovative UI/UX design projects that push boundaries.
+                        </p>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                            <!-- Portfolio Item 1 -->
+                            <div class="group hover-card overflow-hidden rounded-2xl">
+                                <img src="images/1.webp" alt="UI/UX Design Project 1" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                                    <h3 class="text-white text-xl font-bold mb-2">Project Title 1</h3>
+                                    <p class="text-gray-200 text-sm mb-4">UI/UX Design • Mobile App</p>
+                                    <a href="#" class="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors font-medium">
+                                        View Project <i class="fas fa-arrow-right ml-2"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- Portfolio Item 2 -->
+                            <div class="group hover-card overflow-hidden rounded-2xl">
+                                <img src="images/2.webp" alt="UI/UX Design Project 2" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                                    <h3 class="text-white text-xl font-bold mb-2">Project Title 2</h3>
+                                    <p class="text-gray-200 text-sm mb-4">UI/UX Design • Web App</p>
+                                    <a href="#" class="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors font-medium">
+                                        View Project <i class="fas fa-arrow-right ml-2"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- Portfolio Item 3 -->
+                            <div class="group hover-card overflow-hidden rounded-2xl">
+                                <img src="images/3.webp" alt="UI/UX Design Project 3" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                                    <h3 class="text-white text-xl font-bold mb-2">Project Title 3</h3>
+                                    <p class="text-gray-200 text-sm mb-4">UI/UX Design • Dashboard</p>
+                                    <a href="#" class="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors font-medium">
+                                        View Project <i class="fas fa-arrow-right ml-2"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- Portfolio Item 4 -->
+                            <div class="group hover-card overflow-hidden rounded-2xl">
+                                <img src="images/4.webp" alt="UI/UX Design Project 4" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                                    <h3 class="text-white text-xl font-bold mb-2">Project Title 4</h3>
+                                    <p class="text-gray-200 text-sm mb-4">UI/UX Design • E-commerce</p>
+                                    <a href="#" class="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors font-medium">
+                                        View Project <i class="fas fa-arrow-right ml-2"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- Portfolio Item 5 -->
+                            <div class="group hover-card overflow-hidden rounded-2xl">
+                                <img src="images/5.webp" alt="UI/UX Design Project 5" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                                    <h3 class="text-white text-xl font-bold mb-2">Project Title 5</h3>
+                                    <p class="text-gray-200 text-sm mb-4">UI/UX Design • Branding</p>
+                                    <a href="#" class="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors font-medium">
+                                        View Project <i class="fas fa-arrow-right ml-2"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- Portfolio Item 6 (Empty for grid balance) -->
+                            <div class="hidden lg:block group hover-card overflow-hidden rounded-2xl bg-gray-100 dark:bg-dark-800">
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-16">
+                            <a href="#" class="inline-flex items-center px-8 py-4 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition duration-300 font-medium">
+                                View All Projects <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Global Reach Section -->
+            <section class="py-20 relative overflow-hidden bg-dark-900">
+                <!-- Space Background -->
+                <div class="absolute inset-0 z-0">
+                    <div class="space-bg"></div>
+                </div>
+                
+                <div class="container mx-auto px-4 relative z-10">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-16">
+                        <div class="relative text-center" style="margin-top: 40px;">
+                            <div class="text-5xl font-bold text-primary-500 mb-2 counter-number">9+</div>
+                            <div class="text-gray-600 dark:text-gray-400 font-medium">Countries</div>
+                            <div class="absolute w-px h-24 bg-gradient-to-b from-primary-500/0 via-primary-500/50 to-primary-500/0 -bottom-24 left-1/2 transform -translate-x-1/2"></div>
+                        </div>
+                        <div class="relative text-center" style="margin-top: 20px;">
+                            <div class="text-5xl font-bold text-primary-500 mb-2 counter-number">50+</div>
+                            <div class="text-gray-600 dark:text-gray-400 font-medium">Projects</div>
+                            <div class="absolute w-px h-16 bg-gradient-to-b from-primary-500/0 via-primary-500/50 to-primary-500/0 -bottom-16 left-1/2 transform -translate-x-1/2"></div>
+                        </div>
+                        <div class="relative text-center" style="margin-top: 40px;">
+                            <div class="text-5xl font-bold text-primary-500 mb-2 counter-number">100%</div>
+                            <div class="text-gray-600 dark:text-gray-400 font-medium">Satisfaction</div>
+                            <div class="absolute w-px h-24 bg-gradient-to-b from-primary-500/0 via-primary-500/50 to-primary-500/0 -bottom-24 left-1/2 transform -translate-x-1/2"></div>
+                        </div>
+                        <div class="relative text-center" style="margin-top: 20px;">
+                            <div class="text-5xl font-bold text-primary-500 mb-2 counter-number">24/7</div>
+                            <div class="text-gray-600 dark:text-gray-400 font-medium">Support</div>
+                            <div class="absolute w-px h-16 bg-gradient-to-b from-primary-500/0 via-primary-500/50 to-primary-500/0 -bottom-16 left-1/2 transform -translate-x-1/2"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 3D Earth Container -->
+                    <script type="text/babel">
+                        // Globe component
+                        const GlobeVisualization = () => {
+                            const globeRef = React.useRef(null);
+                            
+                            React.useEffect(() => {
+                                if (globeRef.current) {
+                                    const globe = Globe()
+                                        (globeRef.current)
+                                        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
+                                        .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+                                        .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+                                        .pointRadius(0.5)
+                                        .pointColor(() => '#40FB30')
+                                        .pointsData([
+                                            { lat: 51.5074, lng: -0.1278 }, // London
+                                            { lat: 40.7128, lng: -74.0060 }, // New York
+                                            { lat: 35.6762, lng: 139.6503 }, // Tokyo
+                                            { lat: 48.8566, lng: 2.3522 }, // Paris
+                                            { lat: 37.7749, lng: -122.4194 } // San Francisco
+                                        ])
+                                        .arcColor(() => '#40FB30')
+                                        .arcAltitude(0.1)
+                                        .arcStroke(0.5)
+                                        .arcsData([
+                                            { startLat: 51.5074, startLng: -0.1278, endLat: 40.7128, endLng: -74.0060 },
+                                            { startLat: 40.7128, startLng: -74.0060, endLat: 35.6762, endLng: 139.6503 },
+                                            { startLat: 35.6762, startLng: 139.6503, endLat: 48.8566, endLng: 2.3522 },
+                                            { startLat: 48.8566, startLng: 2.3522, endLat: 37.7749, endLng: -122.4194 }
+                                        ]);
+                
+                                    // Auto-rotate
+                                    globe.controls().autoRotate = true;
+                                    globe.controls().autoRotateSpeed = 0.5;
+                                    
+                                    // Add event listeners for interaction
+                                    globe.controls().enableZoom = true;
+                                    globe.controls().enablePan = true;
+                                    globe.controls().enableRotate = true;
+                                    
+                                    // Handle window resize
+                                    window.addEventListener('resize', () => {
+                                        globe.width(window.innerWidth);
+                                        globe.height(window.innerHeight);
+                                    });
+                                }
+                            }, []);
+                
+                            return <div ref={globeRef} style={{ width: '100%', height: '100%' }} />;
+                        };
+                
+                        // Wait for DOM to be fully loaded before rendering
+                        document.addEventListener('DOMContentLoaded', () => {
+                            const root = ReactDOM.createRoot(document.getElementById('globeViz'));
+                            root.render(<GlobeComponent />);
+                        });
+                    </script>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full border-t border-gray-800 dark:border-gray-700 relative">
+        <div class="w-full h-px bg-gradient-to-r from-transparent via-primary-500 to-transparent opacity-30"></div>
+        
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Column 1: Logo and copyright -->
+                <div class="flex flex-col space-y-4">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-secondary-500">
+                        Ahmed Sam
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        © 2025 Ahmed Sam. All rights reserved.
+                    </p>
+                </div>
+                
+                <!-- Column 2: Navigation -->
+                <div class="flex flex-col space-y-4">
+                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Navigation
+                    </h3>
+                    <div class="flex flex-col space-y-2">
+                        <a href="#home" class="text-gray-600 hover:text-primary-500 dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
+                            Home
+                        </a>
+                        <a href="#about" class="text-gray-600 hover:text-primary-500 dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
+                            About
+                        </a>
+                        <a href="#work" class="text-gray-600 hover:text-primary-500 dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
+                            Work
+                        </a>
+                        <a href="#contact" class="text-gray-600 hover:text-primary-500 dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
+                            Contact
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Column 3: Social -->
+                <div class="flex flex-col space-y-4">
+                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Connect
+                    </h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-600 hover:text-primary-500 dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-600 hover:text-primary-500 dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-600 hover:text-primary-500 dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
+                            <i class="fab fa-github text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-600 hover:text-primary-500 dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
+                            <i class="fab fa-dribbble text-xl"></i>
+                        </a>
+                    </div>
+                    <div class="pt-4">
+                        <button class="gradient-border-button">
+                            <div class="inner-button">
+                                <span class="text-white">Get in touch</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom glow effect -->
+        <div class="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary-500 to-transparent opacity-30"></div>
+    </footer>
+
+    <script>
+        // Custom cursor movement - ensure it works everywhere
+        const cursor = document.querySelector('.custom-cursor');
+        
+        document.addEventListener('mousemove', (e) => {
+            if (cursor) {
+                cursor.style.left = `${e.clientX}px`;
+                cursor.style.top = `${e.clientY}px`;
+            }
+        });
+
+        document.addEventListener('mousedown', () => {
+            if (cursor) cursor.classList.add('active');
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (cursor) cursor.classList.remove('active');
+        });
+
+        // Add hover effects to all interactive elements
+        document.querySelectorAll('a, button, input, select, textarea').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                if (cursor) cursor.classList.add('hover');
+            });
+            el.addEventListener('mouseleave', () => {
+                if (cursor) cursor.classList.remove('hover');
+            });
+        });
+
+        // Video section scroll animation with enhanced blob movement
+        const videoSection = document.getElementById('video');
+        const heroSection = document.getElementById('hero');
+        const body = document.body;
+        const blobs = document.querySelectorAll('.blob');
+        
+        // Function to animate blobs with mouse movement
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) / 50;
+            const moveY = (e.clientY - window.innerHeight / 2) / 50;
+            
+            blobs.forEach((blob, index) => {
+                // Add slight randomization to each blob's movement
+                const offsetX = moveX * (1 + index * 0.2);
+                const offsetY = moveY * (1 + index * 0.2);
+                
+                // Apply the transform with a slight delay for a more natural effect
+                setTimeout(() => {
+                    blob.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+                }, index * 50);
+            });
+        });
+        
+        // Function to handle scroll animation
+        function handleScrollAnimation() {
+            const scrollPosition = window.scrollY;
+            const heroHeight = window.innerHeight;
+            const videoHeight = heroHeight * 1.5; // Increased video section height
+            
+            // Video section animation logic - start earlier to overlap hero section
+            if (scrollPosition >= heroHeight * 0.6) {
+                document.body.classList.add('scrolling-video');
+                videoSection.classList.add('active');
+                
+                // Animate content sequentially
+                const videoContent = document.querySelectorAll('.video-content');
+                videoContent.forEach((content, index) => {
+                    setTimeout(() => {
+                        content.classList.add('active');
+                    }, 300 + index * 200);
+                });
+            } else {
+                document.body.classList.remove('scrolling-video');
+                videoSection.classList.remove('active');
+                
+                // Reset content animations
+                document.querySelectorAll('.video-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+            }
+            
+            // Video expansion effect when scrolling further into the video section
+            if (scrollPosition > heroHeight * 0.8) {
+                document.body.classList.add('scrolling-video-further');
+                
+                // Calculate how far into the video section we've scrolled (from 0 to 1)
+                const videoScrollDepth = Math.min(1, (scrollPosition - heroHeight * 0.8) / (videoHeight * 0.8));
+                
+                // Apply dynamic scaling based on scroll depth
+                if (videoScrollDepth > 0) {
+                    const scrollScale = Math.min(1, videoScrollDepth);
+                    const scaleValue = 1 + (scrollScale * 0.2); // Increased scale factor for more dramatic effect
+                    document.querySelector('.video-container').style.transform = `scale(${scaleValue})`;
+                    
+                    // Also adjust the overlay glow intensity based on scroll
+                    const glowOpacity = 0.7 + (scrollScale * 0.3);
+                    const overlayGlow = document.querySelector('#video .overlay-glow');
+                    if (overlayGlow) {
+                        overlayGlow.style.opacity = glowOpacity;
+                        
+                        // Adjust the size of the glow based on scroll as well
+                        const glowSize = 100 + (scrollScale * 30); // Expands by up to 30%
+                        overlayGlow.style.width = `${glowSize}%`;
+                        overlayGlow.style.height = `${glowSize}%`;
+                    }
+                    
+                    // Animate blobs based on scroll
+                    blobs.forEach((blob, index) => {
+                        const blobScale = 1 + (scrollScale * 0.3);
+                        const blobOpacity = 0.5 + (scrollScale * 0.3);
+                        blob.style.transform = `scale(${blobScale})`;
+                        blob.style.opacity = blobOpacity;
+                    });
+                }
+            } else {
+                document.body.classList.remove('scrolling-video-further');
+                document.querySelector('.video-container').style.transform = 'scale(1)';
+                const overlayGlow = document.querySelector('#video .overlay-glow');
+                if (overlayGlow) {
+                    overlayGlow.style.opacity = '0.7';
+                    overlayGlow.style.width = '100%';
+                    overlayGlow.style.height = '100%';
+                }
+                
+                // Reset blob animations
+                blobs.forEach(blob => {
+                    blob.style.transform = '';
+                    blob.style.opacity = '0.5';
+                });
+            }
+            
+            // Animate section titles when they come into view
+            document.querySelectorAll('.section').forEach(section => {
+                const rect = section.getBoundingClientRect();
+                const isVisible = 
+                    rect.top < window.innerHeight * 0.75 && 
+                    rect.bottom > window.innerHeight * 0.25;
+                
+                if (isVisible) {
+                    section.classList.add('active');
+                    
+                    // Animate the section title with a slight delay for better effect
+                    const title = section.querySelector('.section-title');
+                    if (title) {
+                        setTimeout(() => {
+                            title.style.opacity = '1';
+                            title.style.transform = 'translateY(0)';
+                        }, 100);
+                    }
+                }
+            });
+        }
+        
+        // Add scroll event listener
+        window.addEventListener('scroll', handleScrollAnimation);
+        
+        // Listen for resize events to recalculate dimensions
+        window.addEventListener('resize', handleScrollAnimation);
+
+        // Theme toggle functionality
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            
+            if (isDark) {
+                html.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                html.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        }
+
+        // Add click handlers for theme toggle buttons
+        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+        document.getElementById('theme-toggle-mobile').addEventListener('click', toggleTheme);
+
+        // Language toggle functionality
+        const langToggle = document.getElementById('lang-toggle');
+        const html = document.documentElement;
+        
+        function toggleLanguage() {
+            const isRTL = html.dir === 'rtl';
+            
+            if (isRTL) {
+                html.dir = 'ltr';
+                html.lang = 'en';
+                localStorage.lang = 'en';
+            } else {
+                html.dir = 'rtl';
+                html.lang = 'ar';
+                localStorage.lang = 'ar';
+            }
+            
+            updateContent();
+        }
+
+        function updateContent() {
+            const isRTL = html.dir === 'rtl';
+            document.querySelectorAll('[data-en][data-ar]').forEach(el => {
+                el.textContent = isRTL ? el.dataset.ar : el.dataset.en;
+            });
+            
+            document.querySelectorAll('.lang-en, .lang-ar').forEach(el => {
+                if (el && el.classList) {
+                el.classList.toggle('hidden');
+                }
+            });
+        }
+
+        // Initialize language based on localStorage or default to English
+        if (localStorage.lang === 'ar') {
+            html.dir = 'rtl';
+            html.lang = 'ar';
+            updateContent();
+        }
+
+        langToggle.addEventListener('click', toggleLanguage);
+
+        // Update the animation script
+        document.addEventListener('DOMContentLoaded', () => {
+            const svg = document.querySelector('svg');
+            const elements = [
+                document.getElementById('bounce-1'),
+                document.getElementById('bounce-2'),
+                document.getElementById('bounce-3'),
+                document.getElementById('float-1'),
+                document.getElementById('float-2'),
+                document.getElementById('float-3')
+            ];
+
+            // Add hover effect to all elements
+            elements.forEach(element => {
+                element.classList.add('fun-element');
+            });
+
+            // Update elements based on cursor
+            document.addEventListener('mousemove', (e) => {
+                const rect = svg.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                elements.forEach(element => {
+                    const bbox = element.getBBox();
+                    const centerX = bbox.x + bbox.width/2;
+                    const centerY = bbox.y + bbox.height/2;
+                    
+                    const distance = Math.sqrt(
+                        Math.pow(mouseX - centerX, 2) + 
+                        Math.pow(mouseY - centerY, 2)
+                    );
+                    
+                    const maxDistance = 200;
+                    const scale = Math.max(0.8, 1 - (distance / maxDistance));
+                    const angle = Math.atan2(mouseY - centerY, mouseX - centerX);
+                    const moveDistance = (1 - scale) * 20;
+                    
+                    const newX = centerX + Math.cos(angle) * moveDistance;
+                    const newY = centerY + Math.sin(angle) * moveDistance;
+                    
+                    if (element.tagName === 'circle') {
+                        element.setAttribute('cx', newX);
+                        element.setAttribute('cy', newY);
+                    } else {
+                        element.setAttribute('x', newX - bbox.width/2);
+                        element.setAttribute('y', newY - bbox.height/2);
+                    }
+                    
+                    element.style.transform = `scale(${scale})`;
+                });
+            });
+
+            // Add random movement
+            setInterval(() => {
+                elements.forEach(element => {
+                    const bbox = element.getBBox();
+                    const currentX = bbox.x + bbox.width/2;
+                    const currentY = bbox.y + bbox.height/2;
+                    
+                    const moveX = (Math.random() - 0.5) * 3;
+                    const moveY = (Math.random() - 0.5) * 3;
+                    
+                    if (element.tagName === 'circle') {
+                        element.setAttribute('cx', currentX + moveX);
+                        element.setAttribute('cy', currentY + moveY);
+                    } else {
+                        element.setAttribute('x', currentX - bbox.width/2 + moveX);
+                        element.setAttribute('y', currentY - bbox.height/2 + moveY);
+                    }
+                });
+            }, 50);
+        });
+
+        // Update intersection observer for better section activation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    entry.target.classList.add('visible');
+                    
+                    // Force reflow to ensure styles are applied
+                    void entry.target.offsetWidth;
+                    
+                    // Make sure section titles are visible
+                    const sectionTitle = entry.target.querySelector('.section-title');
+                    if (sectionTitle) {
+                        sectionTitle.style.opacity = '1';
+                        sectionTitle.style.transform = 'translateY(0)';
+                    }
+                }
+            });
+        }, {
+            threshold: 0.15,
+            rootMargin: "-10% 0px -10% 0px" // Trigger slightly before section enters viewport
+        });
+
+        // Observe all sections
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.parallax__layer--back');
+            
+            parallaxElements.forEach(element => {
+                const speed = element.dataset.speed || 0.5;
+                element.style.transform = `translateZ(-1px) scale(${1 + speed}) translateY(${scrolled * speed}px)`;
+            });
+        });
+
+        // Remove old cursor event listeners
+        document.removeEventListener('mousemove', function(e) {
+            const cursor = document.querySelector('.custom-cursor');
+            if (cursor) {
+            cursor.style.transform = `translate(-50%, -50%) translate(${e.clientX}px, ${e.clientY}px)`;
+            }
+        });
+
+        document.removeEventListener('mouseover', function(e) {
+            const cursor = document.querySelector('.custom-cursor');
+            if (cursor) {
+                cursor.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
+            }
+        });
+
+        document.removeEventListener('mouseout', function(e) {
+            const cursor = document.querySelector('.custom-cursor');
+            if (cursor) {
+                cursor.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const heroSection = document.getElementById('hero');
+            let hasAnimated = false; // Track if animation has already run
+            
+            // Function to animate all hero characters consistently
+            function animateHeroChars() {
+                // If already animated, don't animate again
+                if (hasAnimated) return;
+                
+                // Get all the characters from both lines
+                const firstLineChars = document.querySelectorAll('.hero-gradient-text:first-child .hero-char');
+                const secondLineChars = document.querySelectorAll('.hero-gradient-text:last-child .hero-char');
+                const allChars = [...firstLineChars, ...secondLineChars];
+                
+                // Reset all characters first
+                allChars.forEach(char => {
+                    char.style.opacity = '0';
+                    char.style.transform = 'translateY(20px)';
+                });
+                
+                // Animate each character with staggered delay - FASTER
+                allChars.forEach((char, index) => {
+                    setTimeout(() => {
+                        char.style.opacity = '1';
+                        char.style.transform = 'translateY(0)';
+                    }, 50 + (index * 30)); // Reduced to 50ms initial delay + 30ms between characters
+                });
+                
+                hasAnimated = true; // Mark as animated
+            }
+            
+            // Run animation immediately on page load - start sooner
+            setTimeout(animateHeroChars, 200); // Reduced initial delay
+            
+            // Set up observer for when scrolling back to trigger animation again
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        hasAnimated = false; // Reset so we can animate again
+                        animateHeroChars();
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            observer.observe(heroSection);
+        });
+
+        // Select the element
+        const element = document.querySelector('h3[data-en="Trusted Tools for Design & Development"]');
+
+        // Check if the element exists
+        if (element) {
+            const currentClasses = element.classList;
+
+            // Remove the existing gray class if present
+            if (currentClasses.contains('text-gray-500')) {
+                currentClasses.remove('text-gray-500');
+            }
+
+            // Check if dark mode is active
+            const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            // Add the appropriate class based on the mode
+            if (isDarkMode) {
+                currentClasses.add('text-white'); // For dark mode
+            } else {
+                currentClasses.add('text-gray-500'); // For light mode
+            }
+        }
+        // Initialize the 3D globe
+        const globeContainer = document.getElementById('globeViz');
+        
+        // Sample data for locations
+        const locations = [
+            { lat: 31.9522, lng: 35.2332, size: 0.1, color: ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)] }, // Palestine
+            { lat: 25.3548, lng: 51.1839, size: 0.1, color: ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)] }, // Qatar
+            { lat: 23.8859, lng: 45.0792, size: 0.1, color: ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)] }, // KSA
+            { lat: 35.1264, lng: 33.4299, size: 0.1, color: ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)] }, // Cyprus
+            { lat: 37.0902, lng: -95.7129, size: 0.1, color: ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)] }, // USA
+            { lat: 55.3781, lng: -3.4360, size: 0.1, color: ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)] }, // UK
+            { lat: 51.1657, lng: 10.4515, size: 0.1, color: ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)] }, // Germany
+            { lat: -26.5225, lng: 31.4659, size: 0.1, color: ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)] }, // Eswatini
+            { lat: 23.4241, lng: 53.8478, size: 0.1, color: ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)] }  // UAE
+        ];
+
+        // Create the globe instance with flat style
+        const Globe = new ThreeGlobe()
+            .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+            .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
+            .pointsData(locations)
+            .pointAltitude(0.01)
+            .pointColor('color')
+            .pointRadius('size')
+            .pointsMerge(true)
+            .pointLabel(point => `${point.lat}, ${point.lng}`)
+            .onPointClick(point => {
+                // Add click interaction if needed
+            });
+
+        // Add auto-rotation
+        Globe.controls().autoRotate = true;
+        Globe.controls().autoRotateSpeed = 0.5;
+
+        // Set initial camera position
+        Globe.camera().position.z = 300;
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            Globe.width(container.clientWidth);
+            Globe.height(container.clientHeight);
+        });
+
+        // Start animation
+        function animate() {
+            requestAnimationFrame(animate);
+            Globe.controls().update();
+        }
+        animate();
+
+        // Mount the globe to the container
+        Globe(container);
+
+        // Add custom styles for flat appearance
+        const style = document.createElement('style');
+        style.textContent = `
+            #globeViz {
+                width: 100%;
+                height: 100%;
+                min-height: 400px;
+                background: #151921;
+                position: relative;
+                overflow: hidden;
+            }
+
+            #globeViz canvas {
+                width: 100%;
+                height: 100%;
+            }
+
+            /* Flat style overrides */
+            .globe-container {
+                filter: saturate(0.8) brightness(1.2);
+            }
+
+            .globe-point {
+                filter: drop-shadow(0 0 4px rgba(77, 255, 77, 0.5));
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Controls
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let targetRotation = { x: 0, y: 0 };
+        let currentRotation = { x: 0, y: 0 };
+
+        globeContainer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            previousMousePosition = {
+                x: e.clientX,
+                y: e.clientY
+            };
+        });
+
+        globeContainer.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const deltaMove = {
+                x: e.clientX - previousMousePosition.x,
+                y: e.clientY - previousMousePosition.y
+            };
+
+            targetRotation.y += deltaMove.x * 0.01;
+            targetRotation.x += deltaMove.y * 0.01;
+
+            previousMousePosition = {
+                x: e.clientX,
+                y: e.clientY
+            };
+        });
+
+        globeContainer.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // Auto-rotation when not interacting
+        let autoRotate = true;
+        let lastInteractionTime = Date.now();
+        const autoRotateDelay = 2000; // 2 seconds
+
+        globeContainer.addEventListener('mousedown', () => {
+            autoRotate = false;
+            lastInteractionTime = Date.now();
+        });
+
+        // Animation function
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Smooth rotation
+            currentRotation.x += (targetRotation.x - currentRotation.x) * 0.05;
+            currentRotation.y += (targetRotation.y - currentRotation.y) * 0.05;
+
+            // Auto-rotation
+            if (!isDragging && Date.now() - lastInteractionTime > autoRotateDelay) {
+                targetRotation.y += 0.002;
+            }
+
+            earth.rotation.y = currentRotation.y;
+            earth.rotation.x = currentRotation.x;
+            borders.rotation.y = currentRotation.y;
+            borders.rotation.x = currentRotation.x;
+
+            // Pulse the dots
+            const time = Date.now() * 0.001;
+            scene.children.forEach(child => {
+                if (child.geometry === dotGeometry) {
+                    child.scale.setScalar(1 + 0.2 * Math.sin(time * 2));
+                }
+            });
+
+            renderer.setClearColor(0x000000, 0);
+            renderer.setClearAlpha(0);
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+    
+    <!-- Custom Cursor Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // New modern cursor implementation
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorCircle = document.querySelector('.cursor-circle');
+            
+            // Only proceed if cursor elements exist
+            if (!cursorDot || !cursorCircle) {
+                console.warn('Cursor elements not found');
+                return;
+            }
+            
+            // Set initial positions
+            let mouseX = 0;
+            let mouseY = 0;
+            let circleX = 0;
+            let circleY = 0;
+            
+            // Update mouse position
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                
+                // The dot follows cursor exactly
+                if (cursorDot) {
+                    cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+                }
+            });
+            
+            // Add hover effect to interactive elements
+            const interactiveElements = document.querySelectorAll('a, button, input, select, textarea, [role="button"]');
+            
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursorDot.style.backgroundColor = '#10B981';
+                    cursorCircle.style.borderColor = 'rgba(16, 185, 129, 0.5)';
+                });
+                
+                el.addEventListener('mouseleave', () => {
+                    cursorDot.style.backgroundColor = ''; // Reset background color to let CSS handle it
+                    
+                    // Keep circle color handling for now, or reset it too if preferred
+                    const isDarkMode = document.documentElement.classList.contains('dark');
+                    if (isDarkMode) {
+                        cursorCircle.style.borderColor = 'rgba(249, 250, 251, 0.4)'; // Match CSS dark mode circle color
+                    } else {
+                        cursorCircle.style.borderColor = '#bdbdbd'; // Match CSS light mode circle color
+                    }
+                });
+            });
+            
+            // Animate the circle with a smooth delay
+            function animateCircle() {
+                // Calculate distance between current position and target
+                const dx = mouseX - circleX;
+                const dy = mouseY - circleY;
+                
+                // Update circle position with easing
+                circleX += dx * 0.1;
+                circleY += dy * 0.1;
+                
+                if (cursorCircle) {
+                    cursorCircle.style.transform = `translate(${circleX}px, ${circleY}px)`;
+                }
+                
+                requestAnimationFrame(animateCircle);
+            }
+            
+            // Start animation
+            animateCircle();
+        });
+    </script>
+
+    <!-- Modern Globe Implementation -->
+    <script src="https://unpkg.com/three"></script>
+    <script src="https://unpkg.com/globe.gl"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM loaded, initializing globe");
+            
+            // Find the container
+            const globeContainer = document.getElementById('globeViz');
+            
+            if (!globeContainer) {
+                console.error('Globe container not found');
+                return;
+            }
+            
+            // Set container styles
+            globeContainer.style.width = '100%';
+            globeContainer.style.height = '500px';
+            globeContainer.style.position = 'relative';
+            
+            // Initialize Globe.GL
+            const globe = Globe()
+                .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
+                .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+                .backgroundImageUrl(null) // Transparent background
+                .showGraticules(true)
+                .showAtmosphere(true)
+                .atmosphereColor('#3a228a')
+                .atmosphereAltitude(0.25)
+                .hexPolygonsData([])
+                .hexPolygonResolution(3)
+                .hexPolygonMargin(0.7)
+                .hexPolygonColor(() => `#${Math.round(Math.random() * 0xffffff).toString(16).padStart(6, '0')}`)
+                (globeContainer);
+
+            // Fetch country data for borders
+            fetch('https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson')
+                .then(res => res.json())
+                .then(countries => {
+                    globe
+                        .polygonsData(countries.features)
+                        .polygonCapColor(() => 'rgba(200, 200, 200, 0.0)')
+                        .polygonSideColor(() => 'rgba(0, 100, 200, 0.3)')
+                        .polygonStrokeColor(() => '#111')
+                        .polygonLabel(({ properties: d }) => `
+                            <b>${d.ADMIN} (${d.ISO_A2})</b>
+                        `)
+                        .onPolygonHover(hoverD => {
+                            globe.polygonAltitude(d => d === hoverD ? 0.12 : 0.06);
+                            globe.polygonCapColor(d => d === hoverD ? 'rgba(100, 200, 255, 0.3)' : 'rgba(200, 200, 200, 0.0)');
+                        })
+                        .polygonsTransitionDuration(300);
+
+                    // Add arcs connecting major cities
+                    const cities = [
+                        { name: 'New York', lat: 40.7128, lng: -74.0060 },
+                        { name: 'London', lat: 51.5074, lng: -0.1278 },
+                        { name: 'Tokyo', lat: 35.6762, lng: 139.6503 },
+                        { name: 'Singapore', lat: 1.3521, lng: 103.8198 },
+                        { name: 'Sydney', lat: -33.8688, lng: 151.2093 }
+                    ];
+
+                    const arcsData = [];
+
+                    // Create arcs between cities
+                    for (let i = 0; i < cities.length; i++) {
+                        const startCity = cities[i];
+                        const endCity = cities[(i + 1) % cities.length];
+                        
+                        arcsData.push({
+                            startLat: startCity.lat,
+                            startLng: startCity.lng,
+                            endLat: endCity.lat,
+                            endLng: endCity.lng,
+                            color: ['#00c6ff', '#0072ff', '#00a6ff', '#00d8ff', '#00e2ff'][i % 5]
+                        });
+                    }
+
+                    globe
+                        .arcsData(arcsData)
+                        .arcColor('color')
+                        .arcDashLength(0.4)
+                        .arcDashGap(0.2)
+                        .arcDashAnimateTime(1500)
+                        .arcStroke(0.5)
+                        .arcAltitude(0.3);
+
+                    // Add point markers for cities
+                    globe
+                        .pointsData(cities)
+                        .pointLabel(d => d.name)
+                        .pointRadius(0.5)
+                        .pointAltitude(0.01)
+                        .pointColor(() => '#ffffff');
+                });
+
+            // Set initial rotation and camera position
+            globe.controls().autoRotate = true;
+            globe.controls().autoRotateSpeed = 0.5;
+            
+            console.log("Globe initialized");
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                globe.width([globeContainer.offsetWidth]);
+                globe.height([globeContainer.offsetHeight]);
+            });
+        });
+    </script>
+    <script src="js/counter.js"></script>
+
+    <!-- Add globe container in the hero section -->
+    <div class="globe-container" id="globeViz"></div>
+
+    <script type="text/babel">
+        // Globe component
+        const GlobeComponent = () => {
+            const globeRef = React.useRef(null);
+            
+            React.useEffect(() => {
+                if (globeRef.current) {
+                    const globe = Globe()
+                        (globeRef.current)
+                        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
+                        .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+                        .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+                        .pointRadius(0.5)
+                        .pointColor(() => '#40FB30')
+                        .pointsData([
+                            { lat: 51.5074, lng: -0.1278 }, // London
+                            { lat: 40.7128, lng: -74.0060 }, // New York
+                            { lat: 35.6762, lng: 139.6503 }, // Tokyo
+                            { lat: 48.8566, lng: 2.3522 }, // Paris
+                            { lat: 37.7749, lng: -122.4194 } // San Francisco
+                        ])
+                        .arcColor(() => '#40FB30')
+                        .arcAltitude(0.1)
+                        .arcStroke(0.5)
+                        .arcsData([
+                            { startLat: 51.5074, startLng: -0.1278, endLat: 40.7128, endLng: -74.0060 },
+                            { startLat: 40.7128, startLng: -74.0060, endLat: 35.6762, endLng: 139.6503 },
+                            { startLat: 35.6762, startLng: 139.6503, endLat: 48.8566, endLng: 2.3522 },
+                            { startLat: 48.8566, startLng: 2.3522, endLat: 37.7749, endLng: -122.4194 }
+                        ]);
+
+                    // Auto-rotate
+                    globe.controls().autoRotate = true;
+                    globe.controls().autoRotateSpeed = 0.5;
+                    
+                    // Add event listeners for interaction
+                    globe.controls().enableZoom = true;
+                    globe.controls().enablePan = true;
+                    globe.controls().enableRotate = true;
+                    
+                    // Handle window resize
+                    window.addEventListener('resize', () => {
+                        globe.width(window.innerWidth);
+                        globe.height(window.innerHeight);
+                    });
+                }
+            }, []);
+
+            return <div ref={globeRef} style={{ width: '100%', height: '100%' }} />;
+        };
+
+        // Wait for DOM to be fully loaded before rendering
+        document.addEventListener('DOMContentLoaded', () => {
+            const root = ReactDOM.createRoot(document.getElementById('globeViz'));
+            root.render(<GlobeComponent />);
+        });
+    </script>
+</body>
+</html> 
