@@ -1,0 +1,68 @@
+{
+  "type": "Topology",
+  "objects": {
+    "land": {
+      "type": "GeometryCollection",
+      "geometries": [
+        {
+          "type": "Polygon",
+          "arcs": [[0]],
+          "properties": {
+            "name": "Africa"
+          }
+        },
+        {
+          "type": "Polygon",
+          "arcs": [[1]],
+          "properties": {
+            "name": "Europe"
+          }
+        },
+        {
+          "type": "Polygon",
+          "arcs": [[2]],
+          "properties": {
+            "name": "North America"
+          }
+        },
+        {
+          "type": "Polygon",
+          "arcs": [[3]],
+          "properties": {
+            "name": "South America"
+          }
+        },
+        {
+          "type": "Polygon",
+          "arcs": [[4]],
+          "properties": {
+            "name": "Asia"
+          }
+        },
+        {
+          "type": "Polygon",
+          "arcs": [[5]],
+          "properties": {
+            "name": "Australia"
+          }
+        },
+        {
+          "type": "Polygon",
+          "arcs": [[6]],
+          "properties": {
+            "name": "Antarctica"
+          }
+        }
+      ]
+    }
+  },
+  "arcs": [
+    [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]],
+    [[20, 0], [30, 0], [30, 10], [20, 10], [20, 0]],
+    [[40, 0], [50, 0], [50, 10], [40, 10], [40, 0]],
+    [[60, 0], [70, 0], [70, 10], [60, 10], [60, 0]],
+    [[80, 0], [90, 0], [90, 10], [80, 10], [80, 0]],
+    [[100, 0], [110, 0], [110, 10], [100, 10], [100, 0]],
+    [[120, 0], [130, 0], [130, 10], [120, 10], [120, 0]]
+  ]
+} 
