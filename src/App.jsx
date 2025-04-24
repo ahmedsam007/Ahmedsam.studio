@@ -52,19 +52,6 @@ function App() {
       const position = window.scrollY
       setScrollPosition(position)
       
-      // Apply video section classes based on scroll position
-      if (position > window.innerHeight * 0.8) {
-        document.body.classList.add('scrolling-video')
-      } else {
-        document.body.classList.remove('scrolling-video')
-      }
-      
-      if (position > window.innerHeight * 1.5) {
-        document.body.classList.add('scrolling-video-further')
-      } else {
-        document.body.classList.remove('scrolling-video-further')
-      }
-
       // Add 'active' class to sections when they come into view
       document.querySelectorAll('.section').forEach(section => {
         const rect = section.getBoundingClientRect()
@@ -109,10 +96,10 @@ function App() {
       <main>
         <div className="fixed-scroll-sections">
           <Hero language={language} />
-          <VideoSection />
         </div>
         
         <div className="regular-sections">
+          <VideoSection />
           <Story language={language} />
           <Portfolio language={language} />
           <GlobalReach />
