@@ -347,6 +347,15 @@ body.scrolling-video-further #video .overlay-glow {
     -webkit-text-fill-color: transparent;
     display: inline-block;
 }
+html, body, #root {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: black;
+    color: white;
+  }
+  
+  
 
 /* Responsive adjustments */
 @media (max-width: 1200px) {
