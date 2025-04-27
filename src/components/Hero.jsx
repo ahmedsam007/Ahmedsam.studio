@@ -164,26 +164,29 @@ const Hero = ({ language }) => {
               <div className="relative w-full mx-auto max-w-4xl opacity-90 dark:opacity-70 overflow-hidden before:content-[''] before:absolute before:inset-0 before:w-full before:bg-[linear-gradient(to_right,hsl(var(--background-default))_0%,transparent_30%,transparent_70%,hsl(var(--background-default))_100%)] before:z-10 flex flex-nowrap px-5 lg:px-12 justify-center gap-4 lg:gap-8" style={{ maskImage: 'linear-gradient(to right, transparent, black 20%, black 80%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 20%, black 80%, transparent 100%)' }}>
                 {/* First track of logos */}
                 <div className="gap-4 lg:gap-8 flex flex-nowrap items-center w-fit animate-[marquee_90000ms_linear_both_infinite] will-change-transform motion-reduce:animate-none motion-reduce:will-change-none">
-                  <LogoItem srcLight="/images/logos/light/cursor.png" srcDark="/images/logos/dark/cursor.png" alt="Cursor" height="4" />
-                  <LogoItem srcLight="/images/logos/light/figma.svg" srcDark="/images/logos/dark/figma.svg" alt="Figma" height="4" />
-                  <LogoItem srcLight="/images/logos/light/midjourney.svg" srcDark="/images/logos/dark/midjourney.svg" alt="Midjourney" height="4" />
-                  <LogoItem srcLight="/images/logos/light/slack.svg" srcDark="/images/logos/dark/slack.svg" alt="Slack" height="4" />
-                  <LogoItem srcLight="/images/logos/light/framer.svg" srcDark="/images/logos/dark/framer.svg" alt="Framer" height="4" />
-                  <LogoItem srcLight="/images/logos/light/jira.svg" srcDark="/images/logos/dark/jira.svg" alt="Jira" height="4" />
+                  <LogoItem srcLight="/images/logos/light/cursor.png" srcDark="/images/logos/dark/cursor.png" alt="Cursor" height="3.5" />
+                  <LogoItem srcLight="/images/logos/light/figma.svg" srcDark="/images/logos/dark/figma.svg" alt="Figma" height="3" />
+                  <LogoItem srcLight="/images/logos/light/midjourney.svg" srcDark="/images/logos/dark/midjourney.svg" alt="Midjourney" height="2" />
+                  <LogoItem srcLight="/images/logos/light/slack.svg" srcDark="/images/logos/dark/slack.svg" alt="Slack" height="3" />
+                  <LogoItem srcLight="/images/logos/light/framer.svg" srcDark="/images/logos/dark/framer.svg" alt="Framer" height="2" />
+                  <LogoItem srcLight="/images/logos/light/jira.svg" srcDark="/images/logos/dark/jira.svg" alt="Jira" height="3" />
                 </div>
                 
                 {/* Second track of logos (identical to first for seamless looping) */}
                 <div className="gap-4 lg:gap-8 flex flex-nowrap items-center w-fit animate-[marquee_90000ms_linear_both_infinite] will-change-transform motion-reduce:animate-none motion-reduce:will-change-none">
-                  <LogoItem srcLight="/images/logos/light/cursor.png" srcDark="/images/logos/dark/cursor.png" alt="Cursor" height="4" />
-                  <LogoItem srcLight="/images/logos/light/figma.svg" srcDark="/images/logos/dark/figma.svg" alt="Figma" height="4" />
-                  <LogoItem srcLight="/images/logos/light/midjourney.svg" srcDark="/images/logos/dark/midjourney.svg" alt="Midjourney" height="4" />
-                  <LogoItem srcLight="/images/logos/light/slack.svg" srcDark="/images/logos/dark/slack.svg" alt="Slack" height="4" />
-                  <LogoItem srcLight="/images/logos/light/framer.svg" srcDark="/images/logos/dark/framer.svg" alt="Framer" height="4" />
-                  <LogoItem srcLight="/images/logos/light/jira.svg" srcDark="/images/logos/dark/jira.svg" alt="Jira" height="4" />
+                  <LogoItem srcLight="/images/logos/light/cursor.png" srcDark="/images/logos/dark/cursor.png" alt="Cursor" height="3.5" />
+                  <LogoItem srcLight="/images/logos/light/figma.svg" srcDark="/images/logos/dark/figma.svg" alt="Figma" height="3" />
+                  <LogoItem srcLight="/images/logos/light/midjourney.svg" srcDark="/images/logos/dark/midjourney.svg" alt="Midjourney" height="2" />
+                  <LogoItem srcLight="/images/logos/light/slack.svg" srcDark="/images/logos/dark/slack.svg" alt="Slack" height="3" />
+                  <LogoItem srcLight="/images/logos/light/framer.svg" srcDark="/images/logos/dark/framer.svg" alt="Framer" height="3" />
+                  <LogoItem srcLight="/images/logos/light/jira.svg" srcDark="/images/logos/dark/jira.svg" alt="Jira" height="3" />
                 </div>
               </div>
             </div>
           </div>
+
+         
+          
         </div>
       </div>
     </section>

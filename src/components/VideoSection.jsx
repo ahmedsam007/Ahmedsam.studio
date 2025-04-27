@@ -1,53 +1,18 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 
 const VideoSection = () => {
   const videoRef = useRef(null);
-  const sectionRef = useRef(null);
 
-  // Temporarily comment out IntersectionObserver logic
-  /*
-  useEffect(() => {
-    const videoElement = videoRef.current;
-    if (!videoElement) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            videoElement.play().catch(error => {
-              console.error("Video autoplay prevented: ", error);
-            });
-          } else {
-            videoElement.pause();
-          }
-        });
-      },
-      {
-        threshold: 0.5,
-      }
-    );
-
-    const currentSectionRef = sectionRef.current;
-    if (currentSectionRef) {
-      observer.observe(currentSectionRef);
-    }
-
-    return () => {
-      if (currentSectionRef) {
-        observer.unobserve(currentSectionRef);
-      }
-      observer.disconnect();
-    };
-  }, []);
-  */
 
   return (
     <section 
-      className="section flex flex-col items-center pt-16 md:pt-20 px-4"
+      // Apply new padding values
+      className="section w-full bg-black pt-[12rem] pb-[6rem] px-0" 
       id="video" 
-      ref={sectionRef}
+      // Ensure style attribute is removed
     >
-      <div className="w-full mb-8 md:mb-12">
+      <div className="w-full mb-8 md:mb-12 pt-[96px]">
         <h2 className="text-center section-title" ani-section-title="" textkey="2d7v0" zn-text="">
           <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', height: 'fit-content', display: 'inline-flex', alignItems: 'baseline' }}>
             <span className="section-title-char">P</span>
@@ -73,12 +38,11 @@ const VideoSection = () => {
       </div>
       
       <div 
-        className="w-full max-w-5xl mx-auto bg-blue-500 rounded-lg overflow-hidden" 
-        style={{ aspectRatio: '16 / 9', minHeight: '200px' }}
+        className="w-full mx-auto overflow-hidden"
       >
         <video
           ref={videoRef}
-          className="w-full h-full object-cover block"
+          className="w-full h-auto object-cover block pt-[12rem] pb-[12rem] px-0"
           src="/images/ahmedvideo.mp4"
           poster="/images/poster.jpeg"
           autoPlay
@@ -86,7 +50,7 @@ const VideoSection = () => {
           muted
           playsInline
           preload="metadata"
-          style={{ border: '3px solid lime' }}
+          // style={{ border: '3px solid lime' }}
         >
           Your browser does not support the video tag.
         </video>

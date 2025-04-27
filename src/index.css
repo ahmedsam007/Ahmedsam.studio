@@ -47,17 +47,9 @@
 
 /* Video section styles */
 #video {
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100vh;
   background-color: black;
-  z-index: 20;
-  transform: translateY(100%);
-  transition: transform 1.2s cubic-bezier(0.17, 0.84, 0.44, 1);
-  will-change: transform;
-  overflow: hidden;
+  padding: 4rem 0 6rem 0;
 }
 
 /* Video content wrapper */
@@ -73,30 +65,12 @@
   overflow: hidden;
 }
 
-/* Scroll-triggered transforms */
-body.scrolling-video #video {
-  transform: translateY(0);
-}
-
-body.scrolling-video-further #video .video-container {
-  max-width: 100%;
-  transform: scale(1.2);
-  transition: max-width 1.4s cubic-bezier(0.17, 0.84, 0.44, 1), 
-              transform 1.4s cubic-bezier(0.17, 0.84, 0.44, 1);
-}
-
-body.scrolling-video-further #video .overlay-glow {
-  opacity: 0.9;
-  background: radial-gradient(circle at center, rgba(64, 251, 48, 0.3) 0%, transparent 75%);
-  transition: opacity 1.2s ease, background 1.2s ease, width 1.2s ease, height 1.2s ease;
-}
-
 /* Regular sections wrapper */
 .regular-sections {
   position: relative;
   z-index: 30;
   background: white;
-  margin-top: 50vh;
+  /* margin-top: 50vh; */ /* Remove this margin */
 }
 
 .dark .regular-sections {

@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom cursor styles */
+/* Custom cursor styles - REMOVE THESE */
+/*
 * {
     cursor: none;
 }
@@ -15,8 +16,11 @@
     position: fixed;
     pointer-events: none;
     z-index: 9999;
-    transition: transform 0.1s ease-out, background-color 0.2s ease;
-    will-change: transform;
+    left: 0;
+    top: 0;
+    transition: transform 0.2s ease-out, background-color 0.2s ease, width 0.2s ease, height 0.2s ease;
+    will-change: transform, background-color, width, height;
+    transform: translate3d(0, 0, 0);
 }
 
 .cursor-circle {
@@ -27,14 +31,16 @@
     position: fixed;
     pointer-events: none;
     z-index: 9998;
-    transition: transform 0.2s cubic-bezier(0.15, 0.85, 0.45, 1), 
+    left: 0;
+    top: 0;
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1),
                 width 0.2s cubic-bezier(0.15, 0.85, 0.45, 1),
                 height 0.2s cubic-bezier(0.15, 0.85, 0.45, 1),
                 border-color 0.2s ease;
-    will-change: transform;
+    will-change: transform, width, height, border-color;
+    transform: translate3d(0, 0, 0);
 }
 
-/* Dark mode cursor */
 .dark .cursor-dot {
     background-color: #808080;
 }
@@ -43,7 +49,6 @@
     border-color: rgba(205, 205, 205, 0.4);
 }
 
-/* Hover state */
 .cursor-dot.active {
     background-color: #40FB30;
     transform: scale(1.2);
@@ -54,7 +59,6 @@
     transform: scale(1.1);
 }
 
-/* Link hover state */
 .cursor-dot.hover {
     width: 12px;
     height: 12px;
@@ -63,10 +67,13 @@
 }
 
 .cursor-circle.hover {
-    width: 40px;
-    height: 40px;
     border-color: rgba(64, 251, 48, 0.4);
-    transform: scale(1.2);
+}
+*/
+
+/* Restore default cursor */
+* {
+    cursor: auto;
 }
 
 /* Hero styles */
@@ -122,11 +129,11 @@
     position: relative;
     z-index: 1;
     border-radius: 12px;
-    padding: 1px;
-    background: linear-gradient(90deg, #ff00cc, #3333ff, #ff00cc);
+    padding: 2px;
+    background: linear-gradient(90deg, #3fbe04, #000000, #069e1d70);
     background-size: 200% 100%;
     overflow: hidden;
-    transition: color 400ms cubic-bezier(0.215, 0.61, 0.355, 1), background 100ms cubic-bezier(0.215, 0.61, 0.355, 1);
+    transition: color 400ms cubic-bezier(0.215, 0.61, 0.355, 1), background 400ms cubic-bezier(0.215, 0.61, 0.355, 1);
     animation: gradientMove 3s ease infinite;
 }
 
@@ -152,17 +159,17 @@
     bottom: 0;
     border-radius: 12px;
     padding: 2px;
-    background: linear-gradient(90deg, #ff00cc, #3333ff, #ff00cc);
+    background: linear-gradient(90deg, #30c6036a, #0b1200, #02b8391f);
     background-size: 200% 100%;
     animation: gradientMove 3s ease infinite;
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+   
     -webkit-mask-composite: destination-out;
     mask-composite: exclude;
-    box-shadow: 0 0 20px rgba(255, 0, 204, 0.5);
+    box-shadow: 0 0 20px rgba(231, 79, 14, 0.11);
 }
 
 .gradient-border-button .inner-button {
-    background-color: #000;
+    background-color: #0425026a;
     border-radius: 10px;
     padding: 12px 24px;
     height: 100%;
@@ -170,11 +177,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 400ms cubic-bezier(0.215, 0.61, 0.355, 1);
+    transition: all 500ms cubic-bezier(0.215, 0.61, 0.555, 1);
 }
 
 .dark .gradient-border-button .inner-button {
-    background-color: #121212;
+    background-color: #0237040e;
 }
 
 /* Section title styles */
@@ -187,16 +194,17 @@
     position: relative;
     z-index: 10;
     
-    /* Fallback Color (Light Mode) */
-    color: #1f2937;
+    /* Remove gradient styles */
+    /* background: linear-gradient(180deg, rgba(31, 41, 55, 1) 0%, rgba(75, 85, 99, 0.9) 100%); */
+    /* -webkit-background-clip: text; */
+    /* background-clip: text; */
+    /* -webkit-text-fill-color: transparent; */ 
 
-    /* Gradient Styles */
-    background: linear-gradient(180deg, rgba(31, 41, 55, 1) 0%, rgba(75, 85, 99, 0.9) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent; 
-    
-    /* Base animation state - applied to container */
+    /* Set fallback text color */
+    color: #1f2937; /* Light mode default */
+    -webkit-text-fill-color: initial; /* Ensure text fill is not transparent */
+
+    /* Restore Base animation state */
     opacity: 0; 
     transform: translateY(30px);
     transition: opacity 0.8s ease-out, transform 0.8s ease-out; 
@@ -204,18 +212,17 @@
 
 /* Dark mode for section titles */
 .dark .section-title {
-    /* Fallback Color (Dark Mode) */
-    color: #f9fafb;
-
-    /* Gradient Styles */
-    background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(156, 163, 175, 0.7) 100%);
+    /* Remove gradient styles */
+     background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(156, 163, 175, 0.7) 100%); 
     -webkit-background-clip: text;
     background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-text-fill-color: transparent; 
+
+    
 }
 
-/* Animation trigger for section titles */
-.section.in-view .section-title { 
+/* Restore Animation trigger for section titles - Increase Specificity */
+#video.section.in-view .section-title { 
     opacity: 1;
     transform: translateY(0);
 }
@@ -223,14 +230,31 @@
 /* Character animations - Apply to .section-title-char */
 .section-title-char {
     display: inline-block;
+
+    /* Add gradient styles */
+    background: linear-gradient(180deg, rgba(31, 41, 55, 1) 0%, rgba(75, 85, 99, 0.9) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* Ensure fallback color is transparent or none if needed */
+    /* color: transparent; */ 
+
+    /* Restore base animation state */
     opacity: 0;
     transform: translateY(20px);
-    /* Removed animation property, rely on transition */
-    transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s; /* Added delay */
+    transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
 }
 
-/* Character animation trigger */
-.section.in-view .section-title-char {
+/* Add dark mode gradient for characters */
+.dark .section-title-char {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(156, 163, 175, 0.7) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Restore Character animation trigger - Increase Specificity */
+#video.section.in-view .section-title-char {
     opacity: 1;
     transform: translateY(0);
 }
@@ -320,17 +344,10 @@
     background: #0a0a0a !important; 
 }
 
-/* REMOVE temporary styles for debugging VideoSection visibility */
-/*
-#video {
-    background-color: red !important; 
-    min-height: 300px !important;      
-    border: 5px solid yellow !important; 
-    width: 100%;
-    display: block !important; 
-    opacity: 1 !important; 
-    visibility: visible !important; 
-    position: relative; 
-    z-index: 1000 !important; 
-}
-*/ 
+/* Style to hide navigation */
+.hide-nav {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+} 
+

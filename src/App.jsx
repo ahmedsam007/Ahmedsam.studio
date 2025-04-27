@@ -4,14 +4,15 @@ import Hero from './components/Hero'
 import VideoSection from './components/VideoSection'
 import Story from './components/Story'
 import Portfolio from './components/Portfolio'
-import GlobalReach from './components/GlobalReach'
 import Footer from './components/Footer'
-import CustomCursor from './components/CustomCursor'
+import GreenGlobe from './components/finished'
+import TestimonialsComponent from './components/Testimonials'
 
 function App() {
   const [darkMode, setDarkMode] = useState(false)
   const [language, setLanguage] = useState('en')
   const [scrollPosition, setScrollPosition] = useState(0)
+  const [isVideoSectionActive, setIsVideoSectionActive] = useState(false)
 
   // Initialize dark mode based on user preference
   useEffect(() => {
@@ -52,21 +53,40 @@ function App() {
       const position = window.scrollY
       setScrollPosition(position)
       
-      // Add 'active' class to sections when they come into view
+      const videoSection = document.getElementById('video')
+      let isVideoVisible = false
+      if (videoSection) {
+        const rect = videoSection.getBoundingClientRect()
+        // Consider active if it's taking up a good portion of the screen
+        isVideoVisible = rect.top < window.innerHeight * 0.5 && rect.bottom > window.innerHeight * 0.5
+      }
+      setIsVideoSectionActive(isVideoVisible)
+
+      // Add 'active' and 'in-view' class to sections when they come into view
       document.querySelectorAll('.section').forEach(section => {
+        console.log('Checking section:', section.id);
         const rect = section.getBoundingClientRect()
         const isVisible = 
           rect.top < window.innerHeight * 0.75 && 
           rect.bottom > window.innerHeight * 0.25
         
         if (isVisible) {
+          console.log('Section IS visible, adding in-view:', section.id);
           section.classList.add('active')
           section.classList.add('in-view')
+        } else {
+          console.log('Section NOT visible:', section.id);
+          // Optional: remove class if needed
+          // section.classList.remove('active') 
+          // section.classList.remove('in-view')
         }
       })
     }
 
     window.addEventListener('scroll', handleScroll)
+    // Initial check in case the page loads with the video section already visible
+    handleScroll()
+
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
@@ -84,9 +104,8 @@ function App() {
 
   return (
     <>
-      <CustomCursor />
-      
       <Navigation 
+        className={isVideoSectionActive ? 'hide-nav' : ''}
         darkMode={darkMode} 
         toggleDarkMode={toggleDarkMode}
         language={language}
@@ -102,7 +121,8 @@ function App() {
           <VideoSection />
           <Story language={language} />
           <Portfolio language={language} />
-          <GlobalReach />
+          <GreenGlobe/>
+          <TestimonialsComponent />
         </div>
       </main>
 
