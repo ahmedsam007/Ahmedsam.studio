@@ -178,7 +178,7 @@ const TestimonialsComponent = ({ language }) => {
     );
 
     return (
-        <section className="testimonials">
+        <section className="testimonials mt-96">
             {/* Use translated text */}
             <h2>{currentTexts.heading}</h2>
             <p className="subtitle">{currentTexts.subheading}</p>

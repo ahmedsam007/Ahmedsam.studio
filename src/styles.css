@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom cursor styles - REMOVE THESE */
-/*
+ Custom cursor styles - REMOVE THESE 
+
 * {
     cursor: none;
 }
@@ -71,7 +71,7 @@
 }
 */
 
-/* Restore default cursor */
+ Restore default cursor 
 * {
     cursor: auto;
 }
@@ -192,19 +192,16 @@
     text-align: center;
     font-weight: 900;
     position: relative;
-    z-index: 10;
+    z-index: 10; /* Ensure title is above cards */
     
-    /* Remove gradient styles */
-    /* background: linear-gradient(180deg, rgba(31, 41, 55, 1) 0%, rgba(75, 85, 99, 0.9) 100%); */
-    /* -webkit-background-clip: text; */
-    /* background-clip: text; */
-    /* -webkit-text-fill-color: transparent; */ 
+    /* Apply gradient styles directly to title */
+    background: linear-gradient(180deg, rgba(31, 41, 55, 1) 0%, rgba(75, 85, 99, 0.9) 100%); 
+    -webkit-background-clip: text; 
+    background-clip: text;
+    -webkit-text-fill-color: transparent;  
+    color: transparent; /* Fallback for non-supporting browsers */
 
-    /* Set fallback text color */
-    color: #1f2937; /* Light mode default */
-    -webkit-text-fill-color: initial; /* Ensure text fill is not transparent */
-
-    /* Restore Base animation state */
+    /* Base animation state */
     opacity: 0; 
     transform: translateY(30px);
     transition: opacity 0.8s ease-out, transform 0.8s ease-out; 
@@ -212,17 +209,17 @@
 
 /* Dark mode for section titles */
 .dark .section-title {
-    /* Remove gradient styles */
+     /* Apply dark mode gradient */
      background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(156, 163, 175, 0.7) 100%); 
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent; 
-
-    
+    color: transparent;
 }
 
-/* Restore Animation trigger for section titles - Increase Specificity */
-#video.section.in-view .section-title { 
+/* Animation trigger for section titles */
+/* Apply to all sections with class .section and .in-view */
+.section.in-view .section-title { 
     opacity: 1;
     transform: translateY(0);
 }
@@ -231,21 +228,20 @@
 .section-title-char {
     display: inline-block;
 
-    /* Add gradient styles */
+    /* Apply gradient styles (redundant but safe) */
     background: linear-gradient(180deg, rgba(31, 41, 55, 1) 0%, rgba(75, 85, 99, 0.9) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    /* Ensure fallback color is transparent or none if needed */
-    /* color: transparent; */ 
 
-    /* Restore base animation state */
+    /* Base animation state */
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
+    /* Use JS for transition delay */
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-/* Add dark mode gradient for characters */
+/* Dark mode gradient for characters */
 .dark .section-title-char {
     background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(156, 163, 175, 0.7) 100%);
     -webkit-background-clip: text;
@@ -253,8 +249,9 @@
     -webkit-text-fill-color: transparent;
 }
 
-/* Restore Character animation trigger - Increase Specificity */
-#video.section.in-view .section-title-char {
+/* Character animation trigger */
+/* Apply to all sections with class .section and .in-view */
+.section.in-view .section-title-char {
     opacity: 1;
     transform: translateY(0);
 }
@@ -350,4 +347,151 @@
     pointer-events: none;
     transition: opacity 0.3s ease-in-out;
 } 
+
+/* === Services Section Styles === */
+
+.service-card {
+    position: absolute; 
+    /* Add other base styles if needed */
+}
+
+.service-card .corner-light {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+        circle at center,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0.1) 20%,
+        rgba(255, 255, 255, 0) 70%
+    );
+    transform: scale(0.1);
+    opacity: 0;
+    transition: transform 0.5s ease, opacity 0.6s ease;
+    pointer-events: none; /* Ensure it doesn't block interactions */
+    z-index: 1; /* Below content but above background */
+}
+
+/* Dark mode adjustment for light */
+.dark .service-card .corner-light {
+    background: radial-gradient(
+        circle at center,
+        rgba(200, 200, 200, 0.3) 0%,
+        rgba(200, 200, 200, 0.05) 20%,
+        rgba(200, 200, 200, 0) 70%
+    );
+}
+
+.service-card:hover .corner-light {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Make sure card content is above the light */
+.service-card h3 {
+    position: relative;
+    z-index: 2;
+}
+
+/* Adjust Section Title animation for Services Section */
+#services.section.in-view .section-title { 
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* We might need to adjust the z-index if the pinned container overlaps other content */
+.services-container {
+    z-index: 10; /* Increase z-index to stay above subsequent sections during pin */
+}
+
+/* Ensure text color is readable on all card backgrounds */
+/*
+.service-card h3 {
+  color: #1f2937; // Dark text for light backgrounds 
+}
+
+.service-card p {
+  color: #4b5563; // Slightly lighter dark text for description 
+}
+*/
+
+/* === Animated Blur Background for Service Cards === */
+.service-card {
+  /* Ensure card acts as a positioning context and clips overflow */
+  position: relative; /* Already set via Tailwind 'relative' class, but good for clarity */
+  overflow: hidden; /* Restore overflow clipping */
+  background-color: #0d1117; /* Fallback solid dark background */
+}
+
+.animated-blur-blob {
+  position: absolute;
+  border-radius: 9999px; /* Fully rounded */
+  opacity: 0.7; /* Restore original opacity */
+  filter: blur(80px); /* Restore blur effect */
+  z-index: 0; /* Behind main content */
+  will-change: transform; /* Restore animation optimization */
+}
+
+/* Define blob colors and initial positions/sizes */
+/* Using colors inspired by your dark theme gradients */
+.blob-1 {
+  width: 300px;
+  height: 300px;
+  background-color: rgba(10, 132, 255, 0.4); /* Blueish - Adjust color/alpha */
+  top: -50px;
+  left: -100px;
+  /* animation: moveBlob1 15s infinite alternate ease-in-out; */ /* Animation disabled */
+}
+
+.blob-2 {
+  width: 250px;
+  height: 250px;
+  background-color: rgba(94, 96, 206, 0.4); /* Purplish - Adjust color/alpha */
+  bottom: -80px;
+  right: -80px;
+  /* animation: moveBlob2 18s infinite alternate ease-in-out; */ /* Animation disabled */
+}
+
+.blob-3 {
+  width: 200px;
+  height: 200px;
+  background-color: rgba(8, 51, 68, 0.5); /* Tealish - Adjust color/alpha */
+  bottom: 50px;
+  left: 50px;
+  /* animation: moveBlob3 12s infinite alternate ease-in-out; */ /* Animation disabled */
+}
+
+/* Keyframes for subtle blob movement */
+@keyframes moveBlob1 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, 50px) scale(1.2); }
+}
+
+@keyframes moveBlob2 {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  100% { transform: translate(-40px, -30px) scale(1.1) rotate(90deg); }
+}
+
+@keyframes moveBlob3 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-20px, 30px) scale(0.9); }
+}
+
+/* --- Ensure Content Stays Above --- */
+/* These might already be handled by relative + z-10 in JSX, but explicit rules can help */
+
+/* Make sure direct children (except blobs) intended as content are above */
+.service-card > h3,
+.service-card > p, /* Might need to target the parent div of p instead */
+.service-card > div:not(.animated-blur-blob):not([class*="bg-\\[url"]) {
+  position: relative; /* Ensure positioning context */
+  z-index: 10; /* Above blobs and noise */
+}
+
+/* Ensure noise overlay is above blobs (z-0) but below content (z-10) */
+.service-card > div[class*="bg-\\[url"] {
+  z-index: 1; /* Explicitly set z-index for noise */
+}
 

@@ -7,12 +7,16 @@ import Portfolio from './components/Portfolio'
 import Footer from './components/Footer'
 import GreenGlobe from './components/finished'
 import TestimonialsComponent from './components/Testimonials'
+import Services from './components/Services'
+import Clients from './components/Clients'
+import gsap from 'gsap'
 
 function App() {
   const [darkMode, setDarkMode] = useState(false)
   const [language, setLanguage] = useState('en')
   const [scrollPosition, setScrollPosition] = useState(0)
   const [isVideoSectionActive, setIsVideoSectionActive] = useState(false)
+  const [hovered, setHovered] = useState(null)
 
   // Initialize dark mode based on user preference
   useEffect(() => {
@@ -102,6 +106,17 @@ function App() {
     }
   }, [])
 
+  useEffect(() => {
+    const circles = document.querySelectorAll('.circle')
+    gsap.from(circles, {
+      opacity: 0,
+      y: 50,
+      stagger: 0.1,
+      duration: 0.6,
+      ease: "power2.out"
+    });
+  }, [])
+
   return (
     <>
       <Navigation 
@@ -121,7 +136,9 @@ function App() {
           <VideoSection />
           <Story language={language} />
           <Portfolio language={language} />
+          <Services />
           <GreenGlobe/>
+          <Clients/>
           <TestimonialsComponent />
         </div>
       </main>
