@@ -1,15 +1,64 @@
 <!DOCTYPE html>
-<html lang="en" class="light" dir="ltr">
+<html class="light notranslate" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google" content="notranslate" />
     <title>Ahmed Sam - Portfolio</title>
     <link rel="icon" type="image/png" href="/images/dark.png">
     <link rel="apple-touch-icon" href="/images/dark.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=UI+Mono+Sans:wght@400;500;600;700&family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://argyleink.github.io/scroll-timeline/dist/scroll-timeline.js"></script>
+    <script>
+      // Ensure ScrollTimeline script loads before app initialization
+      document.addEventListener('DOMContentLoaded', function() {
+        if (typeof ScrollTimeline === 'undefined') {
+          console.log('Loading ScrollTimeline polyfill');
+          const script = document.createElement('script');
+          script.src = 'https://argyleink.github.io/scroll-timeline/dist/scroll-timeline.js';
+          script.onload = function() {
+            console.log('ScrollTimeline polyfill loaded successfully');
+          };
+          script.onerror = function() {
+            console.error('Failed to load ScrollTimeline polyfill');
+          };
+          document.head.appendChild(script);
+        }
+        
+        // Block Google Translate
+        (function() {
+          // Disable Google Translate features by removing any scripts
+          const blockTranslateScripts = () => {
+            document.querySelectorAll('script[src*="translate.google"]').forEach(script => script.remove());
+          };
+          
+          // Initial blocking
+          blockTranslateScripts();
+          
+          // Continue monitoring for any dynamically added scripts
+          const observer = new MutationObserver(blockTranslateScripts);
+          observer.observe(document.documentElement, { 
+            childList: true, 
+            subtree: true 
+          });
+        })();
+      });
+    </script>
+    <script src="/scroll-timeline.js"></script>
+    <style>
+      /* Additional protection against Google Translate's UI */
+      .skiptranslate, .goog-te-banner-frame, #goog-gt-tt {
+        display: none !important;
+        visibility: hidden !important;
+      }
+      
+      body {
+        top: 0 !important;
+      }
+    </style>
   </head>
-  <body class="font-sans bg-white dark:bg-dark-900 antialiased">
+  <body class="font-sans bg-white dark:bg-dark-900 antialiased notranslate">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

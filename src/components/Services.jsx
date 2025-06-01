@@ -72,6 +72,8 @@ const Services = () => {
   const circlesRef = useRef([]);
   const leftHandRef = useRef(null); // Ref for left hand
   const rightHandRef = useRef(null); // Ref for full right hand
+  const titleRef = useRef(null); // Ref for the main title
+  const workExpSectionRef = useRef(null); // Ref for the work experiences section
 
   useEffect(() => {
     const pinHeightEl = pinHeightRef.current;
@@ -80,24 +82,66 @@ const Services = () => {
     const sectionEl = sectionRef.current;
     const leftHandEl = leftHandRef.current; // Get hand elements
     const rightHandEl = rightHandRef.current;
+    const titleEl = titleRef.current; // Get title element
+    
+    // Find the work experiences section
+    workExpSectionRef.current = document.querySelector('.work-exp-section');
 
-    if (!pinHeightEl || !containerEl || !circles.length || !sectionEl || !leftHandEl || !rightHandEl) {
+    if (!pinHeightEl || !containerEl || !circles.length || !sectionEl || !leftHandEl || !rightHandEl || !titleEl) {
       console.warn('GSAP Services Animation: Missing required elements.');
       return;
     }
     
+    // Fix z-index for Services section to prevent overlap with WorkExperiences
+    sectionEl.style.position = 'relative';
+    sectionEl.style.zIndex = '2'; // Higher than work experiences section
+    sectionEl.style.backgroundColor = '#000000'; // Ensure solid background to prevent content showing through
+    
     // Set scroll height for card reveals - aiming for ~3500px total
-    const scrollPixelsPerCard = 400; // Calculated: 3500px / 9 cards ≈ 389
-    const pinDurationHeight = circles.length * scrollPixelsPerCard;
+    const scrollPixelsPerCard = 900; // Calculated: 3500px / 9 cards ≈ 389
+    // Pin duration now only covers up to the last card's reveal (60% of original)
+    const pinDurationHeight = circles.length * scrollPixelsPerCard * 0.6;
     pinHeightEl.style.height = `${pinDurationHeight}px`;
     
     // Set a fixed padding bottom instead of using the full pin duration height
-    sectionEl.style.paddingBottom = '1200px';
+    sectionEl.style.paddingBottom = '800px';
 
-    // Set initial state for hands (invisible and lower)
-    gsap.set([leftHandEl, rightHandEl], { opacity: 0, y: 50 });
+    // Set initial state for hands (invisible, lower, and off-screen horizontally)
+    gsap.set(leftHandEl, { opacity: 0, xPercent: -150, yPercent: 20 });
+    gsap.set(rightHandEl, { opacity: 0, xPercent: 150, yPercent: 20 });
 
     const ctx = gsap.context(() => {
+      // Create ScrollTrigger for z-index management
+      ScrollTrigger.create({
+        trigger: sectionEl,
+        start: 'top bottom',
+        end: 'bottom top',
+        onEnter: () => {
+          // When services section enters viewport, ensure it's above work experiences
+          sectionEl.style.zIndex = '2';
+          
+          // Add scrolled-past class to work experiences section if it exists
+          if (workExpSectionRef.current) {
+            workExpSectionRef.current.classList.add('scrolled-past');
+            const workExpContainer = workExpSectionRef.current.querySelector('.work-exp-container');
+            if (workExpContainer) {
+              workExpContainer.classList.add('scrolled-past');
+            }
+          }
+        },
+        onLeaveBack: () => {
+          // When scrolling back up and leaving services section
+          if (workExpSectionRef.current) {
+            // Remove scrolled-past class from work experiences section
+            workExpSectionRef.current.classList.remove('scrolled-past');
+            const workExpContainer = workExpSectionRef.current.querySelector('.work-exp-container');
+            if (workExpContainer) {
+              workExpContainer.classList.remove('scrolled-past');
+            }
+          }
+        }
+      });
+      
       // Pin the container
       gsap.to(containerEl, {
         scrollTrigger: {
@@ -106,37 +150,59 @@ const Services = () => {
           end: 'bottom bottom',
           pin: containerEl,
           scrub: true,
+          // Add hand animation to the pinning scrub
+          onUpdate: (self) => {
+            // Complete hand animation within the first 10% of the pin duration (before first card animates)
+            const handProgress = Math.min(1, self.progress / 0.1); // Scale progress (0-1) to happen within self.progress (0-0.1)
+            handTimeline.progress(handProgress); // Apply scaled progress
+          }
         }
       });
 
-      // --- HAND ANIMATIONS --- 
-      // Animate TO opacity: 1 and y: 0 at the start
-      gsap.to([leftHandEl, rightHandEl], {
+      // Animate the main title
+      gsap.to(titleEl, {
+        scale: 3,
+        opacity: 0,
+        yPercent: -50, // Moves the title up relative to its height
+        ease: "power1.inOut",
+        scrollTrigger: {
+          trigger: titleEl,
+          start: "top 25%", // Animation starts when the top of the title is 25% from the viewport top
+          end: "top -25%",  // Animation ends when the top of the title is 25% of its height above the viewport top
+          scrub: 1.5,
+          // markers: true, // Uncomment for debugging
+        }
+      });
+
+      // Define hand animations (remain paused)
+      const leftHandTween = gsap.fromTo(leftHandEl,
+        { opacity: 0, xPercent: -20, yPercent: 20 }, // From Off-left, slightly down
+        { // Explicit 'to' state
           opacity: 1,
-          y: 0, // Animate to original vertical position
-          ease: "power1.inOut", // Add easing
-          scrollTrigger: {
-            trigger: pinHeightEl,
-            start: 'top top+=50',  
-            end: 'top top+=300',   // Increase duration slightly for smoother feel
-            scrub: true,
-          }
+          yPercent: 0, // Centered vertically relative to its height
+          xPercent: -35, // Move less towards center, keeping it further left
+          ease: "power2.inOut",
+          duration: 1, // Duration doesn't matter much when scrubbed
+          // paused: true // Keep it controlled by timeline
         }
       );
 
-      // Animate TO opacity: 0 and y: 50 at the end
-      gsap.to([leftHandEl, rightHandEl], { 
-        opacity: 0,
-        y: 50, // Animate down
-        ease: "power1.inOut", // Add easing
-        scrollTrigger: {
-          trigger: pinHeightEl,
-          start: 'bottom bottom-=300', // Increase duration slightly
-          end: 'bottom bottom',       
-          scrub: true,
+      const rightHandTween = gsap.fromTo(rightHandEl,
+        { opacity: 0, xPercent: 20, yPercent: 20 }, // From Off-right, slightly down
+        { // Explicit 'to' state
+          opacity: 1,
+          yPercent: 0, // Shift down slightly
+          xPercent: 35, // Move less towards center, keeping it further right
+          ease: "power2.inOut",
+          duration: 1,
+          // paused: true // Keep it controlled by timeline
         }
-      });
-      // --- END HAND ANIMATIONS ---
+      );
+
+      // Create the hand animation timeline (remains paused)
+      const handTimeline = gsap.timeline({ paused: true })
+        .add(leftHandTween)
+        .add(rightHandTween, 0);
 
       // Card positioning and angle configuration
       const cardAngle = 20; // 20 degree rotation
@@ -178,6 +244,9 @@ const Services = () => {
         const targetX = fromRight ? rightSideOffset : leftSideOffset;
         const targetAngle = fromRight ? cardAngle : -cardAngle;
         
+        // Cards now appear from 10% to 90% of the (shortened) pin duration
+        const cardRevealStart = 0.1 * pinDurationHeight + progress * pinDurationHeight * 0.75;
+        
         // Animate each card into view
         gsap.to(circle, {
           x: targetX,
@@ -188,8 +257,8 @@ const Services = () => {
           ease: "power2.out",
           scrollTrigger: {
             trigger: pinHeightEl,
-            start: `top+=${progress * pinDurationHeight * 0.9} top+=320`, // Add offset to avoid navbar
-            end: `top+=${progress * pinDurationHeight * 0.9 + 10} top+=200`,
+            start: `top+=${cardRevealStart} top+=400`, // now always after hands
+            end:   `top+=${cardRevealStart + 10} top+=200`,
             scrub: 1,
           }
         });
@@ -199,8 +268,8 @@ const Services = () => {
           rotation: -targetAngle, // Counter-rotate the card content to keep text upright
           scrollTrigger: {
             trigger: pinHeightEl,
-            start: `top+=${progress * pinDurationHeight * 0.9} top+=220`,
-            end: `top+=${progress * pinDurationHeight * 0.9 + 10} top+=200`,
+            start: `top+=${cardRevealStart} top+=400`, // match card reveal timing
+            end:   `top+=${cardRevealStart + 10} top+=200`,
             scrub: 1,
           }
         });
@@ -211,23 +280,53 @@ const Services = () => {
       ctx.revert();
       if (pinHeightEl) pinHeightEl.style.height = '';
       if (sectionEl) sectionEl.style.paddingBottom = '';
+      if (sectionEl) sectionEl.style.zIndex = '';
     };
   }, []);
 
   return (
-    <section id="services" ref={sectionRef} className="services-section section relative bg-gray-950 py-80 md:py-320 mt-20">
+    <section 
+      id="services" 
+      ref={sectionRef} 
+      className="services-section section relative bg-gray-950 py-80 md:py-320 mt-0" 
+      style={{ 
+        marginTop: '-2px', 
+        paddingTop: '0',
+        position: 'relative', 
+        zIndex: 2
+      }}
+    >
       {/* Section title moved above cards */}
       <div className="text-center mb-16">
-        <h2 className="text-4xl md:text-6xl font-extrabold text-amber-50/90 relative z-20 mb-2">
-          Services made for <span className="block">your journey</span>
+        <h2 
+          ref={titleRef} 
+          className="text-h1 relative z-20 mb-2 font-mona" 
+          style={{ 
+            fontWeight: 700,
+            fontSize: '5rem',
+            marginBottom: '2rem',
+            background: 'linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(156, 163, 175, 0.7) 100%)',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            color: 'white', /* Fallback color */
+            display: 'inline-block',
+            width: '100%',
+            paddingTop: '12rem',
+            opacity: 1,
+            visibility: 'visible'
+          }}
+        >
+          Services made for <br/><span>your journey</span>
         </h2>
-        <p className="text-lg md:text-xl text-purple-300/80 font-light">
-          Design services built just for SaaS success
-        </p>
       </div>
       
       {/* Pin Height Element - Determines scroll duration */}
-      <div ref={pinHeightRef} className="services-pin-height relative w-full">
+      <div 
+        ref={pinHeightRef} 
+        className="services-pin-height relative w-full mt-0 pt-0" 
+        style={{ marginTop: '0', paddingTop: '0' }}
+      >
         {/* Container to be Pinned */}
         <div ref={containerRef} className="services-container relative w-full h-screen flex items-center justify-center overflow-visible pt-24">
           
@@ -236,14 +335,14 @@ const Services = () => {
             ref={leftHandRef}
             src="/images/left.png" 
             alt="Left Hand" 
-            className="absolute bottom-[-16rem] left-1/2 transform -translate-x-[calc(55%+400px)] w-[74rem] h-auto object-contain z-0 opacity-0 pointer-events-none"
+            className="absolute w-[74rem] h-auto object-contain z-0 pointer-events-none opacity-0" // Simplified CSS
             // Changed to svg
           />
           <img 
             ref={rightHandRef}
             src="/images/right.png" 
             alt="Right Hand" 
-            className="absolute bottom-[-16rem] right-1/2 transform translate-x-[calc(55%+390px)] w-[74rem] h-auto object-contain z-0 opacity-0 pointer-events-none"
+            className="absolute w-[74rem] h-auto object-contain z-0 pointer-events-none opacity-0" // Simplified CSS
              // This is the full hand (behind cards)
           />
 
@@ -261,13 +360,16 @@ const Services = () => {
                   style={{ background: cardGradients[index % cardGradients.length] }}
                 >
                   {/* Service Name */}
-                  <h3 className="text-2xl md:text-3xl font-light text-[#ffffff] tracking-wide mb-4 relative z-10">
+                  <h3 className="text-h3 text-[#ffffff] tracking-wide mb-4 relative z-10" style={{ 
+                    fontFamily: 'Mono sans, SFMono-Regular, "Liberation Mono", "Courier New", monospace !important',
+                    fontWeight: '600'
+                  }}>
                     {service.name}
                   </h3>
                   
                   {/* Main Content */}
                   <div className="flex-1 flex flex-col justify-center w-full relative z-10">
-                    <p className="text-xl md:text-2xl font-medium text-[#ffffff] leading-relaxed mb-8">
+                    <p className="text-body-lg font-medium text-[#ffffff] leading-relaxed mb-8 max-w-prose">
                       "{service.description}"
                     </p>
                   </div>
@@ -280,7 +382,7 @@ const Services = () => {
                       <img src={service.icon} alt={service.name} className="w-8 h-8" />
                     </div>
                     {/* "Author" attribution */}
-                    <p className="text-lg text-[#ffffff] font-light italic">Ahmed's Studio</p>
+                    <p className="text-sm text-[#ffffff] font-light italic">Ahmed's Studio</p>
                   </div>
                   
                   {/* CSS Gradient Debug */}

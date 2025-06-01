@@ -1,7 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Hubot+Sans:wght@400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mona+Sans:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=UI+Mono+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo+Play:wght@400;500;600;700&display=swap');
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  /* Fluid size tokens */
+  --fs-display: clamp(3.5rem, 8vw + 1rem, 7rem);
+  --fs-h1:      clamp(2.5rem, 6vw + 0.8rem, 5rem);
+  --fs-h2:      clamp(2rem,  4vw + 0.6rem, 3.5rem);
+  --fs-h3:      clamp(1.5rem, 3vw + 0.4rem, 2.5rem);
+  --fs-h4:      clamp(1.25rem,2vw + 0.3rem, 2rem);
+  --fs-body-lg: clamp(1.125rem,0.8vw + 0.25rem,1.5rem);
+  --fs-body:    clamp(1rem, 0.6vw + 0.2rem, 1.25rem);
+  --fs-sm:      clamp(0.875rem,0.4vw + 0.15rem,1rem);
+  --fs-xs:      0.75rem;
+
+  /* Line heights for typographic scale */
+  --lh-display: 1.1;
+  --lh-h1: 1.2;
+  --lh-h2: 1.2;
+  --lh-h3: 1.3;
+  --lh-h4: 1.3;
+  --lh-body-lg: 1.5;
+  --lh-body: 1.6;
+  --lh-sm: 1.4;
+  --lh-xs: 1.3;
+
+  /* Font family variables */
+  --font-display-latin: 'Hubot Sans', sans-serif;
+  --font-display-arabic: 'Tajawal', sans-serif;
+  --font-hero-section-latin: 'Mona Sans', sans-serif;
+  --font-hero-section-arabic: 'Noto Sans Arabic', sans-serif;
+  --font-subtitle-latin: 'UI Mono Sans', monospace;
+  --font-subtitle-arabic: 'Cairo Play', sans-serif;
+  --font-xl-display-latin: 'Hubot Sans', sans-serif;
+  --font-xl-display-arabic: 'Tajawal', sans-serif;
+
+  /* Base font setup */
+  font-family: var(--font-subtitle-latin);
+  line-height: var(--lh-body);
   font-weight: 400;
+}
+
+/* Arabic base font */
+html[lang="ar"] {
+  font-family: var(--font-subtitle-arabic);
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -11,6 +56,257 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Base typography styles */
+h1 { 
+  font-size: var(--fs-h1); 
+  line-height: var(--lh-h1); 
+  font-family: var(--font-hero-section-latin);
+  font-weight: 700; 
+}
+
+h2 { 
+  font-size: var(--fs-h2); 
+  line-height: var(--lh-h2); 
+  font-family: var(--font-hero-section-latin);
+  font-weight: 700; 
+}
+
+h3 { 
+  font-size: var(--fs-h3); 
+  line-height: var(--lh-h3); 
+  font-family: var(--font-subtitle-latin);
+  font-weight: 600; 
+}
+
+h4 { 
+  font-size: var(--fs-h4); 
+  line-height: var(--lh-h4); 
+  font-family: var(--font-subtitle-latin);
+  font-weight: 600; 
+}
+
+p { 
+  font-size: var(--fs-body); 
+  line-height: var(--lh-body);
+  font-family: var(--font-subtitle-latin);
+  font-weight: 400;
+}
+
+/* Arabic headings */
+html[lang="ar"] h1 {
+  font-family: var(--font-hero-section-arabic);
+}
+
+html[lang="ar"] h2 {
+  font-family: var(--font-hero-section-arabic);
+}
+
+html[lang="ar"] h3 {
+  font-family: var(--font-subtitle-arabic);
+}
+
+html[lang="ar"] h4 {
+  font-family: var(--font-subtitle-arabic);
+}
+
+html[lang="ar"] p {
+  font-family: var(--font-subtitle-arabic);
+}
+
+/* Typography utility classes */
+.text-display { 
+  font-size: var(--fs-display); 
+  line-height: var(--lh-display);
+  font-family: var(--font-display-latin);
+  font-weight: 800;
+}
+
+html[lang="ar"] .text-display {
+  font-family: var(--font-display-arabic);
+  font-weight: 900;
+}
+
+.text-h1 { 
+  font-size: var(--fs-h1); 
+  line-height: var(--lh-h1);
+  font-family: var(--font-hero-section-latin);
+  font-weight: 700;
+}
+
+html[lang="ar"] .text-h1 {
+  font-family: var(--font-hero-section-arabic);
+}
+
+.text-h2 { 
+  font-size: var(--fs-h2); 
+  line-height: var(--lh-h2);
+  font-family: var(--font-hero-section-latin);
+  font-weight: 700;
+}
+
+html[lang="ar"] .text-h2 {
+  font-family: var(--font-hero-section-arabic);
+}
+
+.text-h3 { 
+  font-size: var(--fs-h3); 
+  line-height: var(--lh-h3);
+  font-family: var(--font-subtitle-latin);
+  font-weight: 600;
+}
+
+html[lang="ar"] .text-h3 {
+  font-family: var(--font-subtitle-arabic);
+}
+
+.text-h4 { 
+  font-size: var(--fs-h4); 
+  line-height: var(--lh-h4);
+  font-family: var(--font-subtitle-latin);
+  font-weight: 600;
+}
+
+html[lang="ar"] .text-h4 {
+  font-family: var(--font-subtitle-arabic);
+}
+
+.text-body-lg { 
+  font-size: var(--fs-body-lg); 
+  line-height: var(--lh-body-lg);
+  font-family: var(--font-subtitle-latin);
+  font-weight: 400;
+}
+
+html[lang="ar"] .text-body-lg {
+  font-family: var(--font-subtitle-arabic);
+}
+
+body, .text-body { 
+  font-size: var(--fs-body); 
+  line-height: var(--lh-body);
+  font-family: var(--font-subtitle-latin);
+  font-weight: 400;
+}
+
+html[lang="ar"] body, 
+html[lang="ar"] .text-body {
+  font-family: var(--font-subtitle-arabic);
+}
+
+.text-sm { 
+  font-size: var(--fs-sm); 
+  line-height: var(--lh-sm);
+  font-family: var(--font-subtitle-latin);
+  font-weight: 400;
+}
+
+html[lang="ar"] .text-sm {
+  font-family: var(--font-subtitle-arabic);
+}
+
+.text-xs { 
+  font-size: var(--fs-xs); 
+  line-height: var(--lh-xs);
+  font-family: var(--font-subtitle-latin);
+  font-weight: 400;
+}
+
+html[lang="ar"] .text-xs {
+  font-family: var(--font-subtitle-arabic);
+}
+
+/* Display / Large text */
+.font-display {
+  font-family: var(--font-display-latin);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+html[lang="ar"] .font-display {
+  font-family: var(--font-display-arabic);
+  font-weight: 900; /* Black weight */
+}
+
+/* Hero & section titles */
+.font-mona {
+  font-family: var(--font-hero-section-latin);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+html[lang="ar"] .font-mona {
+  font-family: var(--font-hero-section-arabic);
+  font-weight: 700;
+}
+
+/* Text and UI */
+.font-inter {
+  font-family: var(--font-subtitle-latin);
+  font-weight: 400;
+}
+
+html[lang="ar"] .font-inter {
+  font-family: var(--font-subtitle-arabic);
+  font-weight: 400;
+}
+
+/* Hubot Sans for display elements */
+.font-hubot {
+  font-family: var(--font-display-latin);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+html[lang="ar"] .font-hubot {
+  font-family: var(--font-display-arabic);
+  font-weight: 900;
+}
+
+/* Legacy class mappings */
+.font-xl-display {
+  font-family: var(--font-display-latin);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+html[lang="ar"] .font-xl-display {
+  font-family: var(--font-display-arabic);
+  font-weight: 900;
+}
+
+.font-hero-section {
+  font-family: var(--font-hero-section-latin);
+  font-weight: 700;
+}
+
+html[lang="ar"] .font-hero-section {
+  font-family: var(--font-hero-section-arabic);
+  font-weight: 700;
+}
+
+.font-subtitle {
+  font-family: var(--font-subtitle-latin);
+  font-weight: 400;
+}
+
+html[lang="ar"] .font-subtitle {
+  font-family: var(--font-subtitle-arabic);
+  font-weight: 400;
+}
+
+/* Hero and Section Title Styles */
+.hero-gradient-text,
+.section-title {
+  font-family: var(--font-hero-section-latin);
+  font-weight: 700;
+}
+
+html[lang="ar"] .hero-gradient-text,
+html[lang="ar"] .section-title {
+  font-family: var(--font-hero-section-arabic);
+  font-weight: 700;
 }
 
 .dark .section-title {
@@ -48,7 +344,7 @@
 /* Video section styles */
 #video {
   width: 100%;
-  background-color: black;
+  background-color: rgb(0, 0, 0);
   padding: 4rem 0 6rem 0;
 }
 
@@ -69,12 +365,12 @@
 .regular-sections {
   position: relative;
   z-index: 30;
-  background: white;
+  background: rgb(0, 0, 0);
   /* margin-top: 50vh; */ /* Remove this margin */
 }
 
 .dark .regular-sections {
-  background: #0f0f0f;
+  background: #000000;
 }
 
 /* Ensure footer is visible */
@@ -83,3 +379,32 @@ footer {
   z-index: 40;
 }
 /* --- End migrated static styles --- */
+
+/* Legacy font classes - updated to point to new variables */
+.hubot-sans {
+  font-family: 'Hubot Sans', sans-serif;
+}
+
+.inter-tight {
+  font-family: 'UI Mono Sans', monospace;
+  font-weight: 400; /* Or specific weights if needed */
+}
+
+.transition-container {
+  position: relative;
+}
+
+#section-transition-mask {
+  position: relative;
+  width: 100vw;
+  height: 120px;
+  margin-top: -60px;
+  z-index: 20;
+  pointer-events: none;
+  background: linear-gradient(90deg, #00fff7 0%, #fff 100%);
+  opacity: 0;
+  filter: blur(0px);
+  transition: opacity 0.6s cubic-bezier(.77,0,.18,1), filter 0.6s cubic-bezier(.77,0,.18,1);
+  border-radius: 60px;
+  box-shadow: 0 0 80px 10px #00fff7, 0 0 120px 40px #fff;
+}

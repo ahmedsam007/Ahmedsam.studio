@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-const Navigation = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
+const Navigation = ({ darkMode, toggleDarkMode, language, toggleLanguage, className }) => {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [lastScrollY, setLastScrollY] = useState(0)
+  const [headerVisible, setHeaderVisible] = useState(true)
   
   const toggleMenu = () => {
     setMenuOpen(!menuOpen)
@@ -12,13 +15,17 @@ const Navigation = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
       en: 'Home',
       ar: 'الرئيسية'
     },
-    features: {
-      en: 'Features',
-      ar: 'المميزات'
+    story: {
+      en: 'Story',
+      ar: 'قصتي'
     },
     portfolio: {
       en: 'Portfolio',
       ar: 'أعمالي'
+    },
+    services: {
+      en: 'Services',
+      ar: 'خدماتي'
     },
     contact: {
       en: 'Contact',
@@ -30,131 +37,148 @@ const Navigation = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
     }
   }
   
+  // Menu items definition using the translations
+  const menuItems = [
+    { name: 'Home', href: '#hero', translationKey: 'home' },
+    { name: 'Story', href: '#story', translationKey: 'story' },
+    { name: 'Portfolio', href: '#portfolio', translationKey: 'portfolio' },
+    { name: 'Services', href: '#services', translationKey: 'services' },
+    { name: 'Contact', href: '#contact', translationKey: 'contact' },
+  ]
+
+  useEffect(() => {
+    // Set initial scrollY post-mount for correct comparison on first scroll event.
+    if (typeof window !== 'undefined') {
+      setLastScrollY(window.scrollY)
+    }
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      const headerHeightThreshold = 80 // Approx. header height, adjust if needed
+      const scrollDelta = 5 // Min scroll distance to trigger visibility change
+
+      // Determine header visibility based on scroll direction
+      if (currentScrollY > lastScrollY + scrollDelta && currentScrollY > headerHeightThreshold) {
+        setHeaderVisible(false) // Scrolling down
+      } else if (currentScrollY < lastScrollY - scrollDelta || currentScrollY <= 10) {
+        setHeaderVisible(true) // Scrolling up or very near the top
+      }
+
+      // Update 'scrolled' state for gradient background effect
+      if (currentScrollY > 50) {
+        setScrolled(true)
+      } else {
+        setScrolled(false)
+      }
+
+      setLastScrollY(currentScrollY <= 0 ? 0 : currentScrollY) // Update last scroll position
+    }
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', handleScroll, { passive: true })
+      return () => {
+        window.removeEventListener('scroll', handleScroll)
+      }
+    }
+  }, [lastScrollY]) // Re-attach listener if lastScrollY changes
+  
   return (
-    <nav className="fixed w-full bg-white/80 dark:bg-dark-800/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 z-50">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center">
-            <a href="#" className="flex items-center">
-              <img 
-                src="/images/logo-light.png" 
-                alt="Ahmed Sam" 
-                className="h-10 w-auto transition-all duration-300 dark:hidden"
-              />
-              <img 
-                src="/images/logo-dark.png" 
-                alt="Ahmed Sam" 
-                className="h-10 w-auto transition-all duration-300 hidden dark:block"
-              />
-            </a>
-          </div>
-          
+    <header 
+      className={`fixed inset-x-0 top-0 z-50 transition-transform duration-300 ease-in-out ${headerVisible ? 'translate-y-0' : '-translate-y-full'} ${className || ''}`}
+    >
+      {/* Gradient overlay - visibility controlled by 'scrolled' state */}
+      <div 
+        className={`pointer-events-none absolute inset-x-0 h-32 lg:h-24 duration-200 bg-gradient-to-b ${darkMode ? (scrolled ? 'from-dark-900/75' : 'from-transparent') : (scrolled ? 'from-black/75' : 'from-transparent')} ${scrolled ? 'opacity-100' : 'opacity-0'}`}>
+      </div>
+      
+      <div className="mx-auto w-full px-6 xl:max-w-7xl relative">
+        <nav className="flex items-center justify-between gap-4 duration-200 py-4 lg:h-20">
+          {/* Logo */}
+          <a href="#hero" className="text-h3 font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-secondary-500">
+            Ahmed Sam
+          </a>
+
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <a 
-              href="#" 
-              className="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500 font-medium"
-            >
-              {translations.home[language]}
-            </a>
-            <a 
-              href="#" 
-              className="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500 font-medium"
-            >
-              {translations.features[language]}
-            </a>
-            <a 
-              href="#" 
-              className="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500 font-medium"
-            >
-              {translations.portfolio[language]}
-            </a>
-            <a 
-              href="#" 
-              className="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500 font-medium"
-            >
-              {translations.contact[language]}
-            </a>
-            
-            {/* Language Switcher */}
-            <button 
+          <ul className="ml-3 hidden flex-grow gap-4 lg:flex">
+            {menuItems.map((item) => (
+              <li key={item.name}>
+                <a 
+                  href={item.href} 
+                  className={`mono-tag px-3 py-1.5 text-sm ${darkMode ? 'text-gray-400' : 'text-primary/50'} hover:text-primary transition-colors`}
+                >
+                  {translations[item.translationKey][language]}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          {/* Action Buttons */}
+          <div className="flex gap-2">
+            {/* Language Toggle Button */}
+            <button
               onClick={toggleLanguage}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-dark-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-dark-900"
+              className="relative isolate inline-flex items-center justify-center border text-base/6 uppercase font-mono tracking-widest shrink-0 px-4 py-2 sm:text-sm gap-x-3 rounded-full [--btn-bg:transparent] [--btn-border:theme(colors.primary/25%)] [--btn-text:theme(colors.primary)] [--btn-hover:theme(colors.secondary/20%)] bg-[--btn-bg] text-[--btn-text] border-[--btn-border] hover:bg-[--btn-hover]"
             >
+              <span className="absolute left-1/2 top-1/2 size-[max(100%,2.75rem)] -translate-x-1/2 -translate-y-1/2 [@media(pointer:fine)]:hidden"></span>
               {translations.langSwitch[language]}
             </button>
             
-            {/* Theme Switcher */}
-            <button 
+            {/* Dark Mode Toggle Button */}
+            <button
               onClick={toggleDarkMode}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-dark-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-dark-900"
+              className="relative isolate inline-flex items-center justify-center border text-base/6 uppercase font-mono tracking-widest shrink-0 aspect-square px-4 py-2 sm:text-sm rounded-full [--btn-bg:transparent] [--btn-border:theme(colors.primary/25%)] [--btn-text:theme(colors.primary)] [--btn-hover:theme(colors.secondary/20%)] bg-[--btn-bg] text-[--btn-text] border-[--btn-border] hover:bg-[--btn-hover]"
             >
-              <i className="fas fa-sun dark:hidden"></i>
-              <i className="fas fa-moon hidden dark:block"></i>
+              <span className="absolute left-1/2 top-1/2 size-[max(100%,2.75rem)] -translate-x-1/2 -translate-y-1/2 [@media(pointer:fine)]:hidden"></span>
+              {darkMode ? <i className="fas fa-sun"></i> : <i className="fas fa-moon"></i>}
             </button>
-          </div>
-          
-          {/* Mobile Navigation */}
-          <div className="md:hidden flex items-center space-x-4">
-            <button 
-              onClick={toggleDarkMode}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-dark-800 text-gray-800 dark:text-gray-200"
-            >
-              <i className="fas fa-sun dark:hidden"></i>
-              <i className="fas fa-moon hidden dark:block"></i>
-            </button>
-            <button 
-              onClick={toggleMenu}
-              className="text-gray-600 dark:text-gray-300"
-            >
-              <i className="fas fa-bars text-2xl"></i>
-            </button>
-          </div>
-        </div>
-        
-        {/* Mobile Menu */}
-        {menuOpen && (
-          <div className="md:hidden mt-4 py-4 border-t border-gray-200 dark:border-gray-800">
-            <div className="flex flex-col space-y-4">
-              <a 
-                href="#" 
-                className="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500 font-medium"
-                onClick={() => setMenuOpen(false)}
+            
+            {/* Mobile Menu Toggle */}
+            <div className="lg:hidden">
+              <button
+                type="button"
+                onClick={toggleMenu}
+                className="relative isolate inline-flex items-center justify-center border text-base/6 uppercase font-mono tracking-widest shrink-0 aspect-square px-4 py-2 sm:text-sm rounded-full [--btn-bg:transparent] [--btn-border:theme(colors.primary/25%)] [--btn-text:theme(colors.primary)] [--btn-hover:theme(colors.secondary/20%)] bg-[--btn-bg] text-[--btn-text] border-[--btn-border] hover:bg-[--btn-hover]"
               >
-                {translations.home[language]}
-              </a>
-              <a 
-                href="#" 
-                className="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500 font-medium"
-                onClick={() => setMenuOpen(false)}
-              >
-                {translations.features[language]}
-              </a>
-              <a 
-                href="#" 
-                className="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500 font-medium"
-                onClick={() => setMenuOpen(false)}
-              >
-                {translations.portfolio[language]}
-              </a>
-              <a 
-                href="#" 
-                className="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500 font-medium"
-                onClick={() => setMenuOpen(false)}
-              >
-                {translations.contact[language]}
-              </a>
-              <button 
-                onClick={toggleLanguage}
-                className="p-2 rounded-lg bg-gray-100 dark:bg-dark-800 text-gray-800 dark:text-gray-200 w-fit"
-              >
-                {translations.langSwitch[language]}
+                <span className="absolute left-1/2 top-1/2 size-[max(100%,2.75rem)] -translate-x-1/2 -translate-y-1/2 [@media(pointer:fine)]:hidden"></span>
+                <i className={menuOpen ? 'fas fa-times' : 'fas fa-bars'}></i>
               </button>
             </div>
           </div>
-        )}
+        </nav>
       </div>
-    </nav>
+
+      {/* Mobile Menu */}
+      {menuOpen && (
+        <div className={`lg:hidden backdrop-blur border-t border-gray-200 dark:border-gray-700 shadow-lg ${darkMode ? 'bg-dark-800/95' : 'bg-white/95' }`}>
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            {menuItems.map((item) => (
+              <a
+                key={item.name}
+                href={item.href}
+                onClick={() => setMenuOpen(false)}
+                className="text-sm block px-3 py-2 mono-tag font-medium text-primary/70 dark:text-gray-300 hover:bg-secondary/10 dark:hover:bg-dark-700 hover:text-primary dark:hover:text-primary-400 transition-colors"
+              >
+                {translations[item.translationKey][language]}
+              </a>
+            ))}
+            <div className="px-3 py-2 border-t border-gray-200 dark:border-gray-700 mt-1 pt-3 flex justify-between items-center">
+              <button
+                onClick={() => { toggleLanguage(); setMenuOpen(false); }}
+                className="text-sm text-center block mono-tag font-medium text-primary/70 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors p-2 flex-1"
+              >
+                {translations.langSwitch[language]}
+              </button>
+              <button
+                onClick={() => { toggleDarkMode(); setMenuOpen(false); }}
+                className="text-sm text-center block mono-tag font-medium text-primary/70 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors p-2 flex-1"
+              >
+                {darkMode ? <i className="fas fa-sun"></i> : <i className="fas fa-moon"></i>} <span className="ml-2">{darkMode ? 'Light' : 'Dark'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </header>
   )
 }
 

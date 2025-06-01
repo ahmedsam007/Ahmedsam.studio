@@ -1,0 +1,39 @@
+#story {
+  position: relative;
+}
+
+#story::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1; /* Place it behind the content */
+
+  /* Grid color (light lines for dark backgrounds) */
+  background-image:
+    linear-gradient(rgba(36, 36, 36, 0.814) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(36, 36, 36, 0.851) 1px, transparent 1px);
+  background-size: 50px 50px; /* Grid cell size */
+  background-position: center center;
+
+  /* Fade effect using a mask - adjusted for increased height */
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 10%,   /* Top fade starts (as per your edit) */
+    black 20%,        /* Grid fully visible from 20% (earlier) */
+    black 80%,        /* Grid fully visible until 80% (later) */
+    transparent 100%   /* Bottom fade ends (as per your edit) */
+  );
+  -webkit-mask-image: linear-gradient( /* For Safari/Chrome */
+    to bottom,
+    transparent 10%,   /* Top fade starts */
+    black 20%,        /* Grid fully visible from 20% */
+    black 80%,        /* Grid fully visible until 80% */
+    transparent 100%   /* Bottom fade ends */
+  );
+}
+
+/* Dark mode styles are implicitly handled by the main #story::before rule now,
+   as the grid lines are dark, suitable for a light background if needed, or vice-versa. */ 
