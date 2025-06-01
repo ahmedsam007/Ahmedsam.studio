@@ -8,8 +8,35 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'Rubik', 'sans-serif'],
-        arabic: ['Rubik', 'sans-serif'],
+        // Design System Fonts
+        'xl-display': ['Hubot Sans', 'sans-serif'],
+        'xl-display-ar': ['Tajawal', 'sans-serif'],
+        'hero': ['Mona Sans', 'sans-serif'],
+        'hero-ar': ['Noto Sans Arabic', 'sans-serif'],
+        'subtitle': ['UI Mono Sans', 'monospace'],
+        'subtitle-ar': ['Cairo Play', 'sans-serif'],
+        'overlay': ['Clash Display', 'sans-serif'],
+        'overlay-ar': ['Changa', 'sans-serif'],
+        
+        // Legacy font definitions
+        sans: ['UI Mono Sans', 'Mona Sans', 'Rubik', 'sans-serif'],
+        arabic: ['Noto Sans Arabic', 'Rubik', 'sans-serif'],
+        'mona': ['Mona Sans', 'sans-serif'],
+        'hubot': ['Hubot Sans', 'sans-serif'],
+        'inter-tight': ['UI Mono Sans', 'monospace'],
+        'playfair-display': ['Playfair Display', 'serif'],
+        'clash': ['Clash Display', 'serif'],
+      },
+      fontSize: {
+        'display': 'var(--fs-display)',
+        'h1': 'var(--fs-h1)',
+        'h2': 'var(--fs-h2)',
+        'h3': 'var(--fs-h3)',
+        'h4': 'var(--fs-h4)',
+        'body-lg': 'var(--fs-body-lg)',
+        'body': 'var(--fs-body)',
+        'sm': 'var(--fs-sm)',
+        'xs': 'var(--fs-xs)',
       },
       colors: {
         primary: {

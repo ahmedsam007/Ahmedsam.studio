@@ -1,0 +1,463 @@
+/* WorkExperiences.css */
+
+/* Import Hubot Sans font */
+@import url('https://fonts.googleapis.com/css2?family=Hubot+Sans:wght@400;500;700;800&display=swap');
+
+/* ------- Osmo [https://osmo.supply/] ------- */
+/* Osmo UI: https://slater.app/10324/23333.css */
+
+:root {
+  --color-black: #000000;
+  --color-dark: #121212;
+  --color-neutral-900: #121212;
+  --color-light: #efeeec;
+  --container-padding: 0;
+  --cubic-default: cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* Remove all custom scroll animation styles */
+.work-exp-section {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+  background: var(--color-black);
+}
+
+.work-exp-container {
+  background: var(--color-black);
+  color: var(--color-light);
+  font-size: var(--fs-body);
+  font-family: var(--font-hero-section-latin);
+  line-height: var(--lh-body);
+  cursor: url("https://cdn.prod.website-files.com/6708f85ff3d3cba6aff436fb/671251b239d7aeb290a31ac5_cursor-default%402x.svg")
+      2 0,
+    auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+html[lang="ar"] .work-exp-container {
+  font-family: var(--font-hero-section-arabic);
+}
+
+/* Work Experiences section title */
+.work-exp-container .section-title {
+  font-family: var(--font-hero-section-latin);
+  font-weight: 800;
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  letter-spacing: -0.03em;
+}
+
+html[lang="ar"] .work-exp-container .section-title {
+  font-family: var(--font-hero-section-arabic);
+}
+
+/* Section header */
+.work-exp-header {
+  padding: 16em 2em 2em;
+  text-align: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+.work-exp-container .work-exp-title {
+  font-size: 5rem;
+  opacity: 1;
+  display: block;
+  font-family: var(--font-hero-section-latin);
+  font-weight: 700;
+  margin: 0 0 0.5em;
+  line-height: 1.1;
+  position: static;
+  z-index: 99999;
+  pointer-events: auto;
+  text-align: center;
+  padding: 0;
+}
+
+html[lang="ar"] .work-exp-title {
+  font-family: var(--font-hero-section-arabic);
+  font-weight: 700;
+}
+
+.work-exp-subtitle {
+  font-size: var(--fs-body-lg);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-weight: 400;
+  margin: 0 auto;
+  color: var(--color-light);
+  opacity: 0.85;
+  max-width: 36em;
+  line-height: var(--lh-body-lg);
+  position: relative;
+  z-index: 50;
+  pointer-events: auto;
+  text-align: center;
+  padding: 5px;
+}
+
+html[lang="ar"] .work-exp-subtitle {
+  font-family: var(--font-subtitle-arabic);
+}
+
+.work-exp-container a,
+.work-exp-container button {
+  cursor: url("https://cdn.prod.website-files.com/6708f85ff3d3cba6aff436fb/671251b212e6b71494aa67ff_cursor-pointer%402x.svg")
+      12 0,
+    pointer;
+}
+
+/* Original Osmo styles */
+.cloneable {
+  padding: var(--container-padding);
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  display: flex;
+  position: relative;
+  font-size: 1.1vw;
+}
+
+.overlay {
+  z-index: 2;
+  background-image: linear-gradient(90deg, #000000 85%, #00000000 100%);
+  justify-content: flex-start;
+  align-items: center;
+  width: 37.5em;
+  height: 100%;
+  padding-left: 2em;
+  display: flex;
+  position: absolute;
+  inset: 0% auto 0% 0%;
+  pointer-events: auto;
+}
+
+.overlay-inner {
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  height: 28.125em;
+  display: flex;
+  gap: 5em;
+}
+
+.overlay-count-row {
+  grid-column-gap: .2em;
+  grid-row-gap: .2em;
+  flex-flow: row;
+  justify-content: flex-start;
+  align-items: center;
+  font-family: var(--font-xl-display-latin);
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  display: flex;
+  line-height: var(--lh-h2);
+}
+
+html[lang="ar"] .overlay-count-row {
+  font-family: var(--font-xl-display-arabic);
+  font-weight: 800;
+}
+
+.count-column {
+  height: 1em;
+  overflow: hidden;
+}
+
+.count-heading {
+  font-family: 'Hubot Sans', PP Neue Corp, Impact, sans-serif;
+  font-size: 0.9em;
+  line-height: 1;
+  margin: 0px;
+}
+
+/* Years (2016, 2017, etc.) need 4ch width */
+[data-slide-count="step"].count-heading {
+  width: 3.75ch;
+}
+
+/* The total element (can contain "present") needs 7ch width */
+[data-slide-count="total"].count-heading {
+  width: 7ch;
+}
+
+.count-row-divider {
+  background-color: var(--color-light);
+  width: 2px;
+  height: .75em;
+  transform: rotate(15deg);
+  margin: 0 0.05em;
+}
+
+.overlay-nav-row {
+  grid-column-gap: 2em;
+  grid-row-gap: 2em;
+  display: flex;
+}
+
+.button {
+  background-color: #0000;
+  color: #fff;
+  border: 1px solid #fff3;
+  border-radius: .4em;
+  justify-content: center;
+  align-items: center;
+  width: 4em;
+  height: 4em;
+  padding: 0;
+  display: flex;
+  position: relative;
+  font-size: inherit;
+}
+
+.button-arrow {
+  flex: none;
+  width: 1em;
+  height: .75em;
+}
+
+.button-arrow.next {
+  transform: rotate(180deg);
+}
+
+.button-overlay {
+  z-index: 2;
+  position: absolute;
+  inset: -1px;
+}
+
+.overlay-corner {
+  border-top: 1px solid var(--color-light);
+  border-left: 1px solid var(--color-light);
+  border-top-left-radius: .4em;
+  width: 1em;
+  height: 1em;
+}
+
+.overlay-corner.top-right {
+  position: absolute;
+  inset: 0% 0% auto auto;
+  transform: rotate(90deg);
+}
+
+.overlay-corner.bottom-left {
+  position: absolute;
+  inset: auto auto 0% 0%;
+  transform: rotate(-90deg);
+}
+
+.overlay-corner.bottom-right {
+  position: absolute;
+  inset: auto 0% 0% auto;
+  transform: rotate(180deg);
+}
+
+.button, .button-overlay{ transition: transform 0.475s var(--cubic-default), opacity 0.475s var(--cubic-default)}
+
+.button:hover .button-overlay{ transform: scale(1.4); }
+.overlay-nav-row:hover:has(.button:hover) .button{ opacity: 0.4; }
+.button:hover{ transform: scale(0.85); opacity: 1 !important; }
+
+.main {
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0%;
+  overflow: hidden;
+}
+
+.slider-wrap {
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.slider-list {
+  flex-flow: row;
+  justify-content: flex-start;
+  align-items: stretch;
+  display: flex;
+  position: relative;
+}
+
+.slider-slide {
+  flex: none;
+  width: 42.5em;
+  height: 28em;
+  padding-left: 1.25em;
+  padding-right: 1.25em;
+  transition: opacity .4s;
+  position: relative;
+}
+
+[data-slider="slide"]{ opacity: 0.2; }
+[data-slider="slide"].active { opacity: 1; } 
+[data-slider="slide"].active .slide-caption{ transition-delay:0.3s;} 
+
+.slide-inner {
+  border-radius: .5em;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slide-caption {
+  z-index: 2;
+  grid-column-gap: .4em;
+  grid-row-gap: .4em;
+  background-color: var(--color-light);
+  color: var(--color-dark);
+  white-space: nowrap;
+  border-radius: .25em;
+  justify-content: flex-start;
+  align-items: center;
+  padding: .4em .75em .4em .5em;
+  display: flex;
+  position: absolute;
+  top: 1.25em;
+  left: 1.25em;
+  overflow: hidden;
+}
+
+.caption-dot {
+  background-color: var(--color-dark);
+  border-radius: 10em;
+  flex: none;
+  width: .5em;
+  height: .5em;
+}
+
+.caption {
+  font-size: var(--fs-sm);
+  font-family: arial;
+  margin: 0px;
+  line-height: var(--lh-sm);
+}
+
+.slide-caption{ transition: transform 0.525s var(--cubic-default), opacity 0.525s var(--cubic-default); transition-delay:0s; }
+
+.slide-caption{ opacity: 0; transform:translate(-25%, 0px) }
+[data-slider="slide"].active .slide-caption{ opacity: 1; transform:translate(0%, 0px) }
+
+.osmo-credits {
+  z-index: 999;
+  pointer-events: none;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 4em;
+  padding: 1em;
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+.osmo-credits__p {
+  pointer-events: auto;
+  color: #efeeec80;
+  text-align: center;
+  margin: 0;
+  font-family: PP Neue Montreal, Arial, sans-serif;
+  font-size: 1.125em;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.osmo-credits__p-a {
+  color: #efeeec;
+}
+
+@font-face {
+  font-family: 'PP Neue Montreal';
+  src: url('https://cdn.prod.website-files.com/6819ed8312518f61b84824df/6819ed8312518f61b84825ba_PPNeueMontreal-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+.logo-area {
+  width: 200px;
+  height: 60px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin: 0.5em 0 0;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.slide-logo {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+  object-position: left center;
+  opacity: 1;
+  margin-left: 0;
+  padding-left: 0;
+  transition: opacity 0.3s ease;
+}
+
+.description-area {
+  width: 100%;
+  margin: 0;
+  margin-top: -3em;
+  position: relative;
+  top: 0;
+}
+
+.experience-description {
+  color: var(--color-light);
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body-lg);
+  max-width: 30em;
+  margin: 0;
+  font-family: monospace;
+  opacity: 0.8;
+  padding: 0;
+  border-radius: 0.25em;
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+html[lang="ar"] .experience-description {
+  font-family: var(--font-subtitle-ar);
+}
+
+/* Highly specific rule for THIS component's title */
+.work-exp-section .work-exp-header .work-exp-title.section-title.text-h1.font-mona {
+  /* Font properties will be inherited from text-h1, font-mona */
+  /* We mainly need to override color, opacity and text-fill for the gradient */
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(220, 220, 220, 0.8) 100%) !important; 
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important; /* Fallback for browsers that don't support background-clip:text */
+  -webkit-text-fill-color: transparent !important; /* Makes the text transparent to show the gradient */
+  opacity: 1 !important; /* Ensure it's visible, overriding section-title default opacity 0 */
+  visibility: visible !important; /* Ensure it's visible */
+  display: block !important; /* Ensure it's displayed */
+  position: relative !important; /* Keep in flow */
+  z-index: inherit !important; /* Inherit z-index from header */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Optional: subtle shadow for depth */
+  margin-bottom: 0.75em !important; /* Increased margin-bottom for more space */
+} 

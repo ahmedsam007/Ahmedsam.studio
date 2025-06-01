@@ -1,195 +1,294 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './Testimonials.css'; // Import the CSS file
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger);
 
 // Accept language prop
 const TestimonialsComponent = ({ language }) => {
+    const containerRef = useRef(null);
+    const headingRef = useRef(null);
+    const cardsRef = useRef([]);
+    const floatingElementsRef = useRef([]);
+    
     // Define testimonial data with translations
     // !! IMPORTANT: Replace placeholder [Arabic...] strings with actual translations !!
-    const testimonialsCol1 = [
+    const testimonialsData = [
         {
             quote: {
                 en: "Cursor is at least a 2x improvement over Copilot. It's amazing having an AI pair programmer, and is an incredible accelerator for me and my team.",
-                ar: "[كيرسور أفضل بمرتين على الأقل من كوبايلوت. من المدهش وجود مبرمج زوجي يعمل بالذكاء الاصطناعي، وهو مسرع لا يصدق لي ولفريقي.]"
+                ar: "كيرسور أفضل بمرتين على الأقل من كوبايلوت. من المدهش وجود مبرمج زوجي يعمل بالذكاء الاصطناعي، وهو مسرع لا يصدق لي ولفريقي."
             },
-            imgSrc: "https://picsum.photos/seed/ben_bernard/40/40",
+            imgSrc: "https://picsum.photos/seed/ben_bernard/60/60",
             alt: "Ben Bernard",
-            name: { en: "Ben Bernard", ar: "[بن برنارد]" },
-            company: { en: "Instacart", ar: "[انستاكارت]" }
+            name: { en: "Ben Bernard", ar: "بن برنارد" },
+            company: { en: "Instacart", ar: "انستاكارت" },
+            rating: 5
         },
         {
             quote: {
-                en: "Cursor is awesome! Someone finally put GPT into a code editor in a seamless way. It's so elegant and easy. No more copying and pasting. I'm an hour in and already hooked.",
-                ar: "[كيرسور رائع! أخيراً قام شخص ما بدمج GPT في محرر أكواد بطريقة سلسة. إنه أنيق وسهل للغاية. لا مزيد من النسخ واللصق. لقد استخدمته لساعة واحدة وأنا مدمن عليه بالفعل.]"
+                en: "Cursor is awesome! Someone finally put GPT into a code editor in a seamless way. It's so elegant and easy. No more copying and pasting.",
+                ar: "كيرسور رائع! أخيراً قام شخص ما بدمج GPT في محرر أكواد بطريقة سلسة. إنه أنيق وسهل للغاية. لا مزيد من النسخ واللصق."
             },
-            imgSrc: "https://picsum.photos/seed/andrew_mccalip/40/40",
+            imgSrc: "https://picsum.photos/seed/andrew_mccalip/60/60",
             alt: "Andrew McCalip",
-            name: { en: "Andrew McCalip", ar: "[أندرو ماكاليب]" },
-            company: { en: "Varda", ar: "[فاردا]" }
+            name: { en: "Andrew McCalip", ar: "أندرو ماكاليب" },
+            company: { en: "Varda", ar: "فاردا" },
+            rating: 5
         },
         {
             quote: {
-                en: "I went from never hearing about Cursor to many IC engineers telling me it's their new favorite tool. Seemingly overnight! Pretty wild product-market fit.",
-                ar: "[انتقلت من عدم السماع عن كيرسور أبداً إلى سماع العديد من المهندسين يخبرونني أنه أداتهم المفضلة الجديدة. يبدو الأمر وكأنه حدث بين عشية وضحاها! توافق مذهل مع السوق.]"
+                en: "I went from never hearing about Cursor to many IC engineers telling me it's their new favorite tool. Seemingly overnight!",
+                ar: "انتقلت من عدم السماع عن كيرسور أبداً إلى سماع العديد من المهندسين يخبرونني أنه أداتهم المفضلة الجديدة."
             },
-            imgSrc: "https://picsum.photos/seed/josh_miller/40/40",
+            imgSrc: "https://picsum.photos/seed/josh_miller/60/60",
             alt: "Josh Miller",
-            name: { en: "Josh Miller", ar: "[جوش ميلر]" },
-            company: { en: "The Browser Company", ar: "[شركة المتصفح]" }
+            name: { en: "Josh Miller", ar: "جوش ميلر" },
+            company: { en: "The Browser Company", ar: "شركة المتصفح" },
+            rating: 5
         },
         {
-            quote: {
-                en: "Cursor is so good, and literally gets better/more feature-rich every couple of weeks.",
-                ar: "[كيرسور جيد جداً، وحرفياً يصبح أفضل وأكثر ثراءً بالميزات كل أسبوعين.]"
-            },
-            imgSrc: "https://picsum.photos/seed/morgan_mcguire/40/40",
-            alt: "Morgan McGuire",
-            name: { en: "Morgan McGuire", ar: "[مورغان ماكغواير]" },
-            company: { en: "Weights & Biases", ar: "[ويتس آند بايسز]" }
-        },
-    ];
-
-    const testimonialsCol2 = [
-         {
             quote: {
                 en: "The Cursor tab completion while coding is occasionally so magic it defies reality - about ~25% of the time it is anticipating exactly what I want to do.",
-                ar: "[إكمال التاب في كيرسور أثناء البرمجة يكون أحيانًا سحريًا لدرجة تتحدى الواقع - حوالي 25% من الوقت يتوقع بالضبط ما أريد القيام به.]"
+                ar: "إكمال التاب في كيرسور أثناء البرمجة يكون أحيانًا سحريًا لدرجة تتحدى الواقع - حوالي 25% من الوقت يتوقع بالضبط ما أريد القيام به."
             },
-            imgSrc: "https://picsum.photos/seed/kevin_whinnery/40/40",
+            imgSrc: "https://picsum.photos/seed/kevin_whinnery/60/60",
             alt: "Kevin Whinnery",
-            name: { en: "Kevin Whinnery", ar: "[كيفن وينري]" },
-            company: { en: "OpenAI", ar: "[أوبن إيه آي]" }
+            name: { en: "Kevin Whinnery", ar: "كيفن وينري" },
+            company: { en: "OpenAI", ar: "أوبن إيه آي" },
+            rating: 5
         },
-        {
-            quote: {
-                en: "Cursor is the best AI developer tool right now, avoid it at your own peril",
-                ar: "[كيرسور هو أفضل أداة مطور ذكاء اصطناعي في الوقت الحالي، تجنبها على مسؤوليتك الخاصة.]"
-            },
-            imgSrc: "https://picsum.photos/seed/logan_kilpatrick/40/40",
-            alt: "Logan Kilpatrick",
-            name: { en: "Logan Kilpatrick", ar: "[لوغان كيلباتريك]" },
-            company: { en: "Google", ar: "[جوجل]" }
-        },
-        {
-            quote: {
-                en: "I installed Cursor ... oh",
-                ar: "[لقد قمت بتثبيت كيرسور ... أوه]"
-            },
-            imgSrc: "https://picsum.photos/seed/kent_dodds/40/40",
-            alt: "Kent C. Dodds",
-            name: { en: "Kent C. Dodds", ar: "[كينت سي دودس]" },
-            company: { en: "Internet", ar: "[إنترنت]" }
-        },
-        {
-            quote: {
-                en: "Cursor is the best product I've used in a while - it's an AI enabled editor. I just asked it to write a README for a project I've been working on - analyzed the code-base and worked first time.",
-                ar: "[كيرسور هو أفضل منتج استخدمته منذ فترة - إنه محرر مدعوم بالذكاء الاصطناعي. لقد طلبت منه للتو كتابة ملف README لمشروع كنت أعمل عليه - قام بتحليل قاعدة الأكواد وعمل بشكل صحيح من المرة الأولى.]"
-            },
-            imgSrc: "https://picsum.photos/seed/alex_maccaw/40/40",
-            alt: "Alex MacCaw",
-            name: { en: "Alex MacCaw", ar: "[أليكس ماكاو]" },
-            company: { en: "Reflect", ar: "[ريفلكت]" }
-        },
-    ];
-
-     const testimonialsCol3 = [
         {
             quote: {
                 en: "Cursor is hands down my biggest workflow improvement in years",
-                ar: "[كيرسور هو بلا شك أكبر تحسين لسير عملي منذ سنوات.]"
+                ar: "كيرسور هو بلا شك أكبر تحسين لسير عملي منذ سنوات."
             },
-            imgSrc: "https://picsum.photos/seed/sawyer_hood/40/40",
+            imgSrc: "https://picsum.photos/seed/sawyer_hood/60/60",
             alt: "Sawyer Hood",
-            name: { en: "Sawyer Hood", ar: "[سوير هود]" },
-            company: { en: "Figma", ar: "[فيجما]" }
+            name: { en: "Sawyer Hood", ar: "سوير هود" },
+            company: { en: "Figma", ar: "فيجما" },
+            rating: 5
         },
         {
             quote: {
                 en: "Started using Cursor yesterday & i'm blown away. it's how Copilot should feel. i'm completely off VSCode now.",
-                ar: "[بدأت استخدام كيرسور بالأمس وأنا منبهر. هكذا يجب أن يكون كوبايلوت. لقد توقفت تمامًا عن استخدام VSCode الآن.]"
+                ar: "بدأت استخدام كيرسور بالأمس وأنا منبهر. هكذا يجب أن يكون كوبايلوت. لقد توقفت تمامًا عن استخدام VSCode الآن."
             },
-            imgSrc: "https://picsum.photos/seed/sam_whitmore/40/40",
+            imgSrc: "https://picsum.photos/seed/sam_whitmore/60/60",
             alt: "Sam Whitmore",
-            name: { en: "Sam Whitmore", ar: "[سام ويتمور]" },
-            company: { en: "New Computer", ar: "[نيو كمبيوتر]" }
-        },
-        {
-            quote: {
-                en: "After many recommendations, I finally switched from VSC to Cursor and ... wow! It's absolutely incredible. If you like Copilot (or if you don't), you'll be blown away by Cursor.",
-                ar: "[بعد العديد من التوصيات، تحولت أخيرًا من VSC إلى كيرسور و ... واو! إنه مدهش للغاية. إذا كنت تحب كوبايلوت (أو إذا لم تكن تحبه)، فسوف تنبهر بكيرسور.]"
-            },
-            imgSrc: "https://picsum.photos/seed/johannes_schickling/40/40",
-            alt: "Johannes Schickling",
-            name: { en: "Johannes Schickling", ar: "[يوهانس شيكلينغ]" },
-            company: { en: "Prisma", ar: "[بريما]" }
-        },
-        {
-            quote: {
-                en: "I love writing code and Cursor is a necessity. Cursor is steps ahead of my brain, proposing multi-line edits so I type \"tab\" more than anything else.",
-                ar: "[أنا أحب كتابة الأكواد وكيرسور ضرورة. كيرسور يسبق تفكيري بخطوات، يقترح تعديلات متعددة الأسطر لذا أضغط \"تاب\" أكثر من أي شيء آخر.]"
-            },
-            imgSrc: "https://picsum.photos/seed/andrew_milich/40/40",
-            alt: "Andrew Milich",
-            name: { en: "Andrew Milich", ar: "[أندرو ميليتش]" },
-            company: { en: "Notion", ar: "[نوشن]" }
-        },
+            name: { en: "Sam Whitmore", ar: "سام ويتمور" },
+            company: { en: "New Computer", ar: "نيو كمبيوتر" },
+            rating: 5
+        }
     ];
 
     // Translations for static text
     const translations = {
         en: {
-            heading: "Happy Clients, Stunning Designs",
-            subheading: "Hear what businesses say about our UI/UX design services."
+            heading: "What Our Clients Say",
+            subheading: "Real feedback from developers who transformed their workflow"
         },
         ar: {
-            heading: "عملاء سعداء، تصميمات مذهلة",
-            subheading: "استمع إلى ما تقوله الشركات عن خدمات تصميم واجهة المستخدم وتجربة المستخدم لدينا."
+            heading: "آراء عملائنا",
+            subheading: "تعليقات حقيقية من المطورين الذين غيروا طريقة عملهم"
         }
     };
 
-    // Get current language texts or default to English
     const currentTexts = translations[language] || translations.en;
 
-    // Function to render a column with duplicated items for seamless scroll
-    // Add direction parameter (default to 'up')
-    const renderColumn = (testimonials, delay, direction = 'up') => (
-        // Conditionally add the class based on direction
-        <div 
-            className={`testimonial-column ${direction === 'down' ? 'scroll-direction-down' : ''}`}
-            style={{ '--animation-delay': `${delay}` }}
-        >
-            {[...testimonials, ...testimonials].map((testimonial, index) => (
-                // Use testimonial-card class and correct inner structure
-                <div className="testimonial-card" key={`${delay}-testimonial-${index}`}> 
-                    {/* Access translated quote, fallback to English */}
-                    <p className="quote">{testimonial.quote[language] || testimonial.quote.en}</p>
-                    {/* Use author-info class */}
-                    <div className="author-info">
-                        <img src={testimonial.imgSrc} alt={testimonial.alt} /> 
-                        <div>
-                            {/* Access translated name, fallback to English */}
-                            <span className="name">{testimonial.name[language] || testimonial.name.en}</span>
-                             {/* Access translated company, fallback to English */}
-                            <span className="company">{testimonial.company[language] || testimonial.company.en}</span>
-                        </div>
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            // Animate heading
+            gsap.fromTo(headingRef.current, 
+                { 
+                    opacity: 0, 
+                    y: 50,
+                    scale: 0.9
+                },
+                { 
+                    opacity: 1, 
+                    y: 0,
+                    scale: 1,
+                    duration: 1.2,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: headingRef.current,
+                        start: "top 80%",
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
+
+            // Animate cards with staggered 3D effect
+            cardsRef.current.forEach((card, index) => {
+                if (card) {
+                    gsap.set(card, {
+                        rotationX: 15,
+                        rotationY: 0,
+                        z: -100,
+                        opacity: 0
+                    });
+
+                    gsap.to(card, {
+                        rotationX: 0,
+                        rotationY: 0,
+                        z: 0,
+                        opacity: 1,
+                        duration: 1.5,
+                        delay: index * 0.2,
+                        ease: "power3.out",
+                        scrollTrigger: {
+                            trigger: card,
+                            start: "top 85%",
+                            toggleActions: "play none none reverse"
+                        }
+                    });
+
+                    // Hover animations
+                    card.addEventListener('mouseenter', () => {
+                        gsap.to(card, {
+                            rotationY: 5,
+                            rotationX: -5,
+                            z: 50,
+                            scale: 1.05,
+                            duration: 0.5,
+                            ease: "power2.out"
+                        });
+                    });
+
+                    card.addEventListener('mouseleave', () => {
+                        gsap.to(card, {
+                            rotationY: 0,
+                            rotationX: 0,
+                            z: 0,
+                            scale: 1,
+                            duration: 0.5,
+                            ease: "power2.out"
+                        });
+                    });
+                }
+            });
+
+            // Floating elements animation
+            floatingElementsRef.current.forEach((element, index) => {
+                if (element) {
+                    gsap.to(element, {
+                        y: "random(-30, 30)",
+                        x: "random(-20, 20)",
+                        rotation: "random(-180, 180)",
+                        duration: "random(4, 8)",
+                        repeat: -1,
+                        yoyo: true,
+                        ease: "power1.inOut",
+                        delay: index * 0.5
+                    });
+                }
+            });
+
+            // Continuous scroll animation for background elements
+            gsap.to(".testimonials-bg-element", {
+                rotation: 360,
+                duration: 20,
+                repeat: -1,
+                ease: "none"
+            });
+
+        }, containerRef);
+
+        return () => ctx.revert();
+    }, []);
+
+    const renderStars = (rating) => {
+        return [...Array(5)].map((_, i) => (
+            <div
+                key={i}
+                className={`star ${i < rating ? 'filled' : ''}`}
+            >
+                ★
+            </div>
+        ));
+    };
 
     return (
-        <section className="testimonials mt-96">
-            {/* Use translated text */}
-            <h2>{currentTexts.heading}</h2>
-            <p className="subtitle">{currentTexts.subheading}</p>
+        <section 
+            ref={containerRef}
+            className="testimonials-futuristic relative py-24 md:py-32 bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-black dark:to-gray-800 overflow-hidden"
+        >
+            {/* Floating background elements */}
+            <div className="absolute inset-0 pointer-events-none">
+                {[...Array(12)].map((_, i) => (
+                    <div
+                        key={i}
+                        ref={el => floatingElementsRef.current[i] = el}
+                        className="testimonials-bg-element absolute opacity-10 dark:opacity-5"
+                        style={{
+                            left: `${Math.random() * 100}%`,
+                            top: `${Math.random() * 100}%`,
+                            transform: `scale(${0.5 + Math.random() * 0.5})`
+                        }}
+                    />
+                ))}
+            </div>
 
-            <div className="testimonial-grid-container">
-                 {/* Column 1 scrolls up (default) */}
-                {renderColumn(testimonialsCol1, '0s')}
-                 {/* Column 2 scrolls down */}
-                {renderColumn(testimonialsCol2, '-20s', 'down')}
-                 {/* Column 3 scrolls up (default) */}
-                {renderColumn(testimonialsCol3, '-40s')}
+            <div className="container mx-auto px-4 relative z-10">
+                {/* Header */}
+                <div ref={headingRef} className="text-center mb-20">
+                    <h2 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-300 dark:to-white bg-clip-text text-transparent mb-6">
+                        {currentTexts.heading}
+                    </h2>
+                    <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                        {currentTexts.subheading}
+                    </p>
+                </div>
+
+                {/* Testimonials Grid */}
+                <div className="testimonials-grid">
+                    {testimonialsData.map((testimonial, index) => (
+                        <div
+                            key={index}
+                            ref={el => cardsRef.current[index] = el}
+                            className="testimonial-card-futuristic group"
+                        >
+                            {/* Card Inner */}
+                            <div className="testimonial-card-inner">
+                                {/* Rating Stars */}
+                                <div className="rating-stars mb-6">
+                                    {renderStars(testimonial.rating)}
+                                </div>
+
+                                {/* Quote */}
+                                <blockquote className="quote-text mb-8">
+                                    "{testimonial.quote[language] || testimonial.quote.en}"
+                                </blockquote>
+
+                                {/* Author */}
+                                <div className="author-section">
+                                    <div className="author-avatar">
+                                        <img
+                                            src={testimonial.imgSrc}
+                                            alt={testimonial.alt}
+                                            loading="lazy"
+                                        />
+                                        <div className="avatar-glow"></div>
+                                    </div>
+                                    <div className="author-details">
+                                        <h4 className="author-name">
+                                            {testimonial.name[language] || testimonial.name.en}
+                                        </h4>
+                                        <p className="author-company">
+                                            {testimonial.company[language] || testimonial.company.en}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Hover Glow Effect */}
+                            <div className="card-glow"></div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </section>
     );

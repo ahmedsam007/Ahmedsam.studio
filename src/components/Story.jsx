@@ -1,6 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState, useRef } from 'react'
+// Import GSAP and ScrollTrigger directly at the top level
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import './Story.css'; // Import the new CSS file
 
-const Story = ({ language }) => {
+// Register the plugin immediately
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
+const Story = ({ language = 'en' }) => {
   // Translations
   const translations = {
     title: {
@@ -11,81 +20,298 @@ const Story = ({ language }) => {
       en: "From Gaza to the world: A journey of passion, resilience, and creative innovation.",
       ar: "من غزة إلى العالم: رحلة من الشغف والمرونة والابتكار الإبداعي."
     },
-    beginning: {
-      en: "The Beginning",
-      ar: "البداية"
-    },
+   
     paragraph1: {
-      en: "Born and raised in Gaza, I discovered my passion for design at an early age. Despite the challenges, I found solace in creating digital experiences that could transcend physical boundaries.",
+      en: "Born in Gaza, I leverage a T-shaped skillset—deep expertise in UI/UX complemented by broad knowledge of computational design, AI, and emerging technologies. Using iterative design methods, I conduct thorough research to understand each challenge. I then craft budget-conscious solutions that balance visual appeal with practical functionality. In international collaborations, I lead cross-time-zone initiatives, integrate diverse insights with cultural respect and openness, maintain an apolitical approach, and deliver stakeholder-aligned results on schedule.",
       ar: "ولدت ونشأت في غزة، واكتشفت شغفي بالتصميم في سن مبكرة. رغم التحديات، وجدت العزاء في إنشاء تجارب رقمية يمكن أن تتجاوز الحدود المادية."
     },
-    paragraph2: {
-      en: "My journey began with simple sketches and evolved into a deep understanding of user-centered design principles.",
-      ar: "بدأت رحلتي برسومات بسيطة وتطورت إلى فهم عميق لمبادئ التصميم المتمحور حول المستخدم."
-    }
   }
 
+  // References for GSAP animations
+  const textRef = useRef(null);
+  const sectionRef = useRef(null);
+  const sectionContentRef = useRef(null);
+  const leftImageRef = useRef(null);
+  const rightImageRef = useRef(null);
+  const centerImageRef = useRef(null);
+  // New refs for staggered animation
+  const titleRef = useRef(null);
+  const subtitleRef = useRef(null);
+  const imageContainerRef = useRef(null);
+  const textSectionRef = useRef(null);
+  const titleLinesRef = useRef([]);
+
+  // Function to split text into lines
+  const splitTextIntoLines = (text) => {
+    return text.split(' ').reduce((acc, word, index, array) => {
+      const currentLine = acc[acc.length - 1] || '';
+      const newLine = currentLine + (currentLine ? ' ' : '') + word;
+      
+      // If this is the last word or adding this word would make the line too long
+      if (index === array.length - 1 || newLine.length > 20) {
+        if (currentLine) acc[acc.length - 1] = currentLine;
+        if (index === array.length - 1) {
+          acc.push(word);
+        } else {
+          acc.push(word);
+        }
+      } else {
+        acc[acc.length - 1] = newLine;
+      }
+      return acc;
+    }, []);
+  };
+
+  // GSAP animations for text and images
+  useEffect(() => {
+    // Create and add style element for simple word reveal
+    const styleEl = document.createElement('style');
+    styleEl.setAttribute('data-text-animation', 'true');
+    styleEl.textContent = `
+      p > span {
+        font-size: var(--fs-body-lg);
+        line-height: var(--lh-body-lg);
+        font-family: monospace;
+        font-weight: 500;
+        opacity: 0;
+        color: white;
+        filter: blur(8px);
+        display: inline;
+        transition: none;
+      }
+      .dark p > span {
+        color: white;
+      }
+      html[lang="ar"] p > span {
+        font-family: var(--font-subtitle-arabic);
+      }
+    `;
+    document.head.appendChild(styleEl);
+
+    // Initialize animations after a brief delay to ensure DOM is ready
+    const initTimer = setTimeout(() => {
+      setupAnimations();
+    }, 300);
+
+    function setupAnimations() {
+      const spans = document.querySelectorAll('#textSection p > span');
+      
+      if (!spans.length || !leftImageRef.current || !rightImageRef.current || !centerImageRef.current) {
+        console.log('Elements not ready, trying again in 200ms');
+        setTimeout(setupAnimations, 200);
+        return;
+      }
+      
+      console.log(`Setting up animations for ${spans.length} spans and images`);
+      
+      try {
+        // Text reveal animation
+        const textTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: '#textSection',
+            start: 'top center',
+            end: 'bottom center',
+            scrub: 2,
+          },
+        });
+        
+        textTl.fromTo(
+          spans,
+          { 
+            opacity: 0, 
+            filter: 'blur(8px)'
+          },
+          {
+            opacity: 1,
+            filter: 'blur(0px)',
+            stagger: 0.1,
+            ease: 'power2.out',
+          }
+        );
+        
+        // Image reveal and rotation animations
+        const imageContainer = document.querySelector('#imageContainer');
+        
+        // Initial state - all images are visible (like Creavora's approach)
+        gsap.set([leftImageRef.current, rightImageRef.current], {
+          opacity: 1,
+          scale: 1,
+          rotation: 0,
+          x: 0,
+          y: 0
+        });
+        
+        // Center image stays visible and static
+        gsap.set(centerImageRef.current, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          rotation: 0
+        });
+        
+        // Exact Creavora animation style matching their HTML values
+        // translateX + rotateZ only, no vertical movement
+        const parallaxTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: imageContainer,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1,
+          },
+        });
+        
+        parallaxTl.to(leftImageRef.current, {
+          rotation: -40, // 40-degree rotation to the left
+          x: '-=100', // Move 100px to the left from current position
+          y: '-=100', // Move 100px up from current position
+          duration: 0.1, // Smooth transition
+          ease: "none"
+        }, 0)
+        .to(rightImageRef.current, {
+          rotation: 40, // 40-degree rotation to the right
+          x: '+=100', // Move 100px to the right from current position
+          y: '+=100', // Move 100px down from current position
+          duration: 0.1 , // Smooth transition
+          ease: "none"
+        }, 0);
+        // Center image remains completely static
+        
+        console.log('All animations setup completed');
+      } catch (error) {
+        console.error('Error setting up animations:', error);
+      }
+    }
+
+    // Cleanup
+    return () => {
+      clearTimeout(initTimer);
+      if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.getAll().forEach(st => st.kill());
+      }
+      // Remove style element
+      const styleElement = document.querySelector('style[data-text-animation]');
+      if (styleElement) styleElement.remove();
+    };
+  }, [language]);
+
+  // Staggered entrance animation for main children
+  useEffect(() => {
+    const targets = [
+      subtitleRef.current,
+      imageContainerRef.current,
+      textSectionRef.current
+    ];
+    gsap.set(targets, { opacity: 0, y: 60 });
+
+    // Title line animation
+    const titleLines = titleLinesRef.current;
+    
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: 'top 80%',
+        toggleActions: 'play none none reverse',
+      }
+    });
+
+    // Animate title lines first
+    tl.fromTo(titleLines, 
+      { 
+        opacity: 0,
+        y: 30
+      },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: 'power3.out'
+      }
+    )
+    // Then animate other elements
+    .to(targets, {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      stagger: 0.18,
+      ease: 'power3.out'
+    }, '-=0.4');
+
+    return () => {
+      tl.kill();
+    };
+  }, []);
+
+  const renderAnimatedParagraph = (text) => {
+    const words = text.split(' ');
+    
+    return words.map((word, index) => (
+      <span key={index}>{word}{index < words.length - 1 ? ' ' : ''}</span>
+    ));
+  };
+
   return (
-    <section className="section" id="story">
-      <div className="section-bg"></div>
-      <div className="section-content">
-        <h2 className="section-title">{translations.title[language]}</h2>
-        <div className="container mx-auto px-4">
-          <p className="text-xl text-center text-gray-600 dark:text-gray-300 mb-16 max-w-3xl mx-auto">
+    <section className="section mb-0" id="story" ref={sectionRef}>
+      <div className="section-content pt-32" ref={sectionContentRef}>
+        <div style={{ textAlign: 'center' }} ref={titleRef}>
+          <h1 
+            className="section-title text-h1 font-mona" 
+            style={{ 
+              fontWeight: 700,
+              color: '#ffffff',
+              fontSize: '5rem',
+              marginBottom: '2rem'
+            }}
+          >
+            {translations.title[language]}
+          </h1>
+        </div>
+        <div className="container mx-auto px-4" ref={subtitleRef}>
+          <p className="text-body-lg text-center text-gray-600 dark:text-gray-300 mb-16 mx-auto" 
+             style={{
+               fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+               maxWidth: '40%'
+             }}>
             {translations.subtitle[language]}
           </p>
           
           <div className="max-w-4xl mx-auto">
-            {/* Story Content */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
-              <div className="order-2 md:order-1">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{translations.beginning[language]}</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-                  {translations.paragraph1[language]}
-                </p>
-                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                  {translations.paragraph2[language]}
-                </p>
-              </div>
-              <div className="order-1 md:order-2">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-primary-500/10 rounded-2xl transform rotate-3"></div>
-                  <img src="/images/mysorty.png" alt="My Story" className="rounded-2xl shadow-xl relative z-10 w-full h-[545px] object-cover" />
-                </div>
-              </div>
+            <div className="relative flex justify-center items-center h-[545px] mb-16" id="imageContainer" ref={imageContainerRef}>
+              <img
+                ref={leftImageRef}
+                src="/images/leftStory.png"
+                alt="Left"
+                className="absolute z-10 w-[250px] h-[350px] object-cover rounded-2xl shadow-xl"
+                style={{
+                  left: 'calc(70% - 495px)',
+                  top: '100px',
+                }}
+              />
+              <img
+                ref={rightImageRef}
+                src="/images/rightStory.png"
+                alt="Right"
+                className="absolute z-10 w-[250px] h-[350px] object-cover rounded-2xl shadow-xl"
+                style={{
+                  right: 'calc(70% - 495px)',
+                  top: '100px',
+                }}
+              />
+              <img
+                ref={centerImageRef}
+                src="/images/Center.png"
+                alt="My Story"
+                className="relative z-30 w-[450px] h-[500px] object-cover rounded-2xl shadow-2xl"
+                style={{
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+                }}
+              />
             </div>
-
-            {/* Timeline */}
-            <div className="space-y-12">
-              {/* Timeline Item 1 */}
-              <div className="relative pl-8 border-l-2 border-primary-500">
-                <div className="absolute left-[-9px] top-0 w-4 h-4 bg-primary-500 rounded-full"></div>
-                <div className="mb-2">
-                  <span className="text-primary-500 font-semibold">2018</span>
-                </div>
-                <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">First UI Project</h4>
-                <p className="text-gray-600 dark:text-gray-300">Launched my first mobile app design, reaching 10,000+ users.</p>
-              </div>
-
-              {/* Timeline Item 2 */}
-              <div className="relative pl-8 border-l-2 border-primary-500">
-                <div className="absolute left-[-9px] top-0 w-4 h-4 bg-primary-500 rounded-full"></div>
-                <div className="mb-2">
-                  <span className="text-primary-500 font-semibold">2020</span>
-                </div>
-                <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Joined UNICC</h4>
-                <p className="text-gray-600 dark:text-gray-300">Started as a Senior UI/UX Designer at the United Nations International Computing Centre, contributing to global digital solutions.</p>
-              </div>
-
-              {/* Timeline Item 3 */}
-              <div className="relative pl-8 border-l-2 border-primary-500">
-                <div className="absolute left-[-9px] top-0 w-4 h-4 bg-primary-500 rounded-full"></div>
-                <div className="mb-2">
-                  <span className="text-primary-500 font-semibold">2023</span>
-                </div>
-                <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Global Impact</h4>
-                <p className="text-gray-600 dark:text-gray-300">Collaborated with international teams on projects reaching millions of users.</p>
-              </div>
+            
+            <div className="mb-16 w-full wrapper mt-24" id="textSection" ref={textSectionRef}>
+              <p className="text-body-lg font-mono text-neutral-700 dark:text-neutral-200 max-w-prose mx-auto text-justify mb-48" ref={textRef}>
+                {renderAnimatedParagraph(translations.paragraph1[language])}
+              </p>
             </div>
           </div>
         </div>

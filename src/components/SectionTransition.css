@@ -1,0 +1,27 @@
+.section-transition-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9990; /* Below loader, above content */
+  display: none;
+  overflow: hidden; /* Prevent scrollbars during animation */
+}
+
+.curtain {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 50%; /* Each curtain takes half the screen */
+  background-color: #1a1a1a; /* Dark color, can be themed with CSS variables */
+  /* For luxury feel, consider a subtle texture or gradient if possible */
+}
+
+.left-curtain {
+  left: 0;
+}
+
+.right-curtain {
+  right: 0;
+} 

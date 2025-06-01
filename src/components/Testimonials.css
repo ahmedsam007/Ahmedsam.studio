@@ -1,206 +1,138 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
-
-/* Remove body styles - usually handled globally */
-
 .testimonials {
+    overflow: hidden;
+    position: relative;
     width: 100%;
-    max-width: 1200px; /* Adjust max width as needed */
+    max-width: 1200px;
     padding: 60px 20px;
-    text-align: center;
-    overflow: hidden; /* Hide overflow for the main section */
     box-sizing: border-box;
-    margin: 0 auto; /* Center the section if needed within its parent */
-    font-family: 'Inter', sans-serif; /* Ensure font is applied */
-    color: #e0e0e0; /* Default text color for the component */
+    margin: 0 auto;
 }
 
 .testimonials h2 {
-    font-size: 2.5rem;
-    margin-bottom: 15px;
-    color: #ffffff;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-family: var(--font-hero-section-latin);
+    font-weight: 800;
 }
 
-.testimonials .subtitle {
-    font-size: 1.1rem;
-    color: #a0a0a0;
-    margin-bottom: 40px;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+html[lang="ar"] .testimonials h2 {
+    font-family: var(--font-hero-section-arabic);
 }
 
 .testimonial-grid-container {
-    display: flex;
-    gap: 20px; /* Spacing between columns */
+    position: relative;
+    max-height: 600px;
+    overflow: hidden;
+    margin: 0 auto;
+    mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+}
+
+.testimonial-marquee-wrap {
     width: 100%;
-    max-height: 600px; /* Adjust height to control visible area */
-    overflow: hidden; /* Crucial: hides the non-visible parts of columns */
-    position: relative; /* Needed for pseudo-elements if used for fading */
-    mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent); /* Optional: fade top/bottom */
-    -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent); /* Safari */
+    overflow: hidden;
+}
+
+.testimonial-marquee-content {
+    display: flex;
+    animation: testimonial-scroll 40s linear infinite;
 }
 
 .testimonial-column {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Spacing between cards */
-    flex: 1; /* Make columns share space */
-    min-width: 0; /* Prevent flex items from overflowing */
-    /* Animation applied here */
-    animation: scroll-up 60s linear infinite; /* Adjust time as needed */
-    animation-delay: var(--animation-delay, 0s); /* Use CSS variable for delay */
-}
-
-/* Apply scroll-down animation if the specific class is present */
-.testimonial-column.scroll-direction-down {
-    animation-name: scroll-down;
-}
-
-.testimonial-grid-container:hover .testimonial-column {
-    animation-play-state: paused; /* Pause animation on hover */
-}
-
-@keyframes scroll-up {
-    0% {
-        transform: translateY(0);
-    }
-    100% {
-        /* Scroll up by half the height (since content is duplicated) */
-        transform: translateY(-50%);
-    }
-}
-
-@keyframes scroll-down {
-    0% {
-        /* Start shifted up because content is duplicated below */
-        transform: translateY(-50%); 
-    }
-    100% {
-        /* End at original position */
-        transform: translateY(0);
-    }
+    min-width: 100%;
+    gap: 1.5rem;
+    padding: 2rem 0;
 }
 
 .testimonial-card {
-    background-color: #1a1a1a; /* Dark card background */
-    border: 1px solid #333; /* Subtle border */
-    border-radius: 15px; /* Rounded corners */
-    padding: 25px;
-    text-align: left;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    /* Optional: Add gradient like in the image */
-    background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+    background-color: #f9f9f9;
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 400px;
+    margin: 0 auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Add a subtle hover effect if desired */
-/* .testimonial-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-} */
+.dark .testimonial-card {
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
 
-.testimonial-card .quote {
-    font-size: 1rem;
-    line-height: 1.6;
-    margin-bottom: 20px;
-    color: #c0c0c0; /* Slightly lighter grey for quote */
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dark .testimonial-card:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+}
+
+.quote {
+    font-family: var(--font-subtitle-latin);
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    line-height: var(--lh-body-lg);
+    color: #333;
+}
+
+html[lang="ar"] .quote {
+    font-family: var(--font-subtitle-arabic);
+}
+
+.dark .quote {
+    color: #e0e0e0;
 }
 
 .author-info {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 1rem;
 }
 
 .author-info img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%; /* Circular images */
-    border: 2px solid #444; /* Optional border */
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
-.author-info div {
-    display: flex;
-    flex-direction: column;
+.author-name {
+    font-family: var(--font-hero-section-latin);
+    font-weight: 600;
+    color: #222;
 }
 
-.author-info .name {
-    font-weight: 500;
-    color: #ffffff; /* White name */
-    font-size: 0.95rem;
+html[lang="ar"] .author-name {
+    font-family: var(--font-hero-section-arabic);
 }
 
-.author-info .company {
-    font-size: 0.85rem;
-    color: #888; /* Grey for company */
+.dark .author-name {
+    color: #f0f0f0;
 }
 
-/* --- Light Mode Styles --- */
-:root:not(.dark) .testimonials {
-    color: #333; /* Darker text for light mode */
+.author-role {
+    font-family: var(--font-subtitle-latin);
+    font-weight: 400;
+    color: #666;
 }
 
-:root:not(.dark) .testimonials h2 {
-    color: #111; /* Very dark heading */
+html[lang="ar"] .author-role {
+    font-family: var(--font-subtitle-arabic);
 }
 
-:root:not(.dark) .testimonials .subtitle {
-    color: #555; /* Dark grey subtitle */
+.dark .author-role {
+    color: #aaa;
 }
 
-:root:not(.dark) .testimonial-card {
-    background-color: #f9f9f9; /* Light card background */
-    border: 1px solid #e0e0e0; /* Lighter border */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    background-image: linear-gradient(145deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0));
-}
-
-:root:not(.dark) .testimonial-card .quote {
-    color: #444; /* Dark grey quote text */
-}
-
-:root:not(.dark) .author-info .name {
-    color: #111; /* Dark name text */
-}
-
-:root:not(.dark) .author-info .company {
-    color: #666; /* Slightly lighter grey for company */
-}
-
-:root:not(.dark) .author-info img {
-    border: 2px solid #ddd; /* Lighter border for images */
-}
-
-/* --- RTL Styles --- */
-[dir="rtl"] .testimonials .subtitle {
-    /* Ensure auto margins work correctly */
-    margin-left: auto;
-    margin-right: auto;
-}
-
-[dir="rtl"] .testimonial-card {
-    text-align: right; /* Align card text to the right */
-}
-
-[dir="rtl"] .author-info {
-    /* Flexbox usually handles direction well, but explicitly state if needed */
-    /* flex-direction: row-reverse; */ /* Uncomment if image needs to be on the right */
-    /* gap: 12px; */ /* Gap should still work */
-}
-
-/* Responsive adjustments */
-@media (max-width: 900px) {
-    .testimonial-grid-container {
-        max-height: 500px; /* Adjust height */
+@keyframes testimonial-scroll {
+    0% {
+        transform: translateY(0);
     }
-    .testimonial-column:nth-child(3) {
-        display: none; /* Hide third column on medium screens */
-    }
-     .testimonials h2 {
-        font-size: 2rem;
-    }
-    .testimonials .subtitle {
-        font-size: 1rem;
+    100% {
+        transform: translateY(-50%);
     }
 }
 
@@ -210,16 +142,378 @@
         mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
         -webkit-mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
     }
-    .testimonial-column:nth-child(2) {
-        display: none; /* Hide second column on small screens */
-    }
+    /* Remove hardcoded font sizes to let fluid typography work */
      .testimonials h2 {
-        font-size: 1.8rem;
+        /* font size handled by text-h1 class */
     }
      .testimonial-card {
         padding: 20px;
     }
      .testimonial-card .quote {
+        /* font size handled by text-body-lg class */
+    }
+}
+
+/* Futuristic Testimonials Styles */
+.testimonials-futuristic {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+/* Background Elements */
+.testimonials-bg-element {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #40FB30, #36e026);
+    border-radius: 50%;
+    filter: blur(40px);
+}
+
+.testimonials-bg-element::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Testimonials Grid */
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Futuristic Card */
+.testimonial-card-futuristic {
+    position: relative;
+    height: 320px;
+    transform-style: preserve-3d;
+    cursor: pointer;
+}
+
+.testimonial-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.dark .testimonial-card-inner {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Card Glow Effect */
+.card-glow {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #40FB30, #36e026, #2cc61c, #40FB30);
+    border-radius: 22px;
+    opacity: 0;
+    z-index: -1;
+    filter: blur(15px);
+    transition: opacity 0.3s ease;
+}
+
+.testimonial-card-futuristic:hover .card-glow {
+    opacity: 0.6;
+}
+
+.dark .testimonial-card-futuristic:hover .card-glow {
+    opacity: 0.4;
+}
+
+/* Rating Stars */
+.rating-stars {
+    display: flex;
+    gap: 4px;
+    justify-content: flex-start;
+}
+
+.star {
+    font-size: 1.2rem;
+    color: #d1d5db;
+    transition: all 0.2s ease;
+}
+
+.star.filled {
+    color: #40FB30;
+    text-shadow: 0 0 10px rgba(64, 251, 48, 0.5);
+}
+
+/* Quote Text */
+.quote-text {
+    font-family: var(--font-subtitle-latin);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #374151;
+    font-weight: 500;
+    position: relative;
+    flex-grow: 1;
+}
+
+html[lang="ar"] .quote-text {
+    font-family: var(--font-subtitle-arabic);
+    text-align: right;
+}
+
+.dark .quote-text {
+    color: #e5e7eb;
+}
+
+.quote-text::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -5px;
+    width: 3px;
+    height: 40px;
+    background: linear-gradient(135deg, #40FB30, #36e026);
+    border-radius: 2px;
+    opacity: 0.7;
+}
+
+/* Author Section */
+.author-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: auto;
+}
+
+.author-avatar {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+}
+
+.author-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.avatar-glow {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(45deg, #40FB30, #36e026, #2cc61c, #40FB30);
+    border-radius: 50%;
+    opacity: 0;
+    z-index: -1;
+    filter: blur(8px);
+    transition: opacity 0.3s ease;
+}
+
+.testimonial-card-futuristic:hover .avatar-glow {
+    opacity: 0.8;
+}
+
+.author-details {
+    flex-grow: 1;
+}
+
+.author-name {
+    font-family: var(--font-hero-latin);
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 4px 0;
+}
+
+html[lang="ar"] .author-name {
+    font-family: var(--font-hero-arabic);
+}
+
+.dark .author-name {
+    color: #f9fafb;
+}
+
+.author-company {
+    font-family: var(--font-subtitle-latin);
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin: 0;
+    font-weight: 400;
+}
+
+html[lang="ar"] .author-company {
+    font-family: var(--font-subtitle-arabic);
+}
+
+.dark .author-company {
+    color: #9ca3af;
+}
+
+/* Hover Effects */
+.testimonial-card-futuristic:hover .testimonial-card-inner {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.dark .testimonial-card-futuristic:hover .testimonial-card-inner {
+    background: rgba(0, 0, 0, 0.6);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 0 1rem;
+    }
+    
+    .testimonial-card-futuristic {
+        height: 280px;
+    }
+    
+    .testimonial-card-inner {
+        padding: 1.5rem;
+    }
+    
+    .quote-text {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    
+    .author-avatar {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .rating-stars {
+        margin-bottom: 1rem;
+    }
+    
+    .star {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .testimonials-futuristic {
+        padding: 3rem 0;
+    }
+    
+    .testimonial-card-futuristic {
+        height: 260px;
+    }
+    
+    .testimonial-card-inner {
+        padding: 1.25rem;
+        border-radius: 16px;
+    }
+    
+    .card-glow {
+        border-radius: 18px;
+    }
+    
+    .quote-text {
         font-size: 0.95rem;
+    }
+    
+    .author-name {
+        font-size: 0.9rem;
+    }
+    
+    .author-company {
+        font-size: 0.8rem;
+    }
+}
+
+/* Loading Animation */
+.testimonial-card-futuristic {
+    opacity: 0;
+    transform: translateY(20px) rotateX(15deg);
+}
+
+/* Performance Optimizations */
+.testimonial-card-futuristic {
+    will-change: transform, opacity;
+}
+
+.testimonial-card-inner {
+    will-change: background, border-color, box-shadow;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .testimonial-card-futuristic,
+    .testimonial-card-inner,
+    .star,
+    .author-avatar img,
+    .avatar-glow,
+    .card-glow {
+        transition: none;
+    }
+}
+
+/* Focus States */
+.testimonial-card-futuristic:focus-within .testimonial-card-inner {
+    outline: 2px solid #40FB30;
+    outline-offset: 2px;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .testimonial-card-inner {
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid #000;
+    }
+    
+    .dark .testimonial-card-inner {
+        background: rgba(0, 0, 0, 0.9);
+        border: 2px solid #fff;
+    }
+    
+    .quote-text {
+        color: #000;
+    }
+    
+    .dark .quote-text {
+        color: #fff;
     }
 } 

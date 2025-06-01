@@ -1,248 +1,249 @@
-import { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const Hero = ({ language }) => {
-  // Translations
-  const translations = {
-    subheading: {
-      en: "UI/UX designer specializing in creating intuitive and engaging digital experiences that bring your vision to life.",
-      ar: "مصمم واجهات المستخدم متخصص في إنشاء تجارب رقمية سهلة وجذابة تحول رؤيتك إلى واقع."
-    },
-    cta: {
-      en: "Chat on WhatsApp",
-      ar: "تواصل عبر واتساب"
-    }
-  }
+const Hero = () => {
+  const canvasRef = useRef(null);
+  const stickyContainerRef = useRef(null);
+  const animatedTextRef = useRef(null);
+  const additionalContentRef = useRef(null);
+  const dotGridRef = useRef(null);
 
-  // Animation for hero characters and SVG
   useEffect(() => {
-    const animateHeroChars = () => {
-      const heroChars = document.querySelectorAll('.hero-char')
-      
-      // Reset all chars
-      heroChars.forEach(char => {
-        char.style.opacity = '0'
-        char.style.transform = 'translateY(20px)'
-      })
-      
-      // Animate each character with delay
-      heroChars.forEach((char, index) => {
-        setTimeout(() => {
-          char.style.opacity = '1'
-          char.style.transform = 'translateY(0)'
-        }, 100 + (index * 50))
-      })
-    }
-    
-    animateHeroChars()
-    
-    // SVG animation
-    const svg = document.querySelector('#hero svg')
-    let isMouseOver = false
-    let defaultAnimationFrame
+    gsap.registerPlugin(ScrollTrigger);
 
-    // Mouse following animation
-    const handleMouseMove = (e) => {
-      if (!svg) return
-      
-      const x = e.clientX / window.innerWidth - 0.5
-      const y = e.clientY / window.innerHeight - 0.5
-      
-      svg.style.transform = `translate(${x * 50}px, ${y * 50}px)`
-      isMouseOver = true
+    // Setup canvas and context
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    // Starfield settings
+    const numStars = 1900;
+    const focalLength = canvas.width * 2;
+    let centerX = canvas.width / 2;
+    let centerY = canvas.height / 2;
+    const baseTrailLength = 2;
+    const maxTrailLength = 30;
+    let stars = [];
+    let warpSpeed = 0;
+    let animationActive = true;
+
+    function initializeStars() {
+      stars = [];
+      for (let i = 0; i < numStars; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          z: Math.random() * canvas.width,
+          o: 0.5 + Math.random() * 0.5,
+          trail: []
+        });
+      }
     }
 
-    // Default floating animation
-    const defaultAnimation = () => {
-      if (!svg || isMouseOver) return
-      
-      const time = Date.now() * 0.001
-      const x = Math.sin(time * 0.5) * 20
-      const y = Math.cos(time * 0.5) * 20
-      
-      svg.style.transform = `translate(${x}px, ${y}px)`
-      defaultAnimationFrame = requestAnimationFrame(defaultAnimation)
+    function moveStars() {
+      stars.forEach(star => {
+        const speed = 1 + warpSpeed * 50;
+        star.z -= speed;
+        if (star.z < 1) {
+          star.z = canvas.width;
+          star.x = Math.random() * canvas.width;
+          star.y = Math.random() * canvas.height;
+          star.trail = [];
+        }
+      });
     }
 
-    // Start default animation
-    defaultAnimation()
+    function drawStars() {
+      if (canvas.width !== canvas.offsetWidth || canvas.height !== canvas.offsetHeight) {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        centerX = canvas.width / 2;
+        centerY = canvas.height / 2;
+      }
+      const trailLength = Math.floor(baseTrailLength + warpSpeed * (maxTrailLength - baseTrailLength));
+      const clearAlpha = 1 - warpSpeed * 0.8;
+      ctx.fillStyle = `rgba(17,17,17,${clearAlpha})`;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Add mouse event listeners
-    document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseleave', () => {
-      isMouseOver = false
-      defaultAnimation()
-    })
+      stars.forEach(star => {
+        const px = (star.x - centerX) * (focalLength / star.z) + centerX;
+        const py = (star.y - centerY) * (focalLength / star.z) + centerY;
+        star.trail.push({ x: px, y: py });
+        if (star.trail.length > trailLength) star.trail.shift();
+        if (star.trail.length > 1) {
+          ctx.beginPath();
+          ctx.moveTo(star.trail[0].x, star.trail[0].y);
+          star.trail.forEach((p, i) => i > 0 && ctx.lineTo(p.x, p.y));
+          ctx.strokeStyle = `rgba(209,255,255,${star.o})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+        ctx.fillStyle = `rgba(209,255,255,${star.o})`;
+        ctx.fillRect(px, py, 1, 1);
+      });
+    }
+
+    function animate() {
+      if (!animationActive) return;
+      moveStars();
+      drawStars();
+      requestAnimationFrame(animate);
+    }
+
+    initializeStars();
+    animate();
+
+    // GSAP ScrollTrigger animations
+    const warpTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: stickyContainerRef.current,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+        onUpdate: self => {
+          const p = self.progress;
+          if (p <= 0.6) warpSpeed = p / 0.6;
+          else if (p <= 0.8) warpSpeed = 1;
+          else warpSpeed = 1 - (p - 0.8) / 0.2;
+        }
+      }
+    });
+
+    const textTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: stickyContainerRef.current,
+        start: '12% top',
+        end: '20% top',
+        scrub: 0.8
+      }
+    });
+    textTimeline.to(animatedTextRef.current, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.4, ease: 'power3.out' });
+
+    const exitTimeline = gsap.timeline({ scrollTrigger: { trigger: stickyContainerRef.current, start: 'bottom 20%', end: 'bottom -10%', scrub: true } });
+    exitTimeline.to(animatedTextRef.current, { opacity: 0, y: -20, filter: 'blur(8px)', duration: 0.4, ease: 'power2.in' }, 0)
+                .to('.webgl-section', { opacity: 0, scale: 0.95, ease: 'power2.inOut' }, 0.1);
+
+    const additionalContentTimeline = gsap.timeline({ scrollTrigger: { trigger: '#additionalSection', start: 'top 80%', toggleActions: 'play none none none' } });
+    additionalContentTimeline.to(additionalContentRef.current, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' });
+
+    const observer = new IntersectionObserver(entries => { entries.forEach(e => { animationActive = e.isIntersecting; if (animationActive) animate(); }); });
+    observer.observe(stickyContainerRef.current);
+
+    const handleResize = () => { initializeStars(); animate(); createDotGrid(); };
+    window.addEventListener('resize', handleResize);
+
+    function createDotGrid() {
+      const grid = dotGridRef.current;
+      grid.innerHTML = '';
+      const fullWidth = window.innerWidth;
+      const pad = 32;
+      const height = 150 * 1.25;
+      const cols = Math.ceil(fullWidth / 20);
+      const rows = Math.ceil(height / 20);
+      const sx = fullWidth / (cols - 1);
+      const sy = height / (rows - 1);
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const dot = document.createElement('div');
+          dot.className = 'dot';
+          dot.textContent = '✦';
+          dot.style.left = `${x * sx - pad}px`;
+          dot.style.top = `${y * sy}px`;
+          grid.appendChild(dot);
+        }
+      }
+    }
+    createDotGrid();
+
+    let isMoving=false, timeout;
+    function update(event) {
+      const rect = dotGridRef.current.getBoundingClientRect();
+      const mx = event.clientX - rect.left;
+      const my = event.clientY - rect.top;
+      isMoving = true; clearTimeout(timeout);
+      document.querySelectorAll('.dot').forEach(dot => {
+        const dx = parseFloat(dot.style.left)+32 - mx;
+        const dy = parseFloat(dot.style.top) - my;
+        const dist = Math.hypot(dx,dy);
+        const maxD = isMoving?150:100;
+        if (dist<maxD) {
+          const intensity = Math.pow(1-dist/maxD,1.5)*(isMoving?1.5:1);
+          dot.style.color = `rgba(255,255,255,${Math.min(intensity,1)})`;
+          const ang = Math.atan2(dy, dx);
+          const pd = intensity*12;
+          dot.style.transform = `translate(${Math.cos(ang)*pd}px,${Math.sin(ang)*pd}px) scale(${1+intensity*1.2})`;
+        } else { dot.style.color = '#444'; dot.style.transform='none'; }
+      });
+      timeout = setTimeout(() => isMoving=false,100);
+    }
+    const gridEl = dotGridRef.current;
+    gridEl.addEventListener('mousemove', update);
+    gridEl.addEventListener('mouseleave', () => { document.querySelectorAll('.dot').forEach(d => { d.style.color='#444'; d.style.transform='none'; }); });
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseleave', () => {
-        isMouseOver = false
-        defaultAnimation()
-      })
-      cancelAnimationFrame(defaultAnimationFrame)
-    }
-  }, [language])
-  
+      window.removeEventListener('resize', handleResize);
+      observer.disconnect();
+      gridEl.removeEventListener('mousemove', update);
+      gsap.core.getAll().forEach(t => t.kill());
+    };
+  }, []);
+
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.setAttribute('data-hero-styles', 'true');
+    style.textContent = `
+      .sticky-container { position: relative; height: 500vh; width:100%; overflow:hidden;}
+      .webgl-section { position: sticky; top:0; width:100%; height:100vh; display:flex; justify-content:center; align-items:center; }
+      .canvas-container { position:relative; width:100%; height:100%; }
+      canvas#space { position:absolute; width:100%; height:100%; top:0; left:0; }
+      .animated-text { position:absolute; left:50%; transform: translate(-50%, -50%) ; color:#fff; font-size:var(--fs-display); line-height:var(--lh-display); text-align:center; opacity:0; filter:blur(8px); font-family:var(--font-xl-display-latin); font-weight:700; }
+      html[lang="ar"] .animated-text { font-family:var(--font-xl-display-arabic); font-weight:900; }
+      .additional-section { width:100%; height:100vh; display:flex; justify-content:center; align-items:center; position:relative; color:#fff; }
+      .additional-container { text-align:center; opacity:0; transform:translateY(30px); }
+      .additional-title { font-size:var(--fs-h1); line-height:var(--lh-h1); font-family:var(--font-hero-section-latin); font-weight:800; margin-bottom:1.5rem; }
+      html[lang="ar"] .additional-title { font-family:var(--font-hero-section-arabic); }
+      .additional-subtitle { font-size:var(--fs-body-lg); line-height:var(--lh-body-lg); max-width:720px; margin:0 auto; font-family:var(--font-subtitle-latin); font-weight:500; }
+      html[lang="ar"] .additional-subtitle { font-family:var(--font-subtitle-arabic); }
+      .dot-grid { position:absolute; top:0; left:0; width:100%; height:100%; z-index:-1; pointer-events:none; }
+      .dot { position:absolute; color:#444; user-select:none; font-size:14px; pointer-events:auto; transition:transform 0.3s cubic-bezier(0.34, 1.25, 0.6, 1), color 0.3s ease; }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.querySelectorAll('style[data-hero-styles="true"]').forEach(el => el.remove());
+    };
+  }, []);
+
   return (
-    <section id="hero">
-      {/* Blur effect SVG */}
-      <svg className="absolute overflow-visible ai-style-change-1 w-[1500px] h-[1500px] sm:w-[1500px] sm:h-[1500px] blur-3xl opacity-70 transition-transform duration-300 ease-out" fill="none" viewBox="0 0 701 467" xmlns="http://www.w3.org/2000/svg">
-        <g className="transform-gpu will-change-transform">
-          <path className="will-change-transform" d="M407.64 132.674 511.646 108l81.075 17.082V326.27H419.103l-31.111-98.696 19.648-94.9Z" fill="#5DA200" data-svg-origin="387.99200439453125 108" style={{ transform: 'translate3d(0px, 0px, 0px)' }}></path>
-          <path className="will-change-transform" d="m357.667 186.498 72.448-19.143 56.475 13.253v156.09H365.651l-21.671-76.572 13.687-73.628Z" fill="#FFC700" data-svg-origin="343.9800109863281 167.35499572753906" style={{ transform: 'translate3d(0px, 0px, 0px)' }}></path>
-          <path className="will-change-transform" d="m471.471 217.57 58.714-9.647 45.77 6.679v78.666h-98.013l-17.563-38.591 11.092-37.107Z" fill="#FFC700" data-svg-origin="460.3790283203125 207.92300415039062" style={{ transform: 'translate3d(0px, 0px, 0px)' }}></path>
-          <path className="will-change-transform" d="m160.042 229.351 80.266-16.432 62.569 11.376v133.988H168.888l-24.009-65.73 15.163-63.202Z" fill="#FFC700" data-svg-origin="144.87899780273438 212.91900634765625" style={{ transform: 'translate3d(0px, 0px, 0px)' }}></path>
-          <path className="will-change-transform" d="m290.066 207.03 73.697-19.143 57.449 13.253v156.091H298.188l-22.044-76.573 13.922-73.628Z" fill="#FFC700" data-svg-origin="276.14398193359375 187.88699340820312" style={{ transform: 'translate3d(0px, 0px, 0px)' }}></path>
-          <path className="will-change-transform" d="m136.004 208.083 73.697-19.143 57.449 13.253v156.09H144.127l-22.045-76.572 13.922-73.628Z" fill="#FFC700" data-svg-origin="122.08200073242188 188.9399871826172" style={{ transform: 'translate3d(0px, 0px, 0px)' }}></path>
-          <path className="will-change-transform" d="m243.752 200.799 86.172-18.321 67.174 12.683v149.388H253.249l-25.776-73.284 16.279-70.466Z" fill="#7C5FE4" data-svg-origin="227.47299194335938 182.47799682617188" style={{ transform: 'translate3d(0px, 0px, 0px)' }}></path>
-          <path className="will-change-transform" d="m417.299 212.382 39.278-7.668 30.618 5.309v62.518h-65.567l-11.749-30.669 7.42-29.49Z" fill="#A40099" data-svg-origin="409.8790588378906 204.71400451660156" style={{ transform: 'translate3d(0px, 0px, 0px)' }}></path>
-          <path className="will-change-transform" d="m145.653 194.349 93.505-19.143 72.89 13.253v156.09h-156.09l-27.97-76.573 17.665-73.627Z" fill="#FF69C4" data-svg-origin="127.98797607421875 175.20599365234375" style={{ transform: 'translate3d(0px, 0px, 0px)' }}></path>
-          <path className="will-change-transform" d="m117.665 194.349 93.505-19.143 72.89 13.253v156.09H127.97L100 267.976l17.665-73.627Z" fill="#C91884" data-svg-origin="100 175.20599365234375" style={{ transform: 'translate3d(0px, 0px, 0px)' }}></path>
-        </g>
-      </svg>
-      
-      <div className="section-content">
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="flex flex-col items-center justify-center min-h-[70vh] max-w-4xl mx-auto text-center">
-            {/* Headline with Animation */}
-            <h1 className="text-[82px] font-bold mb-8 leading-tight">
-              <span className="hero-gradient-text">
-                <span className="hero-char">C</span>
-                <span className="hero-char">r</span>
-                <span className="hero-char">a</span>
-                <span className="hero-char">f</span>
-                <span className="hero-char">t</span>
-                <span className="hero-char">i</span>
-                <span className="hero-char">n</span>
-                <span className="hero-char">g</span>
-                <span className="hero-char">&nbsp;</span>
-                <span className="hero-char">D</span>
-                <span className="hero-char">i</span>
-                <span className="hero-char">g</span>
-                <span className="hero-char">i</span>
-                <span className="hero-char">t</span>
-                <span className="hero-char">a</span>
-                <span className="hero-char">l</span>
-              </span>
-              <br />
-              <span className="hero-gradient-text">
-                <span className="hero-char">E</span>
-                <span className="hero-char">x</span>
-                <span className="hero-char">p</span>
-                <span className="hero-char">e</span>
-                <span className="hero-char">r</span>
-                <span className="hero-char">i</span>
-                <span className="hero-char">e</span>
-                <span className="hero-char">n</span>
-                <span className="hero-char">c</span>
-                <span className="hero-char">e</span>
-                <span className="hero-char">s</span>
-              </span>
-            </h1>
-
-            {/* Subheading */}
-            <p className="text-2xl text-gray-600 dark:text-gray-300 mb-12 leading-relaxed">
-              {translations.subheading[language]}
-            </p>
-
-            {/* CTA Button */}
-            <div className="button-container relative">
-              <a href="https://wa.me/+972598702740" target="_blank" rel="noopener noreferrer" className="gradient-border-button inline-block">
-                <div className="inner-button bg-white dark:bg-dark-900">
-                  <i className="fab fa-whatsapp mr-3 text-[#25D366] text-lg relative z-10"></i>
-                  <span className="relative z-10 text-white dark:text-white font-medium">
-                    {translations.cta[language]}
-                  </span>
-                </div>
-              </a>
+    <div className="hero-section" ref={stickyContainerRef}>
+      <div className="sticky-container" id="stickyContainer">
+        <div className="webgl-section" id="webglSection">
+          <div className="canvas-container" id="canvasContainer">
+            <canvas ref={canvasRef} id="space" />
+            <div className="animated-text font-xl-display" id="animatedText" ref={animatedTextRef}>
+              CLARITY<br />THROUGH<br />SIMPLICITY
             </div>
           </div>
-
-          {/* Logos Section */}
-          <div className="mt-32">
-            <div className="max-w-md md:max-w-lg lg:max-w-2xl mx-auto">
-              <div className="relative w-full mx-auto max-w-4xl opacity-90 dark:opacity-70 overflow-hidden before:content-[''] before:absolute before:inset-0 before:w-full before:bg-[linear-gradient(to_right,hsl(var(--background-default))_0%,transparent_30%,transparent_70%,hsl(var(--background-default))_100%)] before:z-10 flex flex-nowrap px-5 lg:px-12 justify-center gap-4 lg:gap-8" style={{ maskImage: 'linear-gradient(to right, transparent, black 20%, black 80%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 20%, black 80%, transparent 100%)' }}>
-                {/* First track of logos */}
-                <div className="gap-4 lg:gap-8 flex flex-nowrap items-center w-fit animate-[marquee_90000ms_linear_both_infinite] will-change-transform motion-reduce:animate-none motion-reduce:will-change-none">
-                  <LogoItem srcLight="/images/logos/light/cursor.png" srcDark="/images/logos/dark/cursor.png" alt="Cursor" height="3.5" />
-                  <LogoItem srcLight="/images/logos/light/figma.svg" srcDark="/images/logos/dark/figma.svg" alt="Figma" height="3" />
-                  <LogoItem srcLight="/images/logos/light/midjourney.svg" srcDark="/images/logos/dark/midjourney.svg" alt="Midjourney" height="2" />
-                  <LogoItem srcLight="/images/logos/light/slack.svg" srcDark="/images/logos/dark/slack.svg" alt="Slack" height="3" />
-                  <LogoItem srcLight="/images/logos/light/framer.svg" srcDark="/images/logos/dark/framer.svg" alt="Framer" height="2" />
-                  <LogoItem srcLight="/images/logos/light/jira.svg" srcDark="/images/logos/dark/jira.svg" alt="Jira" height="3" />
-                </div>
-                
-                {/* Second track of logos (identical to first for seamless looping) */}
-                <div className="gap-4 lg:gap-8 flex flex-nowrap items-center w-fit animate-[marquee_90000ms_linear_both_infinite] will-change-transform motion-reduce:animate-none motion-reduce:will-change-none">
-                  <LogoItem srcLight="/images/logos/light/cursor.png" srcDark="/images/logos/dark/cursor.png" alt="Cursor" height="3.5" />
-                  <LogoItem srcLight="/images/logos/light/figma.svg" srcDark="/images/logos/dark/figma.svg" alt="Figma" height="3" />
-                  <LogoItem srcLight="/images/logos/light/midjourney.svg" srcDark="/images/logos/dark/midjourney.svg" alt="Midjourney" height="2" />
-                  <LogoItem srcLight="/images/logos/light/slack.svg" srcDark="/images/logos/dark/slack.svg" alt="Slack" height="3" />
-                  <LogoItem srcLight="/images/logos/light/framer.svg" srcDark="/images/logos/dark/framer.svg" alt="Framer" height="3" />
-                  <LogoItem srcLight="/images/logos/light/jira.svg" srcDark="/images/logos/dark/jira.svg" alt="Jira" height="3" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-         
-          
         </div>
       </div>
-    </section>
-  )
-}
-
-// Logo component for the marquee
-const LogoItem = ({ src, srcLight, srcDark, alt, height }) => {
-  // Convert height prop to actual size in rem
-  const getHeightClass = (h) => {
-    switch(h) {
-      case '2': return 'h-8';  // 2rem = 32px
-      case '3': return 'h-6';  // 1.5rem = 24px
-      case '4': return 'h-4';  // 1rem = 16px
-      case '5': return 'h-3';  // 0.75rem = 12px
-      default: return 'h-4';
-    }
-  };
-
-  const heightClass = getHeightClass(height);
-
-  return (
-    <div className={`flex items-center justify-center ${heightClass} w-max !inline-block`}>
-      {srcLight && srcDark ? (
-        <>
-          <img 
-            src={srcLight} 
-            alt={alt} 
-            className={`${heightClass} w-auto block dark:hidden [filter:brightness(0)_opacity(0.7)] hover:opacity-100 transition-opacity`} 
-            draggable="false" 
-          />
-          <img 
-            src={srcDark} 
-            alt={alt} 
-            className={`${heightClass} w-auto hidden dark:block opacity-70 hover:opacity-100 transition-opacity`} 
-            draggable="false" 
-          />
-        </>
-      ) : (
-        <>
-          <img 
-            src={src} 
-            alt={alt} 
-            className={`${heightClass} w-auto block dark:hidden [filter:brightness(0)_opacity(0.7)] hover:opacity-100 transition-opacity`} 
-            draggable="false" 
-          />
-          <img 
-            src={src} 
-            alt={alt} 
-            className={`${heightClass} w-auto hidden dark:block opacity-70 hover:opacity-100 transition-opacity`} 
-            draggable="false" 
-          />
-        </>
-      )}
+      <div className="additional-section section-transition" id="additionalSection">
+        <div className="additional-container" ref={additionalContentRef}>
+          <h1 className="additional-title font-hero-section">THE ART OF REDUCTION</h1>
+          <p className="additional-subtitle font-subtitle">In a world of constant noise and distraction, true creativity emerges from the space between thoughts. The power of simplicity lies not in what is added, but in what is carefully removed.</p>
+          <p className="additional-subtitle font-subtitle">Our approach strips away the unnecessary, revealing the essential core of every project. We believe that when you eliminate the excess, what remains speaks with greater clarity and resonance.</p>
+          <p className="additional-subtitle font-subtitle">This philosophy guides everything we create—from music production to visual design—allowing the authentic voice to emerge without interference.</p>
+        </div>
+      </div>
+      <div className="bottom-bar">
+        <div className="coordinates"><p>34.0522° N, 118.2437° W</p></div>
+        <div className="links"><span>Mindfulness</span><span>Presence</span></div>
+        <div className="info"><p>Est. 2025 • Summer Days</p></div>
+      </div>
+      <div className="dot-grid" id="dotGrid" ref={dotGridRef}></div>
     </div>
-  )
-}
+  );
+};
 
-export default Hero 
+export default Hero; 

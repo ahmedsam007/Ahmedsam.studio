@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react'
-import Navigation from './components/Navigation'
-import Hero from './components/Hero'
+import { useState, useEffect, useRef } from 'react'
+
 import VideoSection from './components/VideoSection'
 import Story from './components/Story'
 import Portfolio from './components/Portfolio'
-import Footer from './components/Footer'
-import GreenGlobe from './components/finished'
 import TestimonialsComponent from './components/Testimonials'
 import Services from './components/Services'
 import Clients from './components/Clients'
+import Certificate from './components/Certificate'
+import StatsCounters from './components/StatsCounters'
 import gsap from 'gsap'
+import SectionTransition from './components/SectionTransition';
+import WorkExperiences from './components/WorkExperiences';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false)
@@ -17,6 +18,9 @@ function App() {
   const [scrollPosition, setScrollPosition] = useState(0)
   const [isVideoSectionActive, setIsVideoSectionActive] = useState(false)
   const [hovered, setHovered] = useState(null)
+  const [runTransition, setRunTransition] = useState(false)
+
+  const transitionTriggerRef = useRef(null)
 
   // Initialize dark mode based on user preference
   useEffect(() => {
@@ -30,6 +34,32 @@ function App() {
     }
   }, [])
 
+  // Prevent translation API calls
+  useEffect(() => {
+    // Remove lang attribute to prevent Google Translate API calls
+    const htmlElement = document.documentElement;
+    htmlElement.removeAttribute('lang');
+    
+    // Disable Google Translate features
+    const meta = document.createElement('meta');
+    meta.name = 'google';
+    meta.content = 'notranslate';
+    document.head.appendChild(meta);
+    
+    // Add a class to block translation
+    document.body.classList.add('notranslate');
+    
+    // Block Google Translate scripts if they exist
+    const translateScripts = document.querySelectorAll('script[src*="translate.google"]');
+    translateScripts.forEach(script => script.remove());
+    
+    // Clean up function
+    return () => {
+      document.head.querySelectorAll('meta[name="google"][content="notranslate"]').forEach(el => el.remove());
+      document.body.classList.remove('notranslate');
+    };
+  }, []);
+  
   // Handle dark mode toggle
   const toggleDarkMode = () => {
     if (darkMode) {
@@ -43,12 +73,17 @@ function App() {
     }
   }
 
-  // Handle language toggle
+  // Handle language toggle - modified to avoid Google Translate API calls
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'ar' : 'en')
-    // Update document direction
+    // Store language preference without setting HTML attributes
+    localStorage.setItem('preferredLanguage', language === 'en' ? 'ar' : 'en');
+    
+    // Update text direction only
     document.documentElement.dir = language === 'en' ? 'rtl' : 'ltr'
-    document.documentElement.lang = language === 'en' ? 'ar' : 'en'
+    
+    // Don't set lang attribute to avoid Google Translate API calls
+    // document.documentElement.lang = language === 'en' ? 'ar' : 'en'
   }
 
   // Handle scroll events
@@ -68,21 +103,14 @@ function App() {
 
       // Add 'active' and 'in-view' class to sections when they come into view
       document.querySelectorAll('.section').forEach(section => {
-        console.log('Checking section:', section.id);
         const rect = section.getBoundingClientRect()
         const isVisible = 
           rect.top < window.innerHeight * 0.75 && 
           rect.bottom > window.innerHeight * 0.25
         
         if (isVisible) {
-          console.log('Section IS visible, adding in-view:', section.id);
           section.classList.add('active')
           section.classList.add('in-view')
-        } else {
-          console.log('Section NOT visible:', section.id);
-          // Optional: remove class if needed
-          // section.classList.remove('active') 
-          // section.classList.remove('in-view')
         }
       })
     }
@@ -96,16 +124,35 @@ function App() {
     }
   }, [])
 
-  // Initialize sections to be in-view
+  // IntersectionObserver for section transition
   useEffect(() => {
-    const hero = document.getElementById('hero')
-    if (hero) {
-      setTimeout(() => {
-        hero.classList.add('in-view')
-      }, 100)
-    }
-  }, [])
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        console.log('[App.jsx] IntersectionObserver callback - entry.isIntersecting:', entry.isIntersecting, '!runTransition:', !runTransition);
+        if (entry.isIntersecting && !runTransition) {
+          console.log('[App.jsx] Transition trigger in view, setting runTransition to true.');
+          setRunTransition(true);
+        }
+      },
+      {
+        root: null, // viewport
+        rootMargin: '0px',
+        threshold: 0.1 // Trigger when 10% of the element is visible
+      }
+    );
 
+    if (transitionTriggerRef.current) {
+      observer.observe(transitionTriggerRef.current);
+    }
+
+    return () => {
+      if (transitionTriggerRef.current) {
+        observer.unobserve(transitionTriggerRef.current);
+      }
+    };
+  }, [runTransition]); // Re-run if runTransition changes, to unobserve/re-observe if needed, or simply to use its latest value
+
+  // Initialize circles animation
   useEffect(() => {
     const circles = document.querySelectorAll('.circle')
     gsap.from(circles, {
@@ -117,33 +164,33 @@ function App() {
     });
   }, [])
 
+  const handleTransitionComplete = () => {
+    console.log('[App.jsx] handleTransitionComplete called.');
+    setTimeout(() => {
+        console.log('[App.jsx] setTimeout in handleTransitionComplete: setting runTransition to false.');
+        setRunTransition(false); 
+    }, 100); 
+  };
+
   return (
     <>
-      <Navigation 
-        className={isVideoSectionActive ? 'hide-nav' : ''}
-        darkMode={darkMode} 
-        toggleDarkMode={toggleDarkMode}
-        language={language}
-        toggleLanguage={toggleLanguage}
-      />
-      
-      <main>
-        <div className="fixed-scroll-sections">
-          <Hero language={language} />
-        </div>
-        
+      <main style={{ overflowX: 'hidden' }}>
         <div className="regular-sections">
           <VideoSection />
-          <Story language={language} />
-          <Portfolio language={language} />
+          <div className="transition-container">
+            <Story language={language} />
+            <div ref={transitionTriggerRef} style={{ height: '1px' }} /> 
+            <SectionTransition isActive={runTransition} onTransitionComplete={handleTransitionComplete} />
+          </div>
+          <WorkExperiences />
           <Services />
-          <GreenGlobe/>
-          <Clients/>
+          <Portfolio language={language} />
+          <StatsCounters />
+          <Clients />
+          <Certificate />
           <TestimonialsComponent />
         </div>
       </main>
-
-      <Footer language={language} />
     </>
   )
 }
