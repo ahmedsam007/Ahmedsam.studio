@@ -252,7 +252,7 @@ const Story = ({ language = 'en' }) => {
 
   return (
     <section className="section mb-0" id="story" ref={sectionRef}>
-      <div className="section-content pt-32" ref={sectionContentRef}>
+      <div className="section-content pt-64" ref={sectionContentRef}>
         <div style={{ textAlign: 'center' }} ref={titleRef}>
           <h1 
             className="section-title text-h1 font-mona" 

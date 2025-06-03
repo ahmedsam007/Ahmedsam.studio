@@ -8,51 +8,51 @@ gsap.registerPlugin(ScrollTrigger);
 const stats = [
   {
     id: 'stat-1',
-    value: '5M',
-    numericValue: 5,
-    unit: 'M',
+    value: '74K',
+    numericValue: 74,
+    unit: 'K',
     label: 'MONTHLY VISITS',
-    description: 'Covid-19 Tracker we built for STAT (Boston Globe) recorded 3 to 5 million visits monthly during the pandemic.'
+    description: 'After the full re-brand, CTBTO.org drew roughly 74000 visits in April 2025 alone—about 2480 people every day.'
   },
   {
     id: 'stat-2',
-    value: '10x',
-    numericValue: 10,
-    unit: 'x',
-    label: 'ORGANIC TRAFFIC INCREASE',
-    description: 'PureGlobal saw a 10x increase in organic traffic within a year after we updated their brand and website.'
+    value: '23M',
+    numericValue: 23,
+    unit: 'M',
+    label: 'LEARNING MINUTES',
+    description: 'Learners have completed 23 million minutes of courses on the e-learning platform we built for Elham.sa.'
   },
   {
     id: 'stat-3',
-    value: '13K',
-    numericValue: 13,
-    unit: 'K',
-    label: 'DAILY VISITS',
-    description: 'Lovb.com, which we redesigned, now sees 13,000 daily visits — up from 800 the year before.'
+    value: '1M',
+    numericValue: 1,
+    unit: 'M',
+    label: 'CAMPAIGN REACH',
+    description: 'Our launch push sent 1 million users to Google Play and converted 50K of them into app downloads.'
   },
   {
     id: 'stat-4',
-    value: '20x',
-    numericValue: 20,
-    unit: 'x',
-    label: 'ORGANIC TRAFFIC INCREASE',
-    description: 'Stringomedia experienced a 20x traffic boost within six months of launching their revamped brand and website.'
+    value: '100K',
+    numericValue: 100,
+    unit: 'K',
+    label: 'APP DOWNLOADS',
+    description: 'The rewards app redesign hit 100000 installs on Google Play within its first year.'
   },
   {
     id: 'stat-5',
-    value: '80%',
-    numericValue: 80,
-    unit: '%',
-    label: 'ORGANIC KEYWORD GROWTH',
-    description: "Since launching Hiatus Spa's new site, their visibility in organic search terms increased by 80%."
+    value: '4x',
+    numericValue: 4,
+    unit: 'X',
+    label: 'EFFICIENCY BOOST',
+    description: 'Post-overhaul, UN teams complete key tasks on UNICC.org four times faster than before.'
   },
   {
     id: 'stat-6',
-    value: '1.2K',
-    numericValue: 1.2,
-    unit: 'K',
-    label: 'DAILY VISITS',
-    description: 'Hubmeded.com reached 1,200 daily visits within six months of launch.'
+    value: '70+',
+    numericValue: 70,
+    unit: '+',
+    label: 'PRODUCTS LAUNCHED',
+    description: 'Over nine years, I\'ve shipped 70-plus digital products across 14 countries.'
   }
 ];
 
@@ -213,7 +213,7 @@ const StatsCounters = () => {
   return (
     <section className="w-full bg-[#08070e] relative" ref={sectionRef}>
       {/* Background vertical lines spanning entire section */}
-      <div className="absolute top-0 left-20 right-20 pointer-events-none z-0" style={{ height: 'calc(100% + 213px)' }}>
+      <div className="absolute top-0 left-20 right-20 pointer-events-none z-0" style={{ height: 'calc(100% + 245px)' }}>
         <div className="relative w-full h-full">
           {/* Evenly distributed vertical lines */}
           <div className="absolute top-0 bottom-0 w-px bg-gray-200 dark:bg-gray-800" style={{ left: '0%' }}></div>
@@ -233,11 +233,12 @@ const StatsCounters = () => {
           {/* Description section */}
           <div className="w-full mb-16">
             <div className="padding-container max-w-4xl mx-auto text-center">
+              <div className="spacer-section--l h-16"></div>
               <h2 className="text-h1 font-extrabold -tracking-tight bg-gradient-to-b from-[#fff] via-[#e0e0e0] to-[#b0b0b0] bg-clip-text text-transparent dark:from-[#eaeaea] dark:via-[#bdbdbd] dark:to-[#888] font-mona mb-8">
-                Results that speak for themselves
+              Numbers Talk
               </h2>
-              <p className="text-lg uppercase text-gray-300 dark:text-gray-200 font-mono leading-relaxed">
-                We help companies with strategy, digital product design, and marketing - supporting everything from early-stage concepting to go-to-market execution.
+              <p className="text-lg text-gray-300 dark:text-gray-200 font-mono leading-relaxed">
+              From strategy and product design to go-to-market, we turn ideas into traction.
               </p>
               <div className="spacer-section--s h-8"></div>
             </div>
@@ -264,7 +265,7 @@ const StatsCounters = () => {
                   
                   <div className="spacer-hssh-hssxs h-4"></div>
                   
-                  <h3 className="heading-style-xs font-mono uppercase text-sm tracking-wider font-bold text-gray-900 dark:text-gray-100">
+                  <h3 className="heading-style-xs font-sans uppercase text-sm tracking-wider font-bold text-gray-900 dark:text-gray-100">
                     {stat.label}
                   </h3>
                   

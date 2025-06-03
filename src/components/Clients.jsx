@@ -110,9 +110,23 @@ const Clients = () => {
   const sectionRef = useRef(null);
   const row1Ref = useRef(null);
   const row2Ref = useRef(null);
+  const headingRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Heading scroll animation - moves right on scroll
+      gsap.to(headingRef.current, {
+        startAt: { xPercent: -25 },
+        xPercent: 25,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1,
+        },
+      });
+
       // Row 1: Scroll Left
       gsap.to(row1Ref.current, {
         xPercent: -15,
@@ -143,11 +157,35 @@ const Clients = () => {
   }, []);
 
   return (
-    <section id="clients" ref={sectionRef} className="bg-white dark:bg-[#08070e] py-16 sm:py-24 overflow-hidden">
+    <section id="clients" ref={sectionRef} className="bg-white dark:bg-[#08070e] pt-8  sm:pt-20 overflow-hidden">
       <div className="w-full">
-        <h4 className="text-h5 font-semibold text-center text-gray-500 dark:text-gray-400 mb-24 font-mono">
-          Trusted by innovative companies worldwide
-        </h4>
+        <div className="overflow-hidden mb-32">
+          <div 
+            ref={headingRef}
+            className="flex items-center space-x-8 text-2xl sm:text-4xl lg:text-3xl  font-mono text-gray-800 dark:text-gray-200 whitespace-nowrap"
+            style={{ willChange: 'transform' }}
+          >
+            <span>Global Organizations</span>
+            <span>•</span>
+            <span>FinTech</span>
+            <span>•</span>
+            <span>Healthcare</span>
+            <span>•</span>
+            <span>Education</span>
+            <span>•</span>
+            <span>SaaS</span>
+            <span>•</span>
+            <span>E-commerce</span>
+            <span>•</span>
+            <span>Consulting</span>
+            <span>•</span>
+            <span>Non-profit</span>
+            <span>•</span>
+            <span>Government</span>
+            <span>•</span>
+            <span>Enterprise</span>
+          </div>
+        </div>
         
         {/* Row 1 */}
         <div className="border border-gray-200 dark:border-gray-800">
