@@ -162,7 +162,7 @@ const Clients = () => {
         <div className="overflow-hidden mb-32">
           <div 
             ref={headingRef}
-            className="flex items-center space-x-8 text-2xl sm:text-4xl lg:text-3xl  font-mono text-gray-800 dark:text-gray-200 whitespace-nowrap"
+            className="flex items-center space-x-8 text-2xl sm:text-4xl lg:text-3xl font-mono text-gray-800 dark:text-gray-200 whitespace-nowrap"
             style={{ willChange: 'transform' }}
           >
             <span>Global Organizations</span>

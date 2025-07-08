@@ -10,78 +10,64 @@ gsap.registerPlugin(ScrollTrigger);
 const TestimonialsComponent = ({ language }) => {
     const containerRef = useRef(null);
     const headingRef = useRef(null);
-    const cardsRef = useRef([]);
-    const floatingElementsRef = useRef([]);
-    
-    // Define testimonial data with translations
-    // !! IMPORTANT: Replace placeholder [Arabic...] strings with actual translations !!
-    const testimonialsData = [
+    const cardsContainerRef = useRef(null);
+    const cardRefs = useRef([]);
+    const clotheslineRef = useRef(null);
+    const clotheslineOverlayRef = useRef(null);
+
+    // Mock testimonials data
+    const testimonials = [
         {
-            quote: {
-                en: "Cursor is at least a 2x improvement over Copilot. It's amazing having an AI pair programmer, and is an incredible accelerator for me and my team.",
-                ar: "كيرسور أفضل بمرتين على الأقل من كوبايلوت. من المدهش وجود مبرمج زوجي يعمل بالذكاء الاصطناعي، وهو مسرع لا يصدق لي ولفريقي."
-            },
-            imgSrc: "https://picsum.photos/seed/ben_bernard/60/60",
-            alt: "Ben Bernard",
-            name: { en: "Ben Bernard", ar: "بن برنارد" },
-            company: { en: "Instacart", ar: "انستاكارت" },
-            rating: 5
+            id: 1,
+            name: "Sarah Johnson",
+            company: "TechFlow Inc.",
+            image: "https://images.unsplash.com/photo-1494790108375-2616b612b786?w=150&h=150&fit=crop&crop=face",
+            review: "This platform revolutionized our development workflow. The efficiency gains have been incredible!"
         },
         {
-            quote: {
-                en: "Cursor is awesome! Someone finally put GPT into a code editor in a seamless way. It's so elegant and easy. No more copying and pasting.",
-                ar: "كيرسور رائع! أخيراً قام شخص ما بدمج GPT في محرر أكواد بطريقة سلسة. إنه أنيق وسهل للغاية. لا مزيد من النسخ واللصق."
-            },
-            imgSrc: "https://picsum.photos/seed/andrew_mccalip/60/60",
-            alt: "Andrew McCalip",
-            name: { en: "Andrew McCalip", ar: "أندرو ماكاليب" },
-            company: { en: "Varda", ar: "فاردا" },
-            rating: 5
+            id: 2,
+            name: "Ahmed Hassan",
+            company: "Innovation Labs",
+            image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+            review: "Outstanding service and support. Our team productivity increased by 300% since implementation."
         },
         {
-            quote: {
-                en: "I went from never hearing about Cursor to many IC engineers telling me it's their new favorite tool. Seemingly overnight!",
-                ar: "انتقلت من عدم السماع عن كيرسور أبداً إلى سماع العديد من المهندسين يخبرونني أنه أداتهم المفضلة الجديدة."
-            },
-            imgSrc: "https://picsum.photos/seed/josh_miller/60/60",
-            alt: "Josh Miller",
-            name: { en: "Josh Miller", ar: "جوش ميلر" },
-            company: { en: "The Browser Company", ar: "شركة المتصفح" },
-            rating: 5
+            id: 3,
+            name: "Maria Rodriguez",
+            company: "Digital Dynamics",
+            image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+            review: "The best investment we've made in our tech stack. Seamless integration and fantastic results."
         },
         {
-            quote: {
-                en: "The Cursor tab completion while coding is occasionally so magic it defies reality - about ~25% of the time it is anticipating exactly what I want to do.",
-                ar: "إكمال التاب في كيرسور أثناء البرمجة يكون أحيانًا سحريًا لدرجة تتحدى الواقع - حوالي 25% من الوقت يتوقع بالضبط ما أريد القيام به."
-            },
-            imgSrc: "https://picsum.photos/seed/kevin_whinnery/60/60",
-            alt: "Kevin Whinnery",
-            name: { en: "Kevin Whinnery", ar: "كيفن وينري" },
-            company: { en: "OpenAI", ar: "أوبن إيه آي" },
-            rating: 5
+            id: 4,
+            name: "David Chen",
+            company: "StartupForge",
+            image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+            review: "Game-changing solution! Our development cycles are now 50% faster with better quality."
         },
         {
-            quote: {
-                en: "Cursor is hands down my biggest workflow improvement in years",
-                ar: "كيرسور هو بلا شك أكبر تحسين لسير عملي منذ سنوات."
-            },
-            imgSrc: "https://picsum.photos/seed/sawyer_hood/60/60",
-            alt: "Sawyer Hood",
-            name: { en: "Sawyer Hood", ar: "سوير هود" },
-            company: { en: "Figma", ar: "فيجما" },
-            rating: 5
+            id: 5,
+            name: "Emma Thompson",
+            company: "CloudTech Solutions",
+            image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+            review: "Exceptional platform with intuitive design. Our entire team adopted it within days."
         },
         {
-            quote: {
-                en: "Started using Cursor yesterday & i'm blown away. it's how Copilot should feel. i'm completely off VSCode now.",
-                ar: "بدأت استخدام كيرسور بالأمس وأنا منبهر. هكذا يجب أن يكون كوبايلوت. لقد توقفت تمامًا عن استخدام VSCode الآن."
-            },
-            imgSrc: "https://picsum.photos/seed/sam_whitmore/60/60",
-            alt: "Sam Whitmore",
-            name: { en: "Sam Whitmore", ar: "سام ويتمور" },
-            company: { en: "New Computer", ar: "نيو كمبيوتر" },
-            rating: 5
+            id: 6,
+            name: "Mohamed Ali",
+            company: "NextGen Apps",
+            image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+            review: "Incredible performance boost! This tool has become essential to our daily operations."
         }
+    ];
+
+    const cardColors = [
+        'bg-teal-100 dark:bg-teal-900',
+        'bg-rose-100 dark:bg-rose-900',
+        'bg-sky-100 dark:bg-sky-900',
+        'bg-amber-100 dark:bg-amber-900',
+        'bg-violet-100 dark:bg-violet-900',
+        'bg-lime-100 dark:bg-lime-900'
     ];
 
     // Translations for static text
@@ -121,118 +107,73 @@ const TestimonialsComponent = ({ language }) => {
                 }
             );
 
-            // Animate cards with staggered 3D effect
-            cardsRef.current.forEach((card, index) => {
-                if (card) {
-                    gsap.set(card, {
-                        rotationX: 15,
-                        rotationY: 0,
-                        z: -100,
-                        opacity: 0
-                    });
+            const rotators = cardRefs.current;
+            if (!rotators || rotators.length === 0) return;
 
-                    gsap.to(card, {
-                        rotationX: 0,
-                        rotationY: 0,
-                        z: 0,
-                        opacity: 1,
-                        duration: 1.5,
-                        delay: index * 0.2,
-                        ease: "power3.out",
-                        scrollTrigger: {
-                            trigger: card,
-                            start: "top 85%",
-                            toggleActions: "play none none reverse"
-                        }
-                    });
+            const container = cardsContainerRef.current;
+            const triggerElement = containerRef.current;
 
-                    // Hover animations
-                    card.addEventListener('mouseenter', () => {
-                        gsap.to(card, {
-                            rotationY: 5,
-                            rotationX: -5,
-                            z: 50,
-                            scale: 1.05,
-                            duration: 0.5,
-                            ease: "power2.out"
-                        });
-                    });
+            ScrollTrigger.create({
+                trigger: triggerElement,
+                start: 'top top',
+                end: 'bottom bottom',
+                pin: container,
+            });
 
-                    card.addEventListener('mouseleave', () => {
-                        gsap.to(card, {
-                            rotationY: 0,
-                            rotationX: 0,
-                            z: 0,
-                            scale: 1,
-                            duration: 0.5,
-                            ease: "power2.out"
-                        });
-                    });
+            gsap.fromTo(rotators, {
+                x: '100vw',
+                rotation: -10,
+            }, {
+                x: '-100vw',
+                rotation: 10,
+                ease: 'power2.inOut',
+                stagger: {
+                    amount: 0.2
+                },
+                scrollTrigger: {
+                    trigger: triggerElement,
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: true,
+                }
+            });
+            
+            gsap.from(container, {
+                opacity: 0,
+                duration: 1,
+                ease: 'power3.inOut',
+                scrollTrigger: {
+                    trigger: triggerElement,
+                    start: 'top 50%',
+                    toggleActions: 'play none none reverse'
                 }
             });
 
-            // Floating elements animation
-            floatingElementsRef.current.forEach((element, index) => {
-                if (element) {
-                    gsap.to(element, {
-                        y: "random(-30, 30)",
-                        x: "random(-20, 20)",
-                        rotation: "random(-180, 180)",
-                        duration: "random(4, 8)",
-                        repeat: -1,
-                        yoyo: true,
-                        ease: "power1.inOut",
-                        delay: index * 0.5
-                    });
+            // Animate clothesline expanding from right center
+            gsap.fromTo([clotheslineRef.current, clotheslineOverlayRef.current], {
+                scaleX: 0,
+            }, {
+                scaleX: 1,
+                duration: 1.5,
+                ease: 'power2.inOut',
+                scrollTrigger: {
+                    trigger: triggerElement,
+                    start: 'top 80%',
+                    toggleActions: 'play none none reverse'
                 }
-            });
-
-            // Continuous scroll animation for background elements
-            gsap.to(".testimonials-bg-element", {
-                rotation: 360,
-                duration: 20,
-                repeat: -1,
-                ease: "none"
             });
 
         }, containerRef);
 
         return () => ctx.revert();
-    }, []);
-
-    const renderStars = (rating) => {
-        return [...Array(5)].map((_, i) => (
-            <div
-                key={i}
-                className={`star ${i < rating ? 'filled' : ''}`}
-            >
-                ★
-            </div>
-        ));
-    };
+    }, [language]);
 
     return (
         <section 
             ref={containerRef}
-            className="testimonials-futuristic relative py-24 md:py-32 bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-black dark:to-gray-800 overflow-hidden"
+            className="testimonials-futuristic relative py-24 md:py-32 overflow-visible"
         >
-            {/* Floating background elements */}
-            <div className="absolute inset-0 pointer-events-none">
-                {[...Array(12)].map((_, i) => (
-                    <div
-                        key={i}
-                        ref={el => floatingElementsRef.current[i] = el}
-                        className="testimonials-bg-element absolute opacity-10 dark:opacity-5"
-                        style={{
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                            transform: `scale(${0.5 + Math.random() * 0.5})`
-                        }}
-                    />
-                ))}
-            </div>
-
-            <div className="container mx-auto px-4 relative z-10">
+            <div className="container mx-auto px-4 relative z-20 overflow-visible">
                 {/* Header */}
                 <div ref={headingRef} className="text-center mb-20">
                     <h2 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-300 dark:to-white bg-clip-text text-transparent mb-6">
@@ -243,51 +184,124 @@ const TestimonialsComponent = ({ language }) => {
                     </p>
                 </div>
 
-                {/* Testimonials Grid */}
-                <div className="testimonials-grid">
-                    {testimonialsData.map((testimonial, index) => (
-                        <div
-                            key={index}
-                            ref={el => cardsRef.current[index] = el}
-                            className="testimonial-card-futuristic group"
-                        >
-                            {/* Card Inner */}
-                            <div className="testimonial-card-inner">
-                                {/* Rating Stars */}
-                                <div className="rating-stars mb-6">
-                                    {renderStars(testimonial.rating)}
+                {/* Testimonial Cards Container */}
+                <div className="testimonials-cards-container relative h-[1400px] md:h-[1300px] overflow-visible">
+                    {/* Clothesline */}
+                    <div className="absolute top-[300px] -left-20 -right-20 z-0 overflow-visible">
+                        <div ref={clotheslineRef} className="w-full h-1 bg-gradient-to-r from-transparent via-amber-600 to-transparent shadow-lg" style={{ transformOrigin: 'right center', scaleX: 0 }}></div>
+                        {/* Rope texture overlay */}
+                        <div ref={clotheslineOverlayRef} className="absolute inset-0 w-full h-1 opacity-30 bg-gradient-to-r from-amber-700 via-amber-500 to-amber-700" style={{ transformOrigin: 'right center', scaleX: 0 }}></div>
+                    </div>
+                    
+                    <div 
+                        ref={cardsContainerRef}
+                        className="relative w-full h-full z-10 pt-[100px] pb-[100px] overflow-visible"
+                    >
+                        {testimonials.map((testimonial, index) => (
+                            <div
+                                key={testimonial.id}
+                                ref={el => cardRefs.current[index] = el}
+                                className="testimonial-rotator absolute top-[50%] left-1/2"
+                                style={{ 
+                                    transform: 'translateX(-50%)',
+                                    top: '42%',
+                                    marginTop: '-16rem' // Position cards closer to the clothesline
+                                }}
+                            >
+                                {/* Clothes Pegs */}
+                                <div className="absolute -top-[40px] left-0 transform -translate-x-1/2 z-20">
+                                    <div className="flex space-x-4">
+                                        {/* Left Peg */}
+                                        <div className="relative">
+                                            <div className="w-4 h-12 bg-amber-700 rounded-t-lg shadow-md"></div>
+                                            <div className="absolute top-3 left-1 w-2 h-2 bg-amber-800 rounded-full"></div>
+                                            <div className="absolute bottom-0 left-0.5 w-3 h-2 bg-amber-600 rounded-b-md"></div>
+                                            {/* Clamping fingers */}
+                                            <div className="absolute -bottom-1 left-0 w-1.5 h-8 bg-amber-800 rounded-bl-md"></div>
+                                            <div className="absolute -bottom-1 right-0 w-1.5 h-8 bg-amber-800 rounded-br-md"></div>
+                                        </div>
+                                        {/* Right Peg */}
+                                        <div className="relative">
+                                            <div className="w-4 h-12 bg-amber-700 rounded-t-lg shadow-md"></div>
+                                            <div className="absolute top-3 left-1 w-2 h-2 bg-amber-800 rounded-full"></div>
+                                            <div className="absolute bottom-0 left-0.5 w-3 h-2 bg-amber-600 rounded-b-md"></div>
+                                            {/* Clamping fingers */}
+                                            <div className="absolute -bottom-1 left-0 w-1.5 h-8 bg-amber-800 rounded-bl-md"></div>
+                                            <div className="absolute -bottom-1 right-0 w-1.5 h-8 bg-amber-800 rounded-br-md"></div>
+                                        </div>
+                                    </div>
                                 </div>
-
-                                {/* Quote */}
-                                <blockquote className="quote-text mb-8">
-                                    "{testimonial.quote[language] || testimonial.quote.en}"
-                                </blockquote>
-
-                                {/* Author */}
-                                <div className="author-section">
-                                    <div className="author-avatar">
+                                
+                                <div
+                                    className={`testimonial-card w-80 md:w-96 h-[28rem] md:h-[32rem] flex flex-col justify-center rounded-2xl border border-gray-200 dark:border-gray-700 p-6 md:p-8 ${cardColors[index % cardColors.length]}`}
+                                    style={{ 
+                                        transform: 'translateX(-50%)',
+                                        position: 'relative',
+                                        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1), 0 0 20px rgba(255, 255, 255, 0.05)'
+                                    }}
+                                >
+                                    {/* User Image */}
+                                    <div className="flex justify-center mb-6">
                                         <img
-                                            src={testimonial.imgSrc}
-                                            alt={testimonial.alt}
+                                            src={testimonial.image}
+                                            alt={testimonial.name}
+                                            className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
                                             loading="lazy"
                                         />
-                                        <div className="avatar-glow"></div>
                                     </div>
-                                    <div className="author-details">
-                                        <h4 className="author-name">
-                                            {testimonial.name[language] || testimonial.name.en}
+
+                                    {/* Review Text */}
+                                    <blockquote className="text-center mb-6 italic text-2xl leading-relaxed font-mono relative" style={{ letterSpacing: '-0.02em' }}>
+                                        "{testimonial.review}"
+                                    </blockquote>
+
+                                    {/* User Info */}
+                                    <div className="text-center">
+                                        <h4 className="font-bold text-gray-900 dark:text-white text-2xl mb-1" style={{ fontFamily: 'Mona Sans, sans-serif' }}>
+                                            {testimonial.name}
                                         </h4>
-                                        <p className="author-company">
-                                            {testimonial.company[language] || testimonial.company.en}
+                                        <p className="text-gray-600 dark:text-gray-400 font-medium font-mono">
+                                            {testimonial.company}
                                         </p>
+                                    </div>
+
+                                    {/* Decorative Elements */}
+                                    <div className="quote-icon absolute top-4 left-4">
+                                        <svg width="80" height="80" viewBox="0 0 512.5 512.5" className="quote-svg">
+                                            <defs>
+                                                <linearGradient id={`quoteGradient-${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                                                    <stop offset="0%" stopColor="rgb(156, 163, 175)" stopOpacity="0" />
+                                                    <stop offset="20%" stopColor="rgb(156, 163, 175)" stopOpacity="0.05" />
+                                                    <stop offset="40%" stopColor="rgb(156, 163, 175)" stopOpacity="0.15" />
+                                                    <stop offset="60%" stopColor="rgb(156, 163, 175)" stopOpacity="0.20" />
+                                                    <stop offset="80%" stopColor="rgb(156, 163, 175)" stopOpacity="0.25" />
+                                                    <stop offset="100%" stopColor="rgb(156, 163, 175)" stopOpacity="0.05" />
+                                                </linearGradient>
+                                                <linearGradient id={`quoteGradientDark-${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                                                    <stop offset="0%" stopColor="rgb(209, 213, 219)" stopOpacity="0" />
+                                                    <stop offset="20%" stopColor="rgb(209, 213, 219)" stopOpacity="0.05" />
+                                                    <stop offset="40%" stopColor="rgb(209, 213, 219)" stopOpacity="0.15" />
+                                                    <stop offset="60%" stopColor="rgb(209, 213, 219)" stopOpacity="0.20" />
+                                                    <stop offset="80%" stopColor="rgb(209, 213, 219)" stopOpacity="0.25" />
+                                                    <stop offset="100%" stopColor="rgb(209, 213, 219)" stopOpacity="0.05" />
+                                                </linearGradient>
+                                            </defs>
+                                            <path 
+                                                d="M112.5,208.25c61.856,0,112,50.145,112,112s-50.144,112-112,112s-112-50.145-112-112l-0.5-16 c0-123.712,100.288-224,224-224v64c-42.737,0-82.917,16.643-113.137,46.863c-5.817,5.818-11.126,12.008-15.915,18.51 C100.667,208.723,106.528,208.25,112.5,208.25z M400.5,208.25c61.855,0,112,50.145,112,112s-50.145,112-112,112 s-112-50.145-112-112l-0.5-16c0-123.712,100.287-224,224-224v64c-42.736,0-82.918,16.643-113.137,46.863 c-5.818,5.818-11.127,12.008-15.916,18.51C388.666,208.723,394.527,208.25,400.5,208.25z"
+                                                fill={`url(#quoteGradient-${index})`}
+                                                className="quote-path light-mode-quote"
+                                            />
+                                            <path 
+                                                d="M112.5,208.25c61.856,0,112,50.145,112,112s-50.144,112-112,112s-112-50.145-112-112l-0.5-16 c0-123.712,100.288-224,224-224v64c-42.737,0-82.917,16.643-113.137,46.863c-5.817,5.818-11.126,12.008-15.915,18.51 C100.667,208.723,106.528,208.25,112.5,208.25z M400.5,208.25c61.855,0,112,50.145,112,112s-50.145,112-112,112 s-112-50.145-112-112l-0.5-16c0-123.712,100.287-224,224-224v64c-42.736,0-82.918,16.643-113.137,46.863 c-5.818,5.818-11.127,12.008-15.916,18.51C388.666,208.723,394.527,208.25,400.5,208.25z"
+                                                fill={`url(#quoteGradientDark-${index})`}
+                                                className="quote-path dark-mode-quote"
+                                            />
+                                        </svg>
                                     </div>
                                 </div>
                             </div>
-
-                            {/* Hover Glow Effect */}
-                            <div className="card-glow"></div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>

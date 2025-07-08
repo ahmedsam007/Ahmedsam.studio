@@ -8,6 +8,8 @@ import Services from './components/Services'
 import Clients from './components/Clients'
 import Certificate from './components/Certificate'
 import StatsCounters from './components/StatsCounters'
+import WhatsAppSection from './components/WhatsAppSection'
+import UnifiedBackground from './components/UnifiedBackground'
 import gsap from 'gsap'
 import SectionTransition from './components/SectionTransition';
 import WorkExperiences from './components/WorkExperiences';
@@ -188,7 +190,10 @@ function App() {
           <StatsCounters />
           <Clients />
           <Certificate />
-          <TestimonialsComponent />
+          <UnifiedBackground>
+            <TestimonialsComponent language={language} />
+            <WhatsAppSection language={language} showFooter={true} />
+          </UnifiedBackground>
         </div>
       </main>
     </>
