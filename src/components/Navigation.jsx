@@ -95,7 +95,7 @@ const Navigation = ({ darkMode, toggleDarkMode, language, toggleLanguage, classN
         <nav className="flex items-center justify-between gap-4 duration-200 py-4 lg:h-20">
           {/* Logo */}
           <a href="#hero" className="text-h3 font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-secondary-500">
-            Ahmed Sam
+            ahmedsam
           </a>
 
           {/* Desktop Navigation */}
@@ -117,7 +117,11 @@ const Navigation = ({ darkMode, toggleDarkMode, language, toggleLanguage, classN
             {/* Language Toggle Button */}
             <button
               onClick={toggleLanguage}
-              className="relative isolate inline-flex items-center justify-center border text-base/6 uppercase font-mono tracking-widest shrink-0 px-4 py-2 sm:text-sm gap-x-3 rounded-full [--btn-bg:transparent] [--btn-border:theme(colors.primary/25%)] [--btn-text:theme(colors.primary)] [--btn-hover:theme(colors.secondary/20%)] bg-[--btn-bg] text-[--btn-text] border-[--btn-border] hover:bg-[--btn-hover]"
+              className={`relative isolate inline-flex items-center justify-center border text-base/6 uppercase font-mono tracking-widest shrink-0 px-4 py-2 sm:text-sm gap-x-3 rounded-full transition-all duration-200 ${
+                darkMode 
+                  ? 'bg-white/10 text-white border-white/30 hover:bg-white/20 hover:border-white/50' 
+                  : 'bg-transparent text-primary border-primary/25 hover:bg-secondary/20'
+              }`}
             >
               <span className="absolute left-1/2 top-1/2 size-[max(100%,2.75rem)] -translate-x-1/2 -translate-y-1/2 [@media(pointer:fine)]:hidden"></span>
               {translations.langSwitch[language]}
@@ -126,7 +130,11 @@ const Navigation = ({ darkMode, toggleDarkMode, language, toggleLanguage, classN
             {/* Dark Mode Toggle Button */}
             <button
               onClick={toggleDarkMode}
-              className="relative isolate inline-flex items-center justify-center border text-base/6 uppercase font-mono tracking-widest shrink-0 aspect-square px-4 py-2 sm:text-sm rounded-full [--btn-bg:transparent] [--btn-border:theme(colors.primary/25%)] [--btn-text:theme(colors.primary)] [--btn-hover:theme(colors.secondary/20%)] bg-[--btn-bg] text-[--btn-text] border-[--btn-border] hover:bg-[--btn-hover]"
+              className={`relative isolate inline-flex items-center justify-center border text-base/6 uppercase font-mono tracking-widest shrink-0 aspect-square px-4 py-2 sm:text-sm rounded-full transition-all duration-200 ${
+                darkMode 
+                  ? 'bg-white/10 text-white border-white/30 hover:bg-white/20 hover:border-white/50' 
+                  : 'bg-transparent text-primary border-primary/25 hover:bg-secondary/20'
+              }`}
             >
               <span className="absolute left-1/2 top-1/2 size-[max(100%,2.75rem)] -translate-x-1/2 -translate-y-1/2 [@media(pointer:fine)]:hidden"></span>
               {darkMode ? <i className="fas fa-sun"></i> : <i className="fas fa-moon"></i>}
@@ -137,7 +145,11 @@ const Navigation = ({ darkMode, toggleDarkMode, language, toggleLanguage, classN
               <button
                 type="button"
                 onClick={toggleMenu}
-                className="relative isolate inline-flex items-center justify-center border text-base/6 uppercase font-mono tracking-widest shrink-0 aspect-square px-4 py-2 sm:text-sm rounded-full [--btn-bg:transparent] [--btn-border:theme(colors.primary/25%)] [--btn-text:theme(colors.primary)] [--btn-hover:theme(colors.secondary/20%)] bg-[--btn-bg] text-[--btn-text] border-[--btn-border] hover:bg-[--btn-hover]"
+                className={`relative isolate inline-flex items-center justify-center border text-base/6 uppercase font-mono tracking-widest shrink-0 aspect-square px-4 py-2 sm:text-sm rounded-full transition-all duration-200 ${
+                  darkMode 
+                    ? 'bg-white/10 text-white border-white/30 hover:bg-white/20 hover:border-white/50' 
+                    : 'bg-transparent text-primary border-primary/25 hover:bg-secondary/20'
+                }`}
               >
                 <span className="absolute left-1/2 top-1/2 size-[max(100%,2.75rem)] -translate-x-1/2 -translate-y-1/2 [@media(pointer:fine)]:hidden"></span>
                 <i className={menuOpen ? 'fas fa-times' : 'fas fa-bars'}></i>
