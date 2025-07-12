@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import Navigation from './Navigation';
 
 const Hero = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
@@ -22,16 +23,173 @@ const Hero = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
     fontLink3.rel = 'stylesheet';
     document.head.appendChild(fontLink3);
 
+    // Add Orbitron font
+    const fontLink4 = document.createElement('link');
+    fontLink4.href = 'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap';
+    fontLink4.rel = 'stylesheet';
+    document.head.appendChild(fontLink4);
+
     // Add custom styles for hero section
     const style = document.createElement('style');
-    style.textContent = `
-             .hero-container {
-         position: relative;
-         width: 100%;
-         height: 100vh;
-         background: #0a0a0a;
-         overflow: hidden;
-       }
+        style.textContent = `
+      html, body {
+        overscroll-behavior: none;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .hero-container {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        background: #0a0a0a;
+        overflow: hidden;
+        touch-action: pan-y;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .hero-text-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 20;
+        text-align: center;
+        color: white;
+        width: 100%;
+        max-width: 90vw;
+        padding: 0 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+      }
+
+      .hero-main-title {
+        font-family: 'Orbitron', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-size: clamp(3.2rem, 7vw, 5.5rem);
+        font-weight: 700;
+        line-height: 1.1;
+        margin-bottom: 1rem;
+        color: white;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      }
+
+      .hero-subtitle {
+        font-family: 'Martian Mono', monospace;
+        font-size: 1.125rem;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 2rem;
+        line-height: 1.4;
+      }
+
+      .hero-description {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: clamp(0.9rem, 1.5vw, 1rem);
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 2rem;
+        line-height: 1.5;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-cta-container {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .hero-cta-button {
+        font-family: 'Martian Mono', monospace;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 12px 24px;
+        border: 2px solid white;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-cta-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+        transform: translateY(-2px);
+      }
+
+      .hero-cta-button:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+      }
+
+      .hero-cta-button:hover:before {
+        left: 100%;
+      }
+
+      .hero-secondary-button {
+        font-family: 'Martian Mono', monospace;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 12px 24px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .hero-secondary-button:hover {
+        border-color: rgba(255, 255, 255, 0.6);
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 768px) {
+        .hero-text-container {
+          padding: 0 16px;
+        }
+
+        .hero-main-title {
+          font-size: clamp(2.5rem, 9vw, 4rem);
+        }
+
+        .hero-subtitle {
+          font-size: 1rem;
+        }
+
+        .hero-cta-container {
+          flex-direction: column;
+          gap: 0.8rem;
+        }
+
+        .hero-cta-button,
+        .hero-secondary-button {
+          width: 100%;
+          max-width: 280px;
+          text-align: center;
+        }
+      }
 
       .hero-container a-hole {
         position: absolute;
@@ -461,6 +619,42 @@ const Hero = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
     };
 
     loadEasingUtils();
+
+    // Prevent unwanted scroll behaviors in hero section
+    const handleTouchStart = (e) => {
+      const heroContainer = document.querySelector('.hero-container');
+      if (heroContainer && heroContainer.contains(e.target)) {
+        // Allow only vertical scrolling for page navigation
+        if (e.touches.length > 1) {
+          e.preventDefault();
+        }
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      const heroContainer = document.querySelector('.hero-container');
+      if (heroContainer && heroContainer.contains(e.target)) {
+        // Prevent horizontal scrolling and pull-to-refresh
+        if (e.touches.length > 1) {
+          e.preventDefault();
+        }
+      }
+    };
+
+    const handleWheel = (e) => {
+      const heroContainer = document.querySelector('.hero-container');
+      if (heroContainer && heroContainer.contains(e.target)) {
+        // Allow only vertical scrolling for page navigation
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+          e.preventDefault();
+        }
+      }
+    };
+
+    // Add event listeners
+    document.addEventListener('touchstart', handleTouchStart, { passive: false });
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('wheel', handleWheel, { passive: false });
     
     return () => {
       document.head.querySelectorAll('style').forEach(el => {
@@ -469,6 +663,11 @@ const Hero = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
       document.head.querySelectorAll('link').forEach(el => {
         if (el.href?.includes('fonts.googleapis.com')) el.remove();
       });
+      
+      // Remove event listeners
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('wheel', handleWheel);
     };
   }, []);
 
@@ -489,6 +688,68 @@ const Hero = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
         <div className="aura"></div>
         <div className="overlay"></div>
       </a-hole>
+
+      {/* Hero Text Content */}
+      <div className="hero-text-container">
+        <motion.h1 
+          className="hero-main-title"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            duration: 1,
+            delay: 0.5,
+            ease: "easeOut"
+          }}
+        >
+          {language === 'en' ? (
+            <>
+              Let&nbsp;Your&nbsp;Product's&nbsp;Gravity<br />
+              Do&nbsp;the&nbsp;Selling.
+            </>
+          ) : 'دع جاذبية منتجك تقوم بالبيع.'}
+        </motion.h1>
+        
+        <motion.p 
+          className="hero-subtitle"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            duration: 0.8,
+            delay: 1,
+            ease: "easeOut"
+          }}
+        >
+          {language === 'en' 
+            ? (
+              <>
+                We engineer interfaces so intuitive they attract customers<br />
+                like a black hole — no friction, just flow.
+              </>
+            ) 
+            : (
+              <>
+                نحن نصمم واجهات بديهية جداً تجذب العملاء<br />
+                كالثقب الأسود — بلا احتكاك، فقط تدفق.
+              </>
+            )
+          }
+        </motion.p>
+
+        <motion.div 
+          className="hero-cta-container"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            duration: 0.6,
+            delay: 1.4,
+            ease: "easeOut"
+          }}
+        >
+          <a href="#contact" className="hero-cta-button">
+            {language === 'en' ? 'Let\'s Create' : 'لنبدع معاً'}
+          </a>
+        </motion.div>
+      </div>
     </div>
   );
 };

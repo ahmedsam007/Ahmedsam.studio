@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 
+import Hero from './components/Hero'
 import VideoSection from './components/VideoSection'
 import Story from './components/Story'
 import Portfolio from './components/Portfolio'
@@ -10,6 +11,8 @@ import Certificate from './components/Certificate'
 import StatsCounters from './components/StatsCounters'
 import WhatsAppSection from './components/WhatsAppSection'
 import UnifiedBackground from './components/UnifiedBackground'
+import CookieConsent from './components/CookieConsent'
+import StructuredData from './components/StructuredData'
 import gsap from 'gsap'
 import SectionTransition from './components/SectionTransition';
 import WorkExperiences from './components/WorkExperiences';
@@ -176,7 +179,14 @@ function App() {
 
   return (
     <>
+      <StructuredData />
       <main style={{ overflowX: 'hidden' }}>
+        <Hero 
+          darkMode={darkMode} 
+          toggleDarkMode={toggleDarkMode} 
+          language={language} 
+          toggleLanguage={toggleLanguage} 
+        />
         <div className="regular-sections">
           <VideoSection />
           <div className="transition-container">
@@ -196,6 +206,7 @@ function App() {
           </UnifiedBackground>
         </div>
       </main>
+      <CookieConsent language={language} />
     </>
   )
 }

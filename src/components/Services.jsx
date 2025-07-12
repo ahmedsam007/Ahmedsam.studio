@@ -300,7 +300,7 @@ const Services = () => {
       <div className="text-center mb-16">
         <h2 
           ref={titleRef} 
-          className="text-h1 relative z-20 mb-2 font-mona" 
+          className="section-title text-h1 font-mona relative z-20 mb-2" 
           style={{ 
             fontWeight: 700,
             fontSize: '5rem',
@@ -360,9 +360,10 @@ const Services = () => {
                   style={{ background: cardGradients[index % cardGradients.length] }}
                 >
                   {/* Service Name */}
-                  <h3 className="text-h3 text-[#ffffff] tracking-wide mb-4 relative z-10" style={{ 
-                    fontFamily: 'Mono sans, SFMono-Regular, "Liberation Mono", "Courier New", monospace !important',
-                    fontWeight: '600'
+                  <h3 className="text-[#ffffff] tracking-wide mb-4 relative z-10 font-mona" style={{ 
+                    fontWeight: '600',
+                    fontSize: 'clamp(1.5rem, 3vw + 0.4rem, 2.5rem)',
+                    lineHeight: '1.3'
                   }}>
                     {service.name}
                   </h3>

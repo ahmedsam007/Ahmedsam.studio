@@ -34,9 +34,11 @@ const VideoSection = () => {
       });
     }
 
-    // Base video styles
+    // Base video styles - start with smaller scale
     gsap.set(video, {
       width: '100%', height: '100%', objectFit: 'cover', transformOrigin: 'center center',
+      scale: 0.7, // Start smaller than full width
+      filter: 'brightness(80%) blur(1px)'
     });
     // Base textOverlay styles
     gsap.set(textOverlay, { opacity: 0, yPercent: 10, pointerEvents: 'none' });
@@ -55,10 +57,10 @@ const VideoSection = () => {
       },
     });
 
-    // Video animation: Scale down, slight blur out, then clear up
+    // Video animation: Scale up to full width and clear up
     tl.fromTo(video,
-      { scale: 1.2, filter: 'brightness(70%) blur(3px)' },
-      { scale: 1, filter: 'brightness(100%) blur(0px)', ease: 'power1.inOut', duration: 1 }
+      { scale: 0.7, filter: 'brightness(80%) blur(1px)' },
+      { scale: 1, filter: 'brightness(100%) blur(0px)', ease: 'power2.out', duration: 1 }
     )
     // Text animation: Fade in and move up, then fade out
     .fromTo(textOverlay,
@@ -138,12 +140,10 @@ const VideoSection = () => {
           ref={textOverlayRef}
           className="absolute inset-0 flex flex-col items-center justify-center text-white text-center p-5 z-10"
         >
-          <h2 className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-6 leading-tight tracking-tight"
-              style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.7)' }}>
+          <h2 className="hero-main-title mb-6">
             Innovate & Create
           </h2>
-          <p className="text-xl md:text-2xl lg:text-3xl font-light"
-             style={{ textShadow: '1px 1px 6px rgba(0,0,0,0.6)' }}>
+          <p className="hero-subtitle">
             Discover the next wave of digital experiences.
           </p>
         </div>
