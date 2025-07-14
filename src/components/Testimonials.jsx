@@ -176,7 +176,7 @@ const TestimonialsComponent = ({ language }) => {
             <div className="container mx-auto px-4 relative z-20 overflow-visible">
                 {/* Header */}
                 <div ref={headingRef} className="text-center mb-20">
-                    <h2 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-300 dark:to-white bg-clip-text text-transparent mb-6">
+                    <h2 className="text-h1 font-extrabold -tracking-tight bg-gradient-to-b from-[#fff] via-[#e0e0e0] to-[#b0b0b0] bg-clip-text text-transparent dark:from-[#eaeaea] dark:via-[#bdbdbd] dark:to-[#888] font-mona mb-6">
                         {currentTexts.heading}
                     </h2>
                     <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">

@@ -5,6 +5,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cairo+Play:wght@400;500;600;700&display=swap');
 
+/* Custom text selection styling - matching certificate section gradient colors */
+::selection {
+  background: linear-gradient(120deg, #c2ffba 0%, #00ff99 100%);
+  background: #00ff99; /* Fallback for browsers that don't support gradients in selection */
+  color: #000;
+  text-shadow: none;
+}
+
+::-moz-selection {
+  background: #00ff99;
+  color: #000;
+  text-shadow: none;
+}
+
 :root {
   /* Fluid size tokens */
   --fs-display: clamp(3.5rem, 8vw + 1rem, 7rem);

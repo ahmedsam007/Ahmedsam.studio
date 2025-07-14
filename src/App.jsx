@@ -16,6 +16,9 @@ import StructuredData from './components/StructuredData'
 import gsap from 'gsap'
 import SectionTransition from './components/SectionTransition';
 import WorkExperiences from './components/WorkExperiences';
+import Lenis from 'lenis'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+gsap.registerPlugin(ScrollTrigger)
 
 function App() {
   const [darkMode, setDarkMode] = useState(false)
@@ -167,6 +170,27 @@ function App() {
       duration: 0.6,
       ease: "power2.out"
     });
+  }, [])
+
+  // Lenis smooth scrolling setup
+  useEffect(() => {
+    const lenis = new Lenis({
+      lerp: 0.1,
+      smoothWheel: true
+    })
+
+    lenis.on('scroll', () => ScrollTrigger.update())
+
+    const raf = (time) => {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+
+    requestAnimationFrame(raf)
+
+    return () => {
+      lenis.destroy()
+    }
   }, [])
 
   const handleTransitionComplete = () => {

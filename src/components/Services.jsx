@@ -7,7 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 const servicesData = [
   { 
     name: 'Landing Pages', 
-    icon: '/images/logos/services/landing-pages.svg', 
+    icon: '/images/icons/landing page.svg', 
     description: 'Crafting high-converting landing pages that transform visitors into customers.' 
   },
   { 
@@ -22,7 +22,7 @@ const servicesData = [
   },
   { 
     name: 'Mobile App Design', 
-    icon: '/images/logos/services/mobile-app-design.svg', 
+    icon: '/images/icons/Mobile App Design.svg', 
     description: 'User-centric mobile experiences that deliver functionality with elegance on iOS and Android.' 
   },
   { 
@@ -32,7 +32,7 @@ const servicesData = [
   },
   { 
     name: 'Front-end Development', 
-    icon: '/images/logos/services/framer-development.svg', 
+    icon: '/images/logos/services/web-app-design.svg', 
     description: 'Bringing designs to life with clean, efficient code that performs flawlessly.' 
   },
   { 
@@ -42,12 +42,12 @@ const servicesData = [
   },
   { 
     name: 'UX Strategy', 
-    icon: '/images/logos/services/ux-strategy.svg', 
+    icon: '/images/icons/UX Strategy.svg', 
     description: 'Developing user-focused strategies that ensure your product succeeds in the market.' 
   },
   { 
     name: 'Implementation Support', 
-    icon: '/images/logos/services/implementation-support.svg', 
+    icon: '/images/icons/Implementation Support.svg', 
     description: 'Guiding teams to implement designs effectively, ensuring the final product matches the vision.' 
   },
 ];
@@ -379,8 +379,8 @@ const Services = () => {
                   <div className="flex justify-between items-center w-full relative z-10">
                     {/* Icon container with circle */}
                     <div className="bg-white/10 rounded-full p-3 w-14 h-14 flex items-center justify-center">
-                      {/* Icon as "logo" - slightly larger */}
-                      <img src={service.icon} alt={service.name} className="w-8 h-8" />
+                      {/* Icon as "logo" - sized to be fully visible */}
+                      <img src={service.icon} alt={service.name} className="w-6 h-6 object-contain" />
                     </div>
                     {/* "Author" attribution */}
                     <p className="text-sm text-[#ffffff] font-light italic">Ahmed's Studio</p>
