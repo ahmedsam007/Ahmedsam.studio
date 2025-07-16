@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import CustomProjectCursor from './CustomProjectCursor';
 
 // Register ScrollTrigger with GSAP
 gsap.registerPlugin(ScrollTrigger);
@@ -13,84 +14,105 @@ function Portfolio({ language = 'en' }) {
   const [progress, setProgress] = useState(0);
   const [leftArrowAnim, setLeftArrowAnim] = useState('');
   const [rightArrowAnim, setRightArrowAnim] = useState('');
+  const [showCustomCursor, setShowCustomCursor] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const intervalRef = useRef(null);
   const SLIDE_DURATION = 15000; // 15 seconds
+
+  // External links for each slide
+  const slideLinks = [
+    'http://ctbto.org/', // CTBTO Official Website
+    'https://dribbble.com/shots/21704329-Fit-Tech-Memvera-Mobile-APP', // 3Days Dribbble Shot
+    'https://www.behance.net/gallery/202415365/eFOOM', // eFoom Behance Gallery
+    'https://www.behance.net/gallery/202615529/Ernify-Local-Events-and-Activities', // Ernify Behance Gallery
+    'https://www.behance.net/gallery/203247885/CRMCOM-eWallet-App', // Eko Smile CRM.COM eWallet App Behance Gallery
+    'https://fasrly.com/' // Fasrly Website
+  ];
 
     const features = [
     {
       id: 1,
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="15" fill="none">
-          <circle cx="7" cy="4.125" r="3.5" stroke="#fff" strokeLinecap="round"></circle>
-          <path stroke="#fff" strokeLinecap="round" d="M13 13.875v0a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v0"></path>
-        </svg>
+        <img 
+          src="/images/icons/ctbto icon.png" 
+          alt="CTBTO Icon" 
+          className="w-full h-full object-contain rounded-xl"
+        />
       ),
-      title: language === 'en' ? 'Human Service' : 'خدمة بشرية',
+      title: language === 'en' ? 'CTBTO - Nuclear Verification' : 'CTBTO - التحقق النووي',
       description: language === 'en' 
-        ? 'All Titan clients have access to a dedicated wealth advisor.'
-        : 'جميع عملاء تيتان لديهم إمكانية الوصول إلى مستشار ثروات مخصص.'
+        ? 'Comprehensive Nuclear-Test-Ban Treaty Organization platform supporting global nuclear test monitoring and verification systems for a nuclear-test-free world.'
+        : 'منظمة معاهدة الحظر الشامل للتجارب النووية - منصة تدعم مراقبة والتحقق من التجارب النووية عالمياً لعالم خالٍ من التجارب النووية.'
     },
     {
       id: 2,
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="10" fill="none">
-          <path stroke="#F8F8F8" d="m1.08 9 5.84-5 3 3 7-6m0 0h-4.08m4.08 0v4"></path>
-        </svg>
+        <img 
+          src="/images/icons/3days icon.png" 
+          alt="3Days Icon" 
+          className="w-full h-full object-contain rounded-xl"
+        />
       ),
-      title: language === 'en' ? 'Fully Managed Investing' : 'استثمار مُدار بالكامل',
+      title: language === 'en' ? '3Days Fitness Club' : 'نادي 3Days الرياضي',
       description: language === 'en' 
-        ? 'We manage your wealth—so you don\'t have to stress.'
-        : 'نحن ندير ثروتك - لذا لا داعي للتوتر.'
+        ? 'A revolutionary fitness club concept offering personalized training programs three days a week, combining efficiency with expert supervision.'
+        : 'مفهوم ثوري لنادي رياضي يقدم برامج تدريب شخصية ثلاثة أيام في الأسبوع، يجمع بين الكفاءة والإشراف المختص.'
     },
     {
       id: 3,
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="20" fill="none">
-          <path stroke="#F8F8F8" d="M5.272 2.714C5.272 1.768 6.046 1 7 1s1.728.768 1.728 1.714m.864 13.715C9.592 17.849 8.432 19 7 19a2.58 2.58 0 0 1-2.592-2.571zm-8.187-2.987-.258.585c-.5 1.133.337 2.402 1.583 2.402h8.54c1.246 0 2.083-1.27 1.583-2.402l-.258-.585a4.26 4.26 0 0 1-.356-1.948l.232-4.264c.133-2.453-1.837-4.516-4.314-4.516H5.843c-2.477 0-4.447 2.063-4.314 4.516l.232 4.264a4.26 4.26 0 0 1-.356 1.948Z"></path>
-        </svg>
+        <img 
+          src="/images/icons/efoom icon.png" 
+          alt="eFoom Icon" 
+          className="w-full h-full object-contain rounded-xl"
+        />
       ),
-      title: language === 'en' ? 'Real-Time Updates' : 'تحديثات فورية',
+      title: language === 'en' ? 'eFoom - Fourth Mills' : 'eFoom - المطاحن الرابعة',
       description: language === 'en' 
-        ? 'Get video updates on your investments from our team.'
-        : 'احصل على تحديثات فيديو حول استثماراتك من فريقنا.'
+        ? 'Digital platform for a leading Saudi flour production company, supporting strategic food security across multiple regions in the Kingdom.'
+        : 'منصة رقمية لشركة رائدة في إنتاج الدقيق السعودية، تدعم الأمن الغذائي الاستراتيجي عبر مناطق متعددة في المملكة.'
     },
     {
       id: 4,
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none">
-          <path stroke="#F8F8F8" strokeLinecap="round" strokeLinejoin="round" d="M8 1.5v1m0 11v1m5.5-6.5h1m-11 0h1m4.5-4.5L9 4m-1 7l1 1M4 4l1 1m7 7l1 1"></path>
-          <circle cx="8" cy="8" r="3" stroke="#F8F8F8" strokeLinecap="round" strokeLinejoin="round"></circle>
-        </svg>
+        <img 
+          src="/images/icons/ernify icon.png" 
+          alt="Ernify Icon" 
+          className="w-full h-full object-contain rounded-xl"
+        />
       ),
-      title: language === 'en' ? 'Security & Protection' : 'الأمان والحماية',
+      title: language === 'en' ? 'Ernify - Local Events & Activities' : 'Ernify - الفعاليات والأنشطة المحلية',
       description: language === 'en' 
-        ? 'Bank-level security with insurance protection for your investments.'
-        : 'أمان على مستوى البنوك مع حماية التأمين لاستثماراتك.'
+        ? 'Mobile application connecting communities through local events and activities, featuring intuitive discovery and seamless participation experiences.'
+        : 'تطبيق محمول يربط المجتمعات من خلال الفعاليات والأنشطة المحلية، مع اكتشاف بديهي وتجارب مشاركة سلسة.'
     },
     {
       id: 5,
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="14" fill="none">
-          <path stroke="#F8F8F8" strokeLinecap="round" strokeLinejoin="round" d="M1 7h16m-8-6v12M5 1v2m8-2v2M3 13h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H3a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"></path>
-        </svg>
+        <img 
+          src="/images/icons/eko smile icon.png" 
+          alt="Eko Smile Icon" 
+          className="w-full h-full object-contain rounded-xl"
+        />
       ),
-      title: language === 'en' ? 'Performance Analytics' : 'تحليلات الأداء',
+      title: language === 'en' ? 'Eko Smile - Rewards App' : 'Eko Smile - تطبيق المكافآت',
       description: language === 'en' 
-        ? 'Detailed insights and analytics to track your portfolio performance.'
-        : 'رؤى مفصلة وتحليلات لتتبع أداء محفظتك الاستثمارية.'
+        ? 'Mobile rewards application that brings smiles to users through engaging loyalty programs and seamless reward redemption experiences.'
+        : 'تطبيق محمول للمكافآت يجلب الابتسامة للمستخدمين من خلال برامج الولاء الجذابة وتجارب استرداد المكافآت السلسة.'
     },
     {
       id: 6,
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="18" fill="none">
-          <path stroke="#F8F8F8" strokeLinecap="round" strokeLinejoin="round" d="M3 1h6a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2z"></path>
-          <path stroke="#F8F8F8" strokeLinecap="round" strokeLinejoin="round" d="M6 14h.01"></path>
-        </svg>
-      ),
-      title: language === 'en' ? 'Mobile Access' : 'الوصول المحمول',
-      description: language === 'en' 
-        ? 'Manage your investments anywhere with our mobile app.'
-        : 'أدر استثماراتك في أي مكان باستخدام تطبيقنا المحمول.'
+        icon: (
+          <img 
+            src="/images/icons/fasrly icon.png" 
+            alt="Fasrly" 
+            className="w-full h-full object-contain rounded-xl"
+          />
+        ),
+        title: language === 'en' ? 'Fasrly Coaching Platform' : 'منصة فاسرلي للتدريب والإرشاد',
+        description: language === 'en' 
+          ? 'A comprehensive platform connecting advice seekers with qualified coaches and therapists online. Offering virtual sessions through chat, audio, video, and direct calls for life coaching, mental health, career guidance, and personal development.'
+          : 'منصة شاملة تربط طالبي المشورة بمدربين ومعالجين مؤهلين عبر الإنترنت. تقدم جلسات افتراضية عبر الدردشة والصوت والفيديو والمكالمات المباشرة للتدريب الحياتي والصحة النفسية والإرشاد المهني والتطوير الشخصي.'
     }
   ];
 
@@ -145,6 +167,13 @@ function Portfolio({ language = 'en' }) {
     };
   }, [currentFeature, features.length]);
 
+  // Cleanup cursor on unmount
+  useEffect(() => {
+    return () => {
+      document.body.style.cursor = 'auto';
+    };
+  }, []);
+
   const goToFeature = (index) => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -176,6 +205,31 @@ function Portfolio({ language = 'en' }) {
     if (currentFeature !== features.length - 1 && !rightArrowAnim) {
       setRightArrowAnim('animate-arrow-right');
       setTimeout(() => setRightArrowAnim(''), 800);
+    }
+  };
+
+  // Custom cursor handlers
+  const handleImageMouseEnter = () => {
+    setShowCustomCursor(true);
+    document.body.style.cursor = 'none';
+  };
+
+  const handleImageMouseLeave = () => {
+    setShowCustomCursor(false);
+    document.body.style.cursor = 'auto';
+  };
+
+  const handleImageMouseMove = (e) => {
+    setMousePosition({
+      x: e.clientX,
+      y: e.clientY
+    });
+  };
+
+  // Click handler to open external links
+  const handleImageClick = (slideIndex) => {
+    if (slideLinks[slideIndex]) {
+      window.open(slideLinks[slideIndex], '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -266,7 +320,7 @@ function Portfolio({ language = 'en' }) {
             <div className="flex items-center justify-center w-full h-full relative overflow-hidden">
               {/* iPhone Image Carousel - Titan Style */}
               <div 
-                className="relative w-3/4 h-3/4 overflow-hidden"
+                className="relative w-full h-full overflow-hidden"
                 style={{
                   willChange: 'transform',
                   contain: 'layout style paint'
@@ -275,40 +329,128 @@ function Portfolio({ language = 'en' }) {
                 <div 
                   className="flex w-full h-full"
                   style={{
-                    transform: `translate3d(${currentFeature === 1 ? -100 : 0}%, 0, 0)`,
+                    transform: `translate3d(-${currentFeature * 100}%, 0, 0)`,
                     transition: 'transform 800ms cubic-bezier(0.4, 0, 0.2, 1)',
                     willChange: 'transform'
                   }}
                 >
-                  {/* Slide 1 - Default iPhone */}
+                  {/* Slide 1 - CTBTO */}
                   <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
                     <img 
-                      src="/images/iphone.png"
-                      alt="iPhone Portfolio Default"
-                      className="w-full h-full object-contain transition-all duration-[800ms]"
+                      src="/images/ctbto.jpg"
+                      alt="CTBTO Platform"
+                      className="w-full h-full object-cover rounded-2xl lg:rounded-3xl transition-all duration-[800ms] cursor-none"
                       style={{
-                        opacity: currentFeature === 1 ? 0.2 : 1,
-                        transform: currentFeature === 1 ? 'scale(0.85)' : 'scale(1)',
+                        opacity: currentFeature === 0 ? 1 : 0.3,
+                        transform: currentFeature === 0 ? 'scale(1)' : 'scale(0.85)',
                         transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
                         willChange: 'transform, opacity',
                         backfaceVisibility: 'hidden'
                       }}
+                      onMouseEnter={handleImageMouseEnter}
+                      onMouseLeave={handleImageMouseLeave}
+                      onMouseMove={handleImageMouseMove}
+                      onClick={() => handleImageClick(0)}
                     />
                   </div>
                   
-                  {/* Slide 2 - Feature iPhone */}
+                  {/* Slide 2 - 3Days Mockup */}
                   <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
                     <img 
-                      src="/images/iphone2.png"
-                      alt="iPhone Portfolio Feature 2"
-                      className="w-full h-full object-contain transition-all duration-[800ms]"
+                      src="/images/3days mockup.png"
+                      alt="3Days App Mockup"
+                      className="w-full h-full object-cover rounded-2xl lg:rounded-3xl transition-all duration-[800ms] cursor-none"
                       style={{
-                        opacity: currentFeature === 1 ? 1 : 0,
-                        transform: currentFeature === 1 ? 'scale(1)' : 'scale(0.8)',
+                        opacity: currentFeature === 1 ? 1 : 0.3,
+                        transform: currentFeature === 1 ? 'scale(1)' : 'scale(0.85)',
                         transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
                         willChange: 'transform, opacity',
                         backfaceVisibility: 'hidden'
                       }}
+                      onMouseEnter={handleImageMouseEnter}
+                      onMouseLeave={handleImageMouseLeave}
+                      onMouseMove={handleImageMouseMove}
+                      onClick={() => handleImageClick(1)}
+                    />
+                  </div>
+                  
+                  {/* Slide 3 - Efoom Mobile */}
+                  <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
+                    <img 
+                      src="/images/icons/efoom mobile.png"
+                      alt="Efoom Mobile App"
+                      className="w-full h-full object-cover rounded-2xl lg:rounded-3xl transition-all duration-[800ms] cursor-none"
+                      style={{
+                        opacity: currentFeature === 2 ? 1 : 0.3,
+                        transform: currentFeature === 2 ? 'scale(1)' : 'scale(0.85)',
+                        transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                        willChange: 'transform, opacity',
+                        backfaceVisibility: 'hidden'
+                      }}
+                      onMouseEnter={handleImageMouseEnter}
+                      onMouseLeave={handleImageMouseLeave}
+                      onMouseMove={handleImageMouseMove}
+                      onClick={() => handleImageClick(2)}
+                    />
+                  </div>
+                  
+                  {/* Slide 4 - Ernify App */}
+                  <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
+                    <img 
+                      src="/images/Ernify app.webp"
+                      alt="Ernify App"
+                      className="w-full h-full object-cover rounded-2xl lg:rounded-3xl transition-all duration-[800ms] cursor-none"
+                      style={{
+                        opacity: currentFeature === 3 ? 1 : 0.3,
+                        transform: currentFeature === 3 ? 'scale(1)' : 'scale(0.85)',
+                        transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                        willChange: 'transform, opacity',
+                        backfaceVisibility: 'hidden'
+                      }}
+                      onMouseEnter={handleImageMouseEnter}
+                      onMouseLeave={handleImageMouseLeave}
+                      onMouseMove={handleImageMouseMove}
+                      onClick={() => handleImageClick(3)}
+                    />
+                  </div>
+                  
+                  {/* Slide 5 - Eko Smile App */}
+                  <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
+                    <img 
+                      src="/images/icons/Eko smile app.png"
+                      alt="Eko Smile App"
+                      className="w-full h-full object-cover rounded-2xl lg:rounded-3xl transition-all duration-[800ms] cursor-none"
+                      style={{
+                        opacity: currentFeature === 4 ? 1 : 0.3,
+                        transform: currentFeature === 4 ? 'scale(1)' : 'scale(0.85)',
+                        transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                        willChange: 'transform, opacity',
+                        backfaceVisibility: 'hidden'
+                      }}
+                      onMouseEnter={handleImageMouseEnter}
+                      onMouseLeave={handleImageMouseLeave}
+                      onMouseMove={handleImageMouseMove}
+                      onClick={() => handleImageClick(4)}
+                    />
+                  </div>
+                  
+                  {/* Slide 6 - Fasrly */}
+                  <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
+                    <img 
+                      src="/images/fasrly.jpg"
+                      alt="Fasrly App"
+                      className="w-full h-full object-cover rounded-2xl lg:rounded-3xl transition-all duration-[800ms] cursor-none"
+                      style={{
+                        opacity: currentFeature === 5 ? 1 : 0.3,
+                        transform: currentFeature === 5 ? 'scale(1)' : 'scale(0.85)',
+                        transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                        willChange: 'transform, opacity',
+                        backfaceVisibility: 'hidden'
+                      }}
+                      onMouseEnter={handleImageMouseEnter}
+                      onMouseLeave={handleImageMouseLeave}
+                      onMouseMove={handleImageMouseMove}
+                      onClick={() => handleImageClick(5)}
                     />
                   </div>
                 </div>
@@ -348,7 +490,12 @@ function Portfolio({ language = 'en' }) {
                     {/* Content */}
                     <div className="w-full text-center text-balance text-gray-700">
                       <p>
-                        <strong className="block mb-4 font-medium text-black text-lg">
+                        <strong 
+                          className="block mb-4 font-medium text-black text-lg"
+                          style={{
+                            fontFamily: index === 0 ? 'Mona Space, monospace' : 'inherit'
+                          }}
+                        >
                           {feature.title}
                         </strong>
                         {feature.description}
@@ -435,6 +582,12 @@ function Portfolio({ language = 'en' }) {
           </div>
         </div>
       </div>
+
+      {/* Custom Project Cursor */}
+      <CustomProjectCursor 
+        isVisible={showCustomCursor}
+        mousePosition={mousePosition}
+      />
     </section>
   );
 }
