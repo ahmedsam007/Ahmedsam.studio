@@ -30,10 +30,6 @@ const Navigation = ({ darkMode, toggleDarkMode, language, toggleLanguage, classN
     contact: {
       en: 'Contact',
       ar: 'تواصل'
-    },
-    langSwitch: {
-      en: 'عربي',
-      ar: 'English'
     }
   }
   
@@ -91,30 +87,21 @@ const Navigation = ({ darkMode, toggleDarkMode, language, toggleLanguage, classN
         className={`pointer-events-none absolute inset-x-0 h-32 lg:h-24 duration-200 bg-gradient-to-b ${darkMode ? (scrolled ? 'from-dark-900/75' : 'from-transparent') : (scrolled ? 'from-black/75' : 'from-transparent')} ${scrolled ? 'opacity-100' : 'opacity-0'}`}>
       </div>
       
-      <div className="mx-auto w-full px-6 xl:max-w-7xl relative">
+      <div className="w-full relative px-6 xl:px-12">
         <nav className="flex items-center justify-between gap-4 duration-200 py-4 lg:h-20">
           {/* Logo */}
-          <a href="#hero" className="text-h3 font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-secondary-500">
-            ahmedsam
+          <a href="#hero" className="flex items-center">
+            <img 
+              src="/images/icons/ahmedsam_logo.png" 
+              alt="ahmedsam logo" 
+              className="h-10 w-auto" 
+              style={{ maxHeight: '40px', width: 'auto', display: 'block' }}
+            />
           </a>
 
-          {/* Desktop Navigation */}
-          <ul className="ml-3 hidden flex-grow gap-4 lg:flex">
-            {menuItems.map((item) => (
-              <li key={item.name}>
-                <a 
-                  href={item.href} 
-                  className={`mono-tag px-3 py-1.5 text-sm ${darkMode ? 'text-gray-400' : 'text-primary/50'} hover:text-primary transition-colors`}
-                >
-                  {translations[item.translationKey][language]}
-                </a>
-              </li>
-            ))}
-          </ul>
-
           {/* Action Buttons */}
-          <div className="flex gap-2">
-            {/* Language Toggle Button */}
+          <div className="flex gap-2 items-center">
+            {/* Language Toggle Button - Always shows عربي */}
             <button
               onClick={toggleLanguage}
               className={`relative isolate inline-flex items-center justify-center border text-base/6 uppercase font-mono tracking-widest shrink-0 px-4 py-2 sm:text-sm gap-x-3 rounded-full transition-all duration-200 ${
@@ -124,7 +111,7 @@ const Navigation = ({ darkMode, toggleDarkMode, language, toggleLanguage, classN
               }`}
             >
               <span className="absolute left-1/2 top-1/2 size-[max(100%,2.75rem)] -translate-x-1/2 -translate-y-1/2 [@media(pointer:fine)]:hidden"></span>
-              {translations.langSwitch[language]}
+              عربي
             </button>
             
             {/* Dark Mode Toggle Button */}
@@ -139,29 +126,27 @@ const Navigation = ({ darkMode, toggleDarkMode, language, toggleLanguage, classN
               <span className="absolute left-1/2 top-1/2 size-[max(100%,2.75rem)] -translate-x-1/2 -translate-y-1/2 [@media(pointer:fine)]:hidden"></span>
               {darkMode ? <i className="fas fa-sun"></i> : <i className="fas fa-moon"></i>}
             </button>
-            
-            {/* Mobile Menu Toggle */}
-            <div className="lg:hidden">
-              <button
-                type="button"
-                onClick={toggleMenu}
-                className={`relative isolate inline-flex items-center justify-center border text-base/6 uppercase font-mono tracking-widest shrink-0 aspect-square px-4 py-2 sm:text-sm rounded-full transition-all duration-200 ${
-                  darkMode 
-                    ? 'bg-white/10 text-white border-white/30 hover:bg-white/20 hover:border-white/50' 
-                    : 'bg-transparent text-primary border-primary/25 hover:bg-secondary/20'
-                }`}
-              >
-                <span className="absolute left-1/2 top-1/2 size-[max(100%,2.75rem)] -translate-x-1/2 -translate-y-1/2 [@media(pointer:fine)]:hidden"></span>
-                <i className={menuOpen ? 'fas fa-times' : 'fas fa-bars'}></i>
-              </button>
-            </div>
+
+            {/* Menu Toggle Button */}
+            <button
+              type="button"
+              onClick={toggleMenu}
+              className={`relative isolate inline-flex items-center justify-center border text-base/6 uppercase font-mono tracking-widest shrink-0 aspect-square px-4 py-2 sm:text-sm rounded-full transition-all duration-200 ${
+                darkMode 
+                  ? 'bg-white/10 text-white border-white/30 hover:bg-white/20 hover:border-white/50' 
+                  : 'bg-transparent text-primary border-primary/25 hover:bg-secondary/20'
+              }`}
+            >
+              <span className="absolute left-1/2 top-1/2 size-[max(100%,2.75rem)] -translate-x-1/2 -translate-y-1/2 [@media(pointer:fine)]:hidden"></span>
+              <i className={menuOpen ? 'fas fa-times' : 'fas fa-bars'}></i>
+            </button>
           </div>
         </nav>
       </div>
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className={`lg:hidden backdrop-blur border-t border-gray-200 dark:border-gray-700 shadow-lg ${darkMode ? 'bg-dark-800/95' : 'bg-white/95' }`}>
+        <div className={`backdrop-blur border-t border-gray-200 dark:border-gray-700 shadow-lg ${darkMode ? 'bg-dark-800/95' : 'bg-white/95' }`}>
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {menuItems.map((item) => (
               <a
@@ -173,20 +158,6 @@ const Navigation = ({ darkMode, toggleDarkMode, language, toggleLanguage, classN
                 {translations[item.translationKey][language]}
               </a>
             ))}
-            <div className="px-3 py-2 border-t border-gray-200 dark:border-gray-700 mt-1 pt-3 flex justify-between items-center">
-              <button
-                onClick={() => { toggleLanguage(); setMenuOpen(false); }}
-                className="text-sm text-center block mono-tag font-medium text-primary/70 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors p-2 flex-1"
-              >
-                {translations.langSwitch[language]}
-              </button>
-              <button
-                onClick={() => { toggleDarkMode(); setMenuOpen(false); }}
-                className="text-sm text-center block mono-tag font-medium text-primary/70 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors p-2 flex-1"
-              >
-                {darkMode ? <i className="fas fa-sun"></i> : <i className="fas fa-moon"></i>} <span className="ml-2">{darkMode ? 'Light' : 'Dark'}</span>
-              </button>
-            </div>
           </div>
         </div>
       )}

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import LoadingIndicator from './LoadingIndicator';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -30,6 +31,7 @@ const WhatsAppSection = ({ language = 'en', showFooter = false }) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [showMeetingPopup, setShowMeetingPopup] = useState(false);
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [meetingForm, setMeetingForm] = useState({
         clientName: '',
         meetingDate: '',
@@ -97,7 +99,7 @@ const WhatsAppSection = ({ language = 'en', showFooter = false }) => {
     };
 
     // Handle meeting form submission
-    const handleMeetingSubmit = (e) => {
+    const handleMeetingSubmit = async (e) => {
         e.preventDefault();
         
         // Validate required fields
@@ -106,8 +108,14 @@ const WhatsAppSection = ({ language = 'en', showFooter = false }) => {
             return;
         }
 
-        // Format the meeting details message
-        const meetingMessage = `NEW MEETING REQUEST
+        setIsSubmitting(true);
+
+        try {
+            // Simulate form processing delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // Format the meeting details message
+            const meetingMessage = `NEW MEETING REQUEST
 
 Client: ${meetingForm.clientName}
 Date: ${meetingForm.meetingDate}
@@ -118,26 +126,32 @@ ${meetingForm.message ? `Message: ${meetingForm.message}` : ''}
 
 Please confirm this meeting schedule.`;
 
-        // Your WhatsApp number (replace with your actual number)
-        const yourWhatsAppNumber = '972598702740'; // Replace with your WhatsApp number (without + sign)
-        
-        // Create WhatsApp link to send message to you
-        const whatsappLink = `https://wa.me/${yourWhatsAppNumber}?text=${encodeURIComponent(meetingMessage)}`;
-        
-        // Open WhatsApp with the meeting details
-        window.open(whatsappLink, '_blank');
-        
-        // Show success message
-        setShowMeetingPopup(false);
-        setShowSuccessPopup(true);
-        
-        // Reset form
-        setMeetingForm({
-            clientName: '',
-            meetingDate: '',
-            meetingTime: '',
-            message: ''
-        });
+            // Your WhatsApp number (replace with your actual number)
+            const yourWhatsAppNumber = '972598702740'; // Replace with your WhatsApp number (without + sign)
+            
+            // Create WhatsApp link to send message to you
+            const whatsappLink = `https://wa.me/${yourWhatsAppNumber}?text=${encodeURIComponent(meetingMessage)}`;
+            
+            // Open WhatsApp with the meeting details
+            window.open(whatsappLink, '_blank');
+            
+            // Show success message
+            setShowMeetingPopup(false);
+            setShowSuccessPopup(true);
+            
+            // Reset form
+            setMeetingForm({
+                clientName: '',
+                meetingDate: '',
+                meetingTime: '',
+                message: ''
+            });
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            alert('There was an error submitting your request. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     // Get minimum date (today)
@@ -402,6 +416,20 @@ Please confirm this meeting schedule.`;
                     .popup-title {
                         font-family: 'Mona Sans', sans-serif;
                     }
+
+                    /* Logo gradient animation */
+                    .animate-gradient-logo {
+                        filter: hue-rotate(0deg);
+                        animation: gradientShift 4s ease-in-out infinite;
+                    }
+
+                    @keyframes gradientShift {
+                        0% { filter: hue-rotate(0deg) brightness(1) saturate(1); }
+                        25% { filter: hue-rotate(90deg) brightness(1.1) saturate(1.2); }
+                        50% { filter: hue-rotate(180deg) brightness(1.2) saturate(1.4); }
+                        75% { filter: hue-rotate(270deg) brightness(1.1) saturate(1.2); }
+                        100% { filter: hue-rotate(360deg) brightness(1) saturate(1); }
+                    }
             `}</style>
             <section 
                 ref={sectionRef}
@@ -587,9 +615,21 @@ Please confirm this meeting schedule.`;
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-medium"
+                                    disabled={isSubmitting}
+                                    className="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                 >
-                                    {currentTexts.scheduleButton}
+                                    {isSubmitting ? (
+                                        <>
+                                            <LoadingIndicator 
+                                                type="inline" 
+                                                size="small" 
+                                                darkMode={true}
+                                            />
+                                            <span>Submitting...</span>
+                                        </>
+                                    ) : (
+                                        currentTexts.scheduleButton
+                                    )}
                                 </button>
                             </div>
                         </form>
@@ -666,13 +706,25 @@ Please confirm this meeting schedule.`;
                   }}
                 ></div>
                 <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-                  {/* Left: Legal Links */}
-                  <div className="flex flex-wrap gap-6 text-sm font-medium">
-                    {legalLinks.map(link => (
-                      <a key={link.label} href={link.href} className="hover:underline opacity-90 hover:opacity-100 transition-opacity">
-                        {link.label}
-                      </a>
-                    ))}
+                  {/* Left: Logo and Legal Links */}
+                  <div className="flex flex-col items-start gap-4">
+                                         {/* Logo */}
+                     <div className="mb-2">
+                       <img 
+                         src="/images/icons/Ahmedsam_logo.svg" 
+                         alt="Ahmed Sam Logo" 
+                         className="h-10 w-auto animate-gradient-logo"
+                         style={{ maxWidth: '200px' }}
+                       />
+                     </div>
+                    {/* Legal Links */}
+                    <div className="flex flex-wrap gap-6 text-sm font-medium">
+                      {legalLinks.map(link => (
+                        <a key={link.label} href={link.href} className="hover:underline opacity-90 hover:opacity-100 transition-opacity">
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
                   </div>
                   {/* Right: Connect Text Links */}
                   <div className="flex items-center gap-2 md:gap-4 flex-wrap">

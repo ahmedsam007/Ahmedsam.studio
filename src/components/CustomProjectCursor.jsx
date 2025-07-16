@@ -25,7 +25,7 @@ function CustomProjectCursor({ isVisible, mousePosition }) {
 
   if (!isVisible) return null;
 
-  const text = "OPEN THE PROJECT • ";
+  const text = "VIEW • ";
   const radius = 35;
   const chars = text.split('');
 
@@ -60,7 +60,7 @@ function CustomProjectCursor({ isVisible, mousePosition }) {
             <defs>
               <path
                 id="circle-path"
-                d="M 40, 40 m -30, 0 a 30,30 0 1,1 60,0 a 30,30 0 1,1 -60,0"
+                d="M 40, 40 m -25, 0 a 25,25 0 1,1 50,0 a 25,25 0 1,1 -50,0"
               />
             </defs>
             <text
@@ -68,10 +68,10 @@ function CustomProjectCursor({ isVisible, mousePosition }) {
               fontWeight="600"
               fill="#000000"
               fontFamily="system-ui, -apple-system, sans-serif"
-              letterSpacing="1px"
+              letterSpacing="0.5px"
             >
               <textPath href="#circle-path" startOffset="0%">
-                {text.repeat(3)}
+                {text.repeat(4)}
               </textPath>
             </text>
           </svg>

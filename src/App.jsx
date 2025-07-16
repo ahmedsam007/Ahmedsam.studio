@@ -16,6 +16,7 @@ import StructuredData from './components/StructuredData'
 import gsap from 'gsap'
 import SectionTransition from './components/SectionTransition';
 import WorkExperiences from './components/WorkExperiences';
+import PageLoader from './components/PageLoader'
 import Lenis from 'lenis'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
@@ -27,6 +28,7 @@ function App() {
   const [isVideoSectionActive, setIsVideoSectionActive] = useState(false)
   const [hovered, setHovered] = useState(null)
   const [runTransition, setRunTransition] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   const transitionTriggerRef = useRef(null)
 
@@ -200,6 +202,14 @@ function App() {
         setRunTransition(false); 
     }, 100); 
   };
+
+  const handleLoadComplete = () => {
+    setIsLoading(false);
+  };
+
+  if (isLoading) {
+    return <PageLoader onLoadComplete={handleLoadComplete} />;
+  }
 
   return (
     <>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="225" height="225" viewBox="0 0 225 225">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#6afb97"/>
+      <stop offset="1" stop-color="#02cbdb"/>
+    </linearGradient>
+  </defs>
+  <g id="Group_12507" data-name="Group 12507" transform="translate(134 1958)">
+    <rect id="Rectangle_11997" data-name="Rectangle 11997" width="225" height="225" rx="56" transform="translate(-134 -1958)" fill="url(#linear-gradient)"/>
+    <g id="Remove-background-project-_2_" transform="translate(-561.883 -1306.671)">
+      <path id="Path_20552" data-name="Path 20552" d="M535.3-608.9a23.9,23.9,0,0,0-15.5,11.6c-2.3,4.2-55.917,129.556-55.917,129.556h36.91L502.5-472.9c5.4-16.4,16.6-23.5,37-23.4,11.8,0,19.1,1.8,26.1,6.5,6.5,4.4,13.221,21.8,13.221,21.8H597.5c10.2,0,18.756.014,18.756.014,0-1.9-54.956-128.114-57.256-131.414C554.1-606.7,544-610.7,535.3-608.9Zm7.4,51.1c1.5,2.1,15.6,37.8,15.1,38.4-.3.2-8.4.3-18.1.2l-17.5-.3,7.5-18.5c7.8-19.3,8.7-21,10.8-21A3.476,3.476,0,0,1,542.7-557.8Z"/>
+    </g>
+  </g>
+</svg>
