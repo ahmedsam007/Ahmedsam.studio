@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import LoadingIndicator from './LoadingIndicator';
+import AnimatedTitle from './AnimatedTitle';
+import AnimatedSubtitle from './AnimatedSubtitle';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,6 +28,7 @@ const WhatsAppSection = ({ language = 'en', showFooter = false }) => {
     const textContainerRef = useRef(null);
     const gridRef = useRef(null);
     const buttonsRef = useRef(null);
+    const greenContainerRef = useRef(null);
     const [currentWordIndex, setCurrentWordIndex] = useState(0);
     const [displayText, setDisplayText] = useState('');
     const [isDeleting, setIsDeleting] = useState(false);
@@ -443,17 +446,25 @@ Please confirm this meeting schedule.`;
             
             {/* Section Title - Same style as Certificate section */}
             <div className="container mx-auto px-4 relative z-30 flex flex-col gap-4 text-center max-w-[90vw] w-full mx-auto mb-16 md:mb-20">
-                <h2 className="text-h1 font-extrabold -tracking-tight bg-gradient-to-b from-[#fff] via-[#e0e0e0] to-[#b0b0b0] bg-clip-text text-transparent dark:from-[#eaeaea] dark:via-[#bdbdbd] dark:to-[#888] font-mona">
-                    Let's Work Together
-                </h2>
-                <p className="text-body-lg font-mono text-neutral-700 dark:text-neutral-200 !text-balance max-w-prose mx-auto">
-                    Get in touch to explore how we can collaborate and create something amazing together.
-                </p>
+                <AnimatedTitle 
+                    text="Let's Work Together"
+                    triggerRef={greenContainerRef}
+                    className="text-h1 font-extrabold -tracking-tight font-mona"
+                    contextRef={sectionRef}
+                    scrubValue={0.3}
+                />
+                <AnimatedSubtitle 
+                    text="Get in touch to explore how we can collaborate and create something amazing together."
+                    triggerRef={greenContainerRef}
+                    className="text-body-lg font-mono !text-balance max-w-prose text-center"
+                    contextRef={sectionRef}
+                    scrubValue={0.3}
+                />
             </div>
             
             <div className="container mx-auto px-4 relative z-30 flex justify-center items-center min-h-[70vh]">
                 {/* Main Card Block */}
-                <div className="glow-card w-full max-w-5xl">
+                <div ref={greenContainerRef} className="glow-card w-full max-w-5xl">
                     <div className="glow-card-inner">
                         <div className="w-full flex flex-col lg:flex-row items-center justify-between gap-6 relative">
                             {/* Center Vertical Divider */}

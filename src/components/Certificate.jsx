@@ -1,8 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import AnimatedTitle from './AnimatedTitle';
+import AnimatedSubtitle from './AnimatedSubtitle';
+
+// Register ScrollTrigger with GSAP
+gsap.registerPlugin(ScrollTrigger);
 
 const Certificate = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const containerRef = useRef(null);
+  const certificateImageRef = useRef(null);
+  const greenContainerRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -78,16 +87,27 @@ const Certificate = () => {
     >
       {/* Title and Description - fixed position at top */}
       <div className="flex flex-col gap-4 text-center max-w-[90vw] w-full mx-auto mb-16 md:mb-40">
-        <h2 className="text-h1 font-extrabold -tracking-tight bg-gradient-to-b from-[#fff] via-[#e0e0e0] to-[#b0b0b0] bg-clip-text text-transparent dark:from-[#eaeaea] dark:via-[#bdbdbd] dark:to-[#888] font-mona">
-          Certificate
-        </h2>
-        <p className="text-body-lg font-mono text-neutral-700 dark:text-neutral-200 !text-balance max-w-prose mx-auto">
-          This official Google UX Design Certificate demonstrates my expertise and builds trust with potential clients.
-        </p>
+        <AnimatedTitle 
+          text="Certificate"
+          triggerRef={greenContainerRef}
+          className="text-h1 font-extrabold -tracking-tight font-mona"
+          contextRef={containerRef}
+          scrubValue={0.3}
+        />
+        <AnimatedSubtitle 
+          text="This official Google UX Design Certificate demonstrates my expertise and builds trust with potential clients."
+          triggerRef={greenContainerRef}
+          className="text-body-lg font-mono !text-balance max-w-prose text-center"
+          contextRef={containerRef}
+          scrubValue={0.3}
+        />
       </div>
 
       {/* Sticky container for the scaling animation - positioned lower to avoid overlap */}
-      <div className="sticky top-[25vh] left-0 w-full h-[50vh] flex items-center justify-center mt-8">
+      <div 
+        ref={certificateImageRef}
+        className="sticky top-[25vh] left-0 w-full h-[50vh] flex items-center justify-center mt-8"
+      >
         {/* Image with animated futuristic green background */}
         <div 
           className="relative w-full max-w-[1296px] aspect-[1296/670] min-h-[420px] md:min-h-[520px] lg:w-[1296px] lg:h-[670px] overflow-hidden shadow-2xl flex items-start justify-center mx-auto px-4 md:px-8 bg-transparent pt-12 transition-all duration-100 ease-out"
@@ -99,6 +119,7 @@ const Certificate = () => {
         >
           {/* Animated green gradient background */}
           <div
+            ref={greenContainerRef}
             className="absolute inset-0 z-0"
             style={{
               background: 'linear-gradient(120deg, #c2ffba 0%, #00e0ff 40%, #00ff99 70%, #c2ffba 100%)',

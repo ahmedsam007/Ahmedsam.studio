@@ -71,17 +71,11 @@ const WorkExperiences = () => {
   const titleRef = useRef(null);
   const sectionRef = useRef(null);
   const containerRef = useRef(null);
+  const headerRef = useRef(null);
+  // Add ref for animated subtitle
+  const animatedSubtitleRef = useRef(null);
   
-  // Animate title on mount
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (titleRef.current) {
-        titleRef.current.classList.add('active');
-      }
-    }, 300);
-    
-    return () => clearTimeout(timer);
-  }, []);
+
   
   // horizontalLoop function, adapted to run within a GSAP context provided by useEffect
   function horizontalLoop(items, config) {
@@ -450,21 +444,145 @@ const WorkExperiences = () => {
     };
   }, []);
 
+  // GSAP ScrollTrigger for title character animation
+  useEffect(() => {
+    if (!titleRef.current) return;
+
+    const ctx = gsap.context(() => {
+      const titleElement = titleRef.current;
+      const text = "The UX Odyssey";
+      
+      // Clear existing content and create character spans
+      titleElement.innerHTML = '';
+      const chars = text.split('').map((char, index) => {
+        const charWrapper = document.createElement('span');
+        charWrapper.style.display = 'inline-block';
+        charWrapper.style.overflow = 'hidden';
+        charWrapper.style.position = 'relative';
+        
+        const charElement = document.createElement('span');
+        charElement.textContent = char === ' ' ? '\u00A0' : char;
+        charElement.style.display = 'inline-block';
+        charElement.style.background = 'linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(220, 220, 220, 0.8) 100%)';
+        charElement.style.webkitBackgroundClip = 'text';
+        charElement.style.backgroundClip = 'text';
+        charElement.style.webkitTextFillColor = 'transparent';
+        charElement.style.color = 'transparent';
+        charElement.style.textShadow = '0 1px 3px rgba(0, 0, 0, 0.2)';
+        charElement.style.transform = 'translateY(100%)';
+        
+        charWrapper.appendChild(charElement);
+        titleElement.appendChild(charWrapper);
+        
+        return charElement;
+      });
+
+      // Create timeline for character animations
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current, // Changed from headerRef to containerRef (the slider component)
+          start: "top 90%", // Start earlier when slider component comes into view
+          end: "top 50%", // Shorter animation distance
+          scrub: 0.5,
+          invalidateOnRefresh: true
+        }
+      });
+
+      // Animate each character with stagger
+      chars.forEach((char, index) => {
+        tl.to(char, {
+          y: 0,
+          duration: 0.1,
+          ease: "power2.out"
+        }, index * 0.01); // Reduced from 0.03 to make stagger faster
+      });
+
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  // Separate useEffect for subtitle animation
+  useEffect(() => {
+    if (!animatedSubtitleRef.current) return;
+    
+    const ctx = gsap.context(() => {
+      // Apply gradient styling to the subtitle
+      const subtitleElement = animatedSubtitleRef.current;
+      subtitleElement.style.background = 'linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(220, 220, 220, 0.8) 100%)';
+      subtitleElement.style.webkitBackgroundClip = 'text';
+      subtitleElement.style.backgroundClip = 'text';
+      subtitleElement.style.color = 'transparent';
+      subtitleElement.style.webkitTextFillColor = 'transparent';
+      
+      // Set initial state - text hidden below the container
+      gsap.set(subtitleElement, {
+        y: '100%', // Start completely below the visible area
+        opacity: 1
+      });
+      
+      // Animate subtitle on scroll - move up to reveal
+      const subtitleAnimation = gsap.to(subtitleElement, {
+        y: '0%', // Move to normal position
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: containerRef.current, // Same trigger as title for coordinated timing
+          start: "top 85%",
+          end: "top 45%",
+          scrub: 0.5
+        }
+      });
+      
+      return () => {
+        if (subtitleAnimation.scrollTrigger) {
+          subtitleAnimation.scrollTrigger.kill();
+        }
+        subtitleAnimation.kill();
+      };
+    }, sectionRef);
+    
+    return () => ctx.revert();
+  }, []);
+
   return (
     <div ref={sectionRef} className="work-exp-section dark">
-      <div className="work-exp-header work-exp-header-fixed">
+      <div ref={headerRef} className="work-exp-header work-exp-header-fixed">
         <h1 
-          className="work-exp-title section-title text-h1 font-mona"
           ref={titleRef}
           style={{ 
             fontWeight: 700,
             fontSize: '5rem',
-            marginBottom: '2rem'
+            marginBottom: '2rem',
+            color: '#ffffff',
+            margin: 0,
+            padding: 0,
+            lineHeight: 1.1,
+            textAlign: 'center'
           }}
         >
           The UX Odyssey
         </h1>
-        <p className="work-exp-subtitle">Nine years of crafting human-centric flows.</p>
+        <div 
+          style={{
+            margin: '0 auto',
+            textAlign: 'center',
+            maxWidth: '36em',
+            marginTop: '1rem',
+            overflow: 'hidden' // This creates the mask effect
+          }}
+        >
+          <p 
+            ref={animatedSubtitleRef}
+            style={{
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+              lineHeight: 1.5,
+              fontSize: '1.1rem',
+              margin: 0
+            }}
+          >
+            Nine years of crafting human-centric flows.
+          </p>
+        </div>
       </div>
       <div ref={containerRef} className="work-exp-container dark">
         <section className="cloneable">

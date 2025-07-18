@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Navigation from './Navigation';
+import ScrollingLogos from './ScrollingLogos';
 
 const Hero = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
   const aHoleRef = useRef(null);
@@ -750,6 +751,9 @@ const Hero = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
           </a>
         </motion.div>
       </div>
+
+      {/* Scrolling Client Logos */}
+      <ScrollingLogos language={language} />
     </div>
   );
 };

@@ -447,13 +447,12 @@ html[lang="ar"] .experience-description {
 /* Highly specific rule for THIS component's title */
 .work-exp-section .work-exp-header .work-exp-title.section-title.text-h1.font-mona {
   /* Font properties will be inherited from text-h1, font-mona */
-  /* We mainly need to override color, opacity and text-fill for the gradient */
+  /* We mainly need to override color and text-fill for the gradient */
   background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(220, 220, 220, 0.8) 100%) !important; 
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important; /* Fallback for browsers that don't support background-clip:text */
   -webkit-text-fill-color: transparent !important; /* Makes the text transparent to show the gradient */
-  opacity: 1 !important; /* Ensure it's visible, overriding section-title default opacity 0 */
   visibility: visible !important; /* Ensure it's visible */
   display: block !important; /* Ensure it's displayed */
   position: relative !important; /* Keep in flow */

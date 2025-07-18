@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import AnimatedTitle from './AnimatedTitle';
+import AnimatedSubtitle from './AnimatedSubtitle';
 
 // Register ScrollTrigger with GSAP
 gsap.registerPlugin(ScrollTrigger);
@@ -186,6 +188,7 @@ const AnimatedNumber = ({ value, unit, play }) => {
 const StatsCounters = () => {
   const statRefs = useRef([]);
   const sectionRef = useRef(null);
+  const statsGridRef = useRef(null);
   const [animationsActivated, setAnimationsActivated] = useState(false);
 
   useEffect(() => {
@@ -234,18 +237,30 @@ const StatsCounters = () => {
           <div className="w-full mb-16">
             <div className="padding-container max-w-4xl mx-auto text-center">
               <div className="spacer-section--l h-16"></div>
-              <h2 className="text-h1 font-extrabold -tracking-tight bg-gradient-to-b from-[#fff] via-[#e0e0e0] to-[#b0b0b0] bg-clip-text text-transparent dark:from-[#eaeaea] dark:via-[#bdbdbd] dark:to-[#888] font-mona mb-8">
-              Numbers Talk
-              </h2>
-              <p className="text-lg text-gray-300 dark:text-gray-200 font-mono leading-relaxed">
-              From strategy and product design to go-to-market, we turn ideas into traction.
-              </p>
+              <AnimatedTitle 
+                text="Numbers Talk"
+                triggerRef={statsGridRef}
+                className="text-h1 font-extrabold -tracking-tight font-mona mb-8"
+                contextRef={sectionRef}
+                scrubValue={0.5}
+              />
+              <AnimatedSubtitle 
+                text="From strategy and product design to go-to-market, we turn ideas into traction."
+                triggerRef={statsGridRef}
+                className="text-lg font-mono leading-relaxed"
+                containerClassName="flex justify-center w-full"
+                contextRef={sectionRef}
+                scrubValue={0.5}
+              />
               <div className="spacer-section--s h-8"></div>
             </div>
           </div>
 
           {/* Stats grid with borders */}
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border border-gray-200 dark:border-gray-800 bg-[#08070f]">
+          <div 
+            ref={statsGridRef}
+            className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border border-gray-200 dark:border-gray-800 bg-[#08070f]"
+          >
             {stats.map((stat, i) => (
               <div
                 key={stat.id}

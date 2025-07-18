@@ -10,6 +10,10 @@ function Portfolio({ language = 'en' }) {
   const sectionRef = useRef(null);
   const gradientLineRef = useRef(null);
   const scrollLightRef = useRef(null);
+  const headerRef = useRef(null);
+  const titleRef = useRef(null);
+  // Add ref for animated subtitle
+  const animatedSubtitleRef = useRef(null);
   const [currentFeature, setCurrentFeature] = useState(0);
   const [progress, setProgress] = useState(0);
   const [leftArrowAnim, setLeftArrowAnim] = useState('');
@@ -142,6 +146,105 @@ function Portfolio({ language = 'en' }) {
 
     return () => ctx.revert();
   }, []);
+
+  // GSAP ScrollTrigger for title character animation
+  useEffect(() => {
+    if (!titleRef.current) return;
+
+    const ctx = gsap.context(() => {
+      const titleElement = titleRef.current;
+      const text = language === 'en' ? "Crafted & Shipped." : "صُنع وشُحن.";
+      
+      // Clear existing content and create character spans
+      titleElement.innerHTML = '';
+      const chars = text.split('').map((char, index) => {
+        const charWrapper = document.createElement('span');
+        charWrapper.style.display = 'inline-block';
+        charWrapper.style.overflow = 'hidden';
+        charWrapper.style.position = 'relative';
+        
+        const charElement = document.createElement('span');
+        charElement.textContent = char === ' ' ? '\u00A0' : char;
+        charElement.style.display = 'inline-block';
+        charElement.style.backgroundImage = 'linear-gradient(174deg, #25dff9, #21ff94)';
+        charElement.style.webkitBackgroundClip = 'text';
+        charElement.style.backgroundClip = 'text';
+        charElement.style.webkitTextFillColor = 'transparent';
+        charElement.style.color = 'transparent';
+        charElement.style.transform = 'translateY(100%)';
+        
+        charWrapper.appendChild(charElement);
+        titleElement.appendChild(charWrapper);
+        
+        return charElement;
+      });
+
+      // Create timeline for character animations
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: headerRef.current,
+          start: "top 80%",
+          end: "top 40%", // Changed from "center 20%" to make animation complete faster
+          scrub: 0.8, // Reduced from 1 to make animation more responsive to scroll
+          invalidateOnRefresh: true
+        }
+      });
+
+      // Animate each character with stagger
+      chars.forEach((char, index) => {
+        tl.to(char, {
+          y: 0,
+          duration: 0.1,
+          ease: "power2.out"
+        }, index * 0.01); // Already at 0.02 which is the faster stagger
+      });
+
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [language]);
+
+  // Separate useEffect for subtitle animation
+  useEffect(() => {
+    if (!animatedSubtitleRef.current) return;
+    
+    const ctx = gsap.context(() => {
+      // Apply gradient styling to the subtitle
+      const subtitleElement = animatedSubtitleRef.current;
+      subtitleElement.style.background = 'linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(220, 220, 220, 0.8) 100%)';
+      subtitleElement.style.webkitBackgroundClip = 'text';
+      subtitleElement.style.backgroundClip = 'text';
+      subtitleElement.style.color = 'transparent';
+      subtitleElement.style.webkitTextFillColor = 'transparent';
+      
+      // Set initial state - text hidden below the container
+      gsap.set(subtitleElement, {
+        y: '100%', // Start completely below the visible area
+        opacity: 1
+      });
+      
+      // Animate subtitle on scroll - move up to reveal
+      const subtitleAnimation = gsap.to(subtitleElement, {
+        y: '0%', // Move to normal position
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: headerRef.current, // Same trigger as title for coordinated timing
+          start: "top 85%",
+          end: "top 45%",
+          scrub: 0.8 // Same as title animation
+        }
+      });
+      
+      return () => {
+        if (subtitleAnimation.scrollTrigger) {
+          subtitleAnimation.scrollTrigger.kill();
+        }
+        subtitleAnimation.kill();
+      };
+    }, sectionRef);
+    
+    return () => ctx.revert();
+  }, [language]);
 
   // Auto-advance functionality with progress
   useEffect(() => {
@@ -281,34 +384,32 @@ function Portfolio({ language = 'en' }) {
 
       <div className="flex flex-col gap-16">
         {/* Header Section */}
-        <div className="flex w-full gap-16 px-8 lg:px-0 flex-col justify-between lg:flex-row lg:gap-0">
+        <div ref={headerRef} className="flex w-full gap-16 px-8 lg:px-0 flex-col justify-between lg:flex-row lg:gap-0">
           <h2 
+            ref={titleRef}
             className="text-4xl lg:text-6xl font-bold max-w-2xl text-balance leading-tight"
-            style={{
-              WebkitTextFillColor: 'transparent',
-              backgroundImage: 'linear-gradient(174deg, #25dff9, #21ff94)',
-              WebkitBackgroundClip: 'text',
-              backgroundClip: 'text'
-            }}
           >
-            {language === 'en' ? (
-              <>
-                Crafted & Shipped.
-              </>
-            ) : (
-              <>
-                صُنع وشُحن.
-              </>
-            )}
+            {language === 'en' ? 'Crafted & Shipped.' : 'صُنع وشُحن.'}
           </h2>
           
           <div className="text-white flex flex-col gap-12 items-start lg:w-[calc(45%-1.5rem)] lg:mt-3">
-            <div className="max-w-2xl text-pretty">
-              <p className="opacity-70">
-            {language === 'en' 
+            <div 
+              className="max-w-2xl text-pretty"
+              style={{
+                overflow: 'hidden' // This creates the mask effect
+              }}
+            >
+              <p 
+                ref={animatedSubtitleRef}
+                style={{
+                  margin: 0,
+                  lineHeight: '1.6'
+                }}
+              >
+                {language === 'en' 
                   ? 'Apps and websites I\'ve designed and launched—solo as a freelancer, and shoulder-to-shoulder with in-house teams.'
                   : 'التطبيقات والمواقع التي صممتها وأطلقتها - بمفردي كمستقل، وجنباً إلى جنب مع الفرق الداخلية.'}
-          </p>
+              </p>
             </div>
           </div>
         </div>

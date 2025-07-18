@@ -40,6 +40,10 @@ const Story = ({ language = 'en' }) => {
   const imageContainerRef = useRef(null);
   const textSectionRef = useRef(null);
   const titleLinesRef = useRef([]);
+  // Add ref for animated title
+  const animatedTitleRef = useRef(null);
+  // Add ref for animated subtitle
+  const animatedSubtitleRef = useRef(null);
 
   // Function to split text into lines
   const splitTextIntoLines = (text) => {
@@ -242,6 +246,91 @@ const Story = ({ language = 'en' }) => {
     };
   }, []);
 
+  // Separate useEffect for title character animation
+  useEffect(() => {
+    if (!animatedTitleRef.current) return;
+    
+    const titleText = translations.title[language];
+    const characters = titleText.split('');
+    
+    // Clear previous content
+    animatedTitleRef.current.innerHTML = '';
+    
+    // Create character spans
+    characters.forEach((char, index) => {
+      const span = document.createElement('span');
+      span.textContent = char === ' ' ? '\u00A0' : char; // Use non-breaking space
+      span.style.display = 'inline-block';
+      span.style.background = 'linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(220, 220, 220, 0.8) 100%)';
+      span.style.webkitBackgroundClip = 'text';
+      span.style.backgroundClip = 'text';
+      span.style.color = 'transparent';
+      span.style.webkitTextFillColor = 'transparent';
+      span.style.opacity = '0';
+      span.style.transform = 'translateY(100%)';
+      animatedTitleRef.current.appendChild(span);
+    });
+    
+    // Animate characters on scroll
+    const titleAnimation = gsap.to(animatedTitleRef.current.children, {
+      opacity: 1,
+      y: 0,
+      stagger: 0.02, // Reduced from 0.03 to make stagger faster
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: animatedTitleRef.current,
+        start: "top 80%",
+        end: "top 40%", // Changed from "center 20%" to make animation complete faster
+        scrub: 0.5 // Reduced from 1 to make animation more responsive to scroll
+      }
+    });
+    
+    return () => {
+      if (titleAnimation.scrollTrigger) {
+        titleAnimation.scrollTrigger.kill();
+      }
+      titleAnimation.kill();
+    };
+  }, [language]);
+
+  // Separate useEffect for subtitle animation
+  useEffect(() => {
+    if (!animatedSubtitleRef.current) return;
+    
+    // Apply gradient styling to the subtitle
+    const subtitleElement = animatedSubtitleRef.current;
+    subtitleElement.style.background = 'linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(220, 220, 220, 0.8) 100%)';
+    subtitleElement.style.webkitBackgroundClip = 'text';
+    subtitleElement.style.backgroundClip = 'text';
+    subtitleElement.style.color = 'transparent';
+    subtitleElement.style.webkitTextFillColor = 'transparent';
+    
+    // Set initial state - text hidden below the container
+    gsap.set(subtitleElement, {
+      y: '100%', // Start completely below the visible area
+      opacity: 1
+    });
+    
+    // Animate subtitle on scroll - move up to reveal
+    const subtitleAnimation = gsap.to(subtitleElement, {
+      y: '0%', // Move to normal position
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: subtitleElement.parentElement, // Trigger on the container
+        start: "top 80%",
+        end: "center 30%",
+        scrub: 1
+      }
+    });
+    
+    return () => {
+      if (subtitleAnimation.scrollTrigger) {
+        subtitleAnimation.scrollTrigger.kill();
+      }
+      subtitleAnimation.kill();
+    };
+  }, [language]);
+
   const renderAnimatedParagraph = (text) => {
     const words = text.split(' ');
     
@@ -255,25 +344,38 @@ const Story = ({ language = 'en' }) => {
       <div className="section-content pt-64" ref={sectionContentRef}>
         <div style={{ textAlign: 'center' }} ref={titleRef}>
           <h1 
+            ref={animatedTitleRef}
             className="section-title text-h1 font-mona" 
             style={{ 
               fontWeight: 700,
-              color: '#ffffff',
               fontSize: '5rem',
-              marginBottom: '2rem'
+              marginBottom: '2rem',
+              overflow: 'hidden'
             }}
           >
-            {translations.title[language]}
+            {/* Content will be dynamically created by GSAP animation */}
           </h1>
         </div>
         <div className="container mx-auto px-4" ref={subtitleRef}>
-          <p className="text-body-lg text-center text-gray-600 dark:text-gray-300 mb-16 mx-auto" 
-             style={{
-               fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-               maxWidth: '40%'
-             }}>
-            {translations.subtitle[language]}
-          </p>
+          <div 
+            className="text-center mb-16 mx-auto"
+            style={{
+              maxWidth: '40%',
+              height: 'auto',
+              overflow: 'hidden' // This creates the mask effect
+            }}
+          >
+            <p 
+              ref={animatedSubtitleRef}
+              className="text-body-lg" 
+              style={{
+                fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                margin: 0,
+                lineHeight: '1.6'
+              }}>
+              {translations.subtitle[language]}
+            </p>
+          </div>
           
           <div className="max-w-4xl mx-auto">
             <div className="relative flex justify-center items-center h-[545px] mb-16" id="imageContainer" ref={imageContainerRef}>

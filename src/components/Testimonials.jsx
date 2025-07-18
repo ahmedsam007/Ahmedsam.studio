@@ -10,6 +10,8 @@ gsap.registerPlugin(ScrollTrigger);
 const TestimonialsComponent = ({ language }) => {
     const containerRef = useRef(null);
     const headingRef = useRef(null);
+    const titleRef = useRef(null);
+    const animatedSubtitleRef = useRef(null);
     const cardsContainerRef = useRef(null);
     const cardRefs = useRef([]);
     const clotheslineRef = useRef(null);
@@ -86,26 +88,85 @@ const TestimonialsComponent = ({ language }) => {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // Animate heading
-            gsap.fromTo(headingRef.current, 
-                { 
-                    opacity: 0, 
-                    y: 50,
-                    scale: 0.9
-                },
-                { 
-                    opacity: 1, 
-                    y: 0,
-                    scale: 1,
-                    duration: 1.2,
-                    ease: "power3.out",
+            // GSAP ScrollTrigger for title character animation
+            if (titleRef.current) {
+                const titleElement = titleRef.current;
+                const text = currentTexts.heading;
+                
+                // Clear existing content and create character spans
+                titleElement.innerHTML = '';
+                const chars = text.split('').map((char, index) => {
+                    const charWrapper = document.createElement('span');
+                    charWrapper.style.display = 'inline-block';
+                    charWrapper.style.overflow = 'hidden';
+                    charWrapper.style.position = 'relative';
+                    
+                    const charElement = document.createElement('span');
+                    charElement.textContent = char === ' ' ? '\u00A0' : char;
+                    charElement.style.display = 'inline-block';
+                    charElement.style.background = 'linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(220, 220, 220, 0.8) 100%)';
+                    charElement.style.webkitBackgroundClip = 'text';
+                    charElement.style.backgroundClip = 'text';
+                    charElement.style.webkitTextFillColor = 'transparent';
+                    charElement.style.color = 'transparent';
+                    charElement.style.textShadow = '0 1px 3px rgba(0, 0, 0, 0.2)';
+                    charElement.style.transform = 'translateY(100%)';
+                    
+                    charWrapper.appendChild(charElement);
+                    titleElement.appendChild(charWrapper);
+                    
+                    return charElement;
+                });
+
+                // Create timeline for character animations
+                const tl = gsap.timeline({
                     scrollTrigger: {
-                        trigger: headingRef.current,
-                        start: "top 80%",
-                        toggleActions: "play none none reverse"
+                        trigger: cardsContainerRef.current,
+                        start: "top 90%",
+                        end: "top 50%",
+                        scrub: 0.3,
+                        invalidateOnRefresh: true
                     }
-                }
-            );
+                });
+
+                // Animate each character with stagger
+                chars.forEach((char, index) => {
+                    tl.to(char, {
+                        y: 0,
+                        duration: 0.1,
+                        ease: "power2.out"
+                    }, index * 0.01);
+                });
+            }
+
+            // Subtitle animation
+            if (animatedSubtitleRef.current) {
+                // Apply gradient styling to the subtitle
+                const subtitleElement = animatedSubtitleRef.current;
+                subtitleElement.style.background = 'linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(220, 220, 220, 0.8) 100%)';
+                subtitleElement.style.webkitBackgroundClip = 'text';
+                subtitleElement.style.backgroundClip = 'text';
+                subtitleElement.style.color = 'transparent';
+                subtitleElement.style.webkitTextFillColor = 'transparent';
+                
+                // Set initial state - text hidden below the container
+                gsap.set(subtitleElement, {
+                    y: '100%',
+                    opacity: 1
+                });
+                
+                // Animate subtitle on scroll - move up to reveal
+                gsap.to(subtitleElement, {
+                    y: '0%',
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: cardsContainerRef.current,
+                        start: "top 85%",
+                        end: "top 45%",
+                        scrub: 0.3
+                    }
+                });
+            }
 
             const rotators = cardRefs.current;
             if (!rotators || rotators.length === 0) return;
@@ -176,12 +237,33 @@ const TestimonialsComponent = ({ language }) => {
             <div className="container mx-auto px-4 relative z-20 overflow-visible">
                 {/* Header */}
                 <div ref={headingRef} className="text-center mb-20">
-                    <h2 className="text-h1 font-extrabold -tracking-tight bg-gradient-to-b from-[#fff] via-[#e0e0e0] to-[#b0b0b0] bg-clip-text text-transparent dark:from-[#eaeaea] dark:via-[#bdbdbd] dark:to-[#888] font-mona mb-6">
+                    <h2 
+                        ref={titleRef}
+                        className="text-h1 font-extrabold -tracking-tight font-mona mb-6"
+                        style={{ 
+                            fontWeight: 700,
+                            overflow: 'hidden'
+                        }}
+                    >
                         {currentTexts.heading}
                     </h2>
-                    <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                        {currentTexts.subheading}
-                    </p>
+                    <div 
+                        className="flex justify-center w-full"
+                        style={{
+                            overflow: 'hidden' // This creates the mask effect
+                        }}
+                    >
+                        <p 
+                            ref={animatedSubtitleRef}
+                            className="text-xl max-w-2xl text-center"
+                            style={{
+                                margin: 0,
+                                lineHeight: '1.6'
+                            }}
+                        >
+                            {currentTexts.subheading}
+                        </p>
+                    </div>
                 </div>
 
                 {/* Testimonial Cards Container */}
