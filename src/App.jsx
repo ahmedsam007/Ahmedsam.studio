@@ -20,6 +20,7 @@ import PageLoader from './components/PageLoader'
 import Lenis from 'lenis'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
+import ShimmerDemo from './components/ShimmerDemo';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false)
@@ -29,6 +30,8 @@ function App() {
   const [hovered, setHovered] = useState(null)
   const [runTransition, setRunTransition] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  // Add a state for demo mode (you can remove this later)
+  const [showShimmerDemo, setShowShimmerDemo] = useState(false);
 
   const transitionTriggerRef = useRef(null)
 
@@ -194,6 +197,19 @@ function App() {
       lenis.destroy()
     }
   }, [])
+
+  // Check for demo query parameter
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('demo') === 'shimmer') {
+      setShowShimmerDemo(true);
+    }
+  }, []);
+
+  // If demo mode is active, show the shimmer demo
+  if (showShimmerDemo) {
+    return <ShimmerDemo />;
+  }
 
   const handleTransitionComplete = () => {
     console.log('[App.jsx] handleTransitionComplete called.');

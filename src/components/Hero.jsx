@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Navigation from './Navigation';
 import ScrollingLogos from './ScrollingLogos';
+import ShimmerText from './ShimmerText';
 
 const Hero = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
   const aHoleRef = useRef(null);
@@ -692,8 +693,7 @@ const Hero = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
 
       {/* Hero Text Content */}
       <div className="hero-text-container">
-        <motion.h1 
-          className="hero-main-title"
+        <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ 
@@ -702,16 +702,24 @@ const Hero = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
             ease: "easeOut"
           }}
         >
-          {language === 'en' ? (
-            <>
-              Let&nbsp;Your&nbsp;Product's&nbsp;Gravity<br />
-              Do&nbsp;the&nbsp;Selling.
-            </>
-          ) : 'دع جاذبية منتجك تقوم بالبيع.'}
-        </motion.h1>
+          <ShimmerText 
+            variant="rainbow"
+            trigger="auto"
+            delay={2000}
+            duration={3000}
+            tag="h1"
+            className="hero-main-title"
+          >
+            {language === 'en' ? (
+              <>
+                Let&nbsp;Your&nbsp;Product's&nbsp;Gravity<br />
+                Do&nbsp;the&nbsp;Selling.
+              </>
+            ) : 'دع جاذبية منتجك تقوم بالبيع.'}
+          </ShimmerText>
+        </motion.div>
         
-        <motion.p 
-          className="hero-subtitle"
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ 
@@ -720,21 +728,30 @@ const Hero = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
             ease: "easeOut"
           }}
         >
-          {language === 'en' 
-            ? (
-              <>
-                We engineer interfaces so intuitive they attract customers<br />
-                like a black hole — no friction, just flow.
-              </>
-            ) 
-            : (
-              <>
-                نحن نصمم واجهات بديهية جداً تجذب العملاء<br />
-                كالثقب الأسود — بلا احتكاك، فقط تدفق.
-              </>
-            )
-          }
-        </motion.p>
+          <ShimmerText 
+            variant="gold"
+            trigger="auto"
+            delay={4000}
+            duration={2500}
+            tag="p"
+            className="hero-subtitle"
+          >
+            {language === 'en' 
+              ? (
+                <>
+                  We engineer interfaces so intuitive they attract customers<br />
+                  like a black hole — no friction, just flow.
+                </>
+              ) 
+              : (
+                <>
+                  نحن نصمم واجهات بديهية جداً تجذب العملاء<br />
+                  كالثقب الأسود — بلا احتكاك، فقط تدفق.
+                </>
+              )
+            }
+          </ShimmerText>
+        </motion.div>
 
         <motion.div 
           className="hero-cta-container"

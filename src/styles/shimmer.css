@@ -1,0 +1,305 @@
+/* Modern Shimmer Effects - 2025 Trendy Styles */
+
+/* Core Shimmer Variables */
+:root {
+  --shimmer-duration: 2s;
+  --shimmer-delay: 0.5s;
+  --shimmer-primary: rgba(255, 255, 255, 0.8);
+  --shimmer-secondary: rgba(255, 255, 255, 0.2);
+  --shimmer-accent: rgba(138, 180, 248, 0.6);
+  --shimmer-gold: linear-gradient(110deg, transparent 40%, rgba(255, 215, 0, 0.8) 50%, transparent 60%);
+  --shimmer-rainbow: linear-gradient(110deg, 
+    transparent 40%, 
+    rgba(255, 0, 150, 0.8) 45%, 
+    rgba(0, 255, 255, 0.8) 50%, 
+    rgba(255, 255, 0, 0.8) 55%, 
+    transparent 60%);
+  --shimmer-glass: linear-gradient(110deg, 
+    transparent 40%, 
+    rgba(255, 255, 255, 0.4) 45%, 
+    rgba(138, 180, 248, 0.3) 50%, 
+    rgba(255, 255, 255, 0.4) 55%, 
+    transparent 60%);
+}
+
+/* Base Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes shimmer-glow {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes shimmer-wave {
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+  }
+  100% {
+    transform: translateX(200%) skewX(-15deg);
+  }
+}
+
+@keyframes shimmer-pulse {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes shimmer-rotate {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.05);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+/* Modern Shimmer Wrapper */
+.shimmer-wrapper {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, 
+    #f3f4f6 25%, 
+    #e5e7eb 50%, 
+    #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: shimmer-pulse var(--shimmer-duration) ease-in-out infinite;
+  border-radius: 0.5rem;
+}
+
+.shimmer-wrapper.dark {
+  background: linear-gradient(90deg, 
+    #374151 25%, 
+    #4b5563 50%, 
+    #374151 75%);
+}
+
+.shimmer-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--shimmer-glass);
+  animation: shimmer var(--shimmer-duration) ease-in-out infinite;
+  animation-delay: var(--shimmer-delay);
+}
+
+/* Premium Glass Shimmer */
+.shimmer-glass {
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+}
+
+.shimmer-glass::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: var(--shimmer-glass);
+  animation: shimmer-wave 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.shimmer-glass::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  animation: shimmer-glow 4s ease-in-out infinite;
+}
+
+/* Iridescent Rainbow Shimmer */
+.shimmer-rainbow {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(45deg, 
+    #ff0080, #ff8c00, #40e0d0, #c71585, #00ff00, #8a2be2);
+  background-size: 300% 300%;
+  animation: shimmer-rotate 6s ease-in-out infinite;
+}
+
+.shimmer-rainbow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--shimmer-rainbow);
+  animation: shimmer-wave 2.5s ease-in-out infinite;
+  mix-blend-mode: overlay;
+}
+
+/* Metallic Gold Shimmer */
+.shimmer-gold {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #ffd700, #ffed4e, #ffd700);
+  background-size: 200% 200%;
+  animation: shimmer-pulse 3s ease-in-out infinite;
+}
+
+.shimmer-gold::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--shimmer-gold);
+  animation: shimmer var(--shimmer-duration) ease-in-out infinite;
+  mix-blend-mode: hard-light;
+}
+
+/* Text Shimmer Effects */
+.shimmer-text {
+  background: linear-gradient(90deg, 
+    transparent 30%, 
+    rgba(255, 255, 255, 0.8) 50%, 
+    transparent 70%);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shimmer var(--shimmer-duration) ease-in-out infinite;
+}
+
+.shimmer-text.rainbow {
+  background: linear-gradient(90deg, 
+    #ff0080 0%, 
+    #ff8c00 25%, 
+    #40e0d0 50%, 
+    #c71585 75%, 
+    #ff0080 100%);
+  background-size: 300% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: shimmer-pulse 4s ease-in-out infinite;
+}
+
+.shimmer-text.gold {
+  background: linear-gradient(90deg, 
+    #b8860b 0%, 
+    #ffd700 25%, 
+    #ffed4e 50%, 
+    #ffd700 75%, 
+    #b8860b 100%);
+  background-size: 300% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: shimmer-pulse 3s ease-in-out infinite;
+}
+
+/* Loading Skeleton Shimmers */
+.shimmer-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer-pulse var(--shimmer-duration) ease-in-out infinite;
+}
+
+.shimmer-skeleton.dark {
+  background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+}
+
+.shimmer-skeleton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(110deg, 
+    transparent 40%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    transparent 60%);
+  animation: shimmer var(--shimmer-duration) ease-in-out infinite;
+}
+
+/* Hover Effects */
+.shimmer-hover:hover {
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+}
+
+.shimmer-hover:hover::before {
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+}
+
+/* Size Variants */
+.shimmer-xs { height: 1rem; }
+.shimmer-sm { height: 1.5rem; }
+.shimmer-md { height: 2rem; }
+.shimmer-lg { height: 3rem; }
+.shimmer-xl { height: 4rem; }
+
+/* Shape Variants */
+.shimmer-circle { border-radius: 50%; }
+.shimmer-rounded { border-radius: 0.5rem; }
+.shimmer-rounded-lg { border-radius: 1rem; }
+.shimmer-rounded-xl { border-radius: 1.5rem; }
+
+/* Utility Classes */
+.shimmer-infinite { animation-iteration-count: infinite; }
+.shimmer-once { animation-iteration-count: 1; }
+.shimmer-slow { animation-duration: 4s; }
+.shimmer-fast { animation-duration: 1s; }
+
+/* Responsive Design */
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-wrapper,
+  .shimmer-wrapper::before,
+  .shimmer-glass,
+  .shimmer-glass::before,
+  .shimmer-glass::after,
+  .shimmer-rainbow,
+  .shimmer-rainbow::before,
+  .shimmer-gold,
+  .shimmer-gold::before,
+  .shimmer-text,
+  .shimmer-skeleton,
+  .shimmer-skeleton::before {
+    animation: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --shimmer-primary: rgba(255, 255, 255, 0.6);
+    --shimmer-secondary: rgba(255, 255, 255, 0.1);
+    --shimmer-accent: rgba(96, 165, 250, 0.4);
+  }
+} 
